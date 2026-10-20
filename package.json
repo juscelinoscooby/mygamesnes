@@ -1,0 +1,16 @@
+{
+  "name": "manual-offline-pwa",
+  "version": "1.0.0",
+  "description": "PWA 100% offline para consulta ultrarrápida Full-Text Search de manuais técnicos em PDF",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "build:web": "node scripts/sync-www.js",
+    "cap:sync": "node scripts/sync-www.js && npx cap sync android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.2.1",
+    "@capacitor/cli": "^6.2.1",
+    "@capacitor/core": "^6.2.1"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "appId": "com.techmanual.offline",
+  "appName": "TechManual Offline",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}

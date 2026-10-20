@@ -1,0 +1,545 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [6 0 R 8 0 R 10 0 R 12 0 R 14 0 R] /Count 5 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Length 2146 >>
+stream
+0.08 0.12 0.22 rg
+36 765 523 48 re f
+0.96 0.62 0.04 rg
+36 762 523 3 re f
+BT
+/F2 11 Tf
+1 1 1 rg
+48 793 Td (MANUAL TECNICO DE CAMPO - INVERSOR CFW500 & BOMBA KSB) Tj
+/F1 9 Tf
+0.96 0.78 0.35 rg
+0 -16 Td (Pagina 1 de 5 | Secao 1: Especificacoes Eletricas, Torque e Instalacao) Tj
+ET
+BT
+/F2 10.5 Tf
+0.08 0.22 0.45 rg
+44 730 Td (1. ESPECIFICACOES DE ALIMENTACAO ELETRICA E POTENCIA) Tj
+ET
+0.82 0.85 0.90 RG 0.8 w
+44 716 m 548 716 l S
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 698 Td (Modelo de Referencia: Inversor de Frequencia WEG CFW500-C \(Quadro Mec C\)) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 682 Td (Tensao Nominal de Entrada: 380V a 440V CA Trifasico \(50/60 Hz\)) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 666 Td (Tolerancia de Tensao Permitida: -15% a +10% \(323V min / 484V max\)) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 650 Td (Corrente Nominal de Saida \(HD\): 32.0 A | Potencia do Motor: 15 CV \(11 kW\)) Tj
+ET
+BT
+/F2 10.5 Tf
+0.08 0.22 0.45 rg
+44 618 Td (2. ESPECIFICACOES DE TORQUE DE APERTO E CABEAMENTO) Tj
+ET
+0.82 0.85 0.90 RG 0.8 w
+44 604 m 548 604 l S
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 586 Td (Bornes de Potencia \(R/L1, S/L2, T/L3 e U, V, W\): Torque de 25 Nm) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 570 Td (Parafuso de Aterramento de Protecao \(PE\): Torque de 42 Nm \(Cabo min 10 mm2\)) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 554 Td (Bornes de Controle e Entradas Digitais \(DI1 a DI4\): Torque de 0.5 Nm) Tj
+ET
+BT
+/F2 10.5 Tf
+0.08 0.22 0.45 rg
+44 522 Td (3. REQUISITOS DE VENTILACAO E FILTRO RFI) Tj
+ET
+0.82 0.85 0.90 RG 0.8 w
+44 508 m 548 508 l S
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 490 Td (Espacamento minimo superior e inferior no painel eletrico: 110 mm.) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 474 Td (Temperatura ambiente de operacao nominal: -10 C ate +50 C sem derating.) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 458 Td (Para ambientes com alta interferencia eletromagnetica, ativar o filtro RFI) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 442 Td (interno conectando o grampo de aterramento metalico na chapa Terra.) Tj
+ET
+0.50 0.55 0.62 rg
+BT /F1 8 Tf 44 32 Td (TechManual Offline PWA - Documento Tecnico Indexado Localmente) Tj ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 5 0 R >>
+endobj
+7 0 obj
+<< /Length 2444 >>
+stream
+0.08 0.12 0.22 rg
+36 765 523 48 re f
+0.96 0.62 0.04 rg
+36 762 523 3 re f
+BT
+/F2 11 Tf
+1 1 1 rg
+48 793 Td (MANUAL TECNICO DE CAMPO - INVERSOR CFW500 & BOMBA KSB) Tj
+/F1 9 Tf
+0.96 0.78 0.35 rg
+0 -16 Td (Pagina 2 de 5 | Secao 2: Diagnostico de Falhas e Alarmes \(F0021 a A0046\)) Tj
+ET
+BT
+/F2 10.5 Tf
+0.08 0.22 0.45 rg
+44 730 Td (TABELA DE CODIGOS DE FALHA E SOLUCAO DE PROBLEMAS \(TROUBLESHOOTING\)) Tj
+ET
+0.82 0.85 0.90 RG 0.8 w
+44 716 m 548 716 l S
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 698 Td (CODIGO F0021 - Subtensao no Barramento CC \(Link DC Undervoltage\):) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 682 Td (  Causa: Tensao de alimentacao abaixo do limite minimo \(< 323V CA\) ou) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 666 Td (  falta de fase na entrada trifasica L1/L2/L3.) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 650 Td (  Acao Corretiva: Medir tensao nas fases de entrada com multimetro True-RMS;) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 634 Td (  reapertar bornes de potencia \(25 Nm\) e verificar contator principal K1.) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 602 Td (CODIGO F0022 - Sobretensao no Barramento CC \(Overvoltage > 810V CC\):) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 586 Td (  Causa: Inercia elevada da carga durante a frenagem ou rampa muito curta.) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 570 Td (  Acao Corretiva: Aumentar o tempo de desaceleracao no parametro P0101) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 554 Td (  ou instalar resistor de frenagem reostatica nos bornes BR e +UD.) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 522 Td (CODIGO F0070 - Sobrecorrente ou Curto-Circuito na Saida \(U, V, W\):) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 506 Td (  Causa: Curto entre fases do cabo do motor, isolacao danificada ou) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 490 Td (  rotor da bomba hidraulica travado mecanicamente.) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 474 Td (  Acao Corretiva: Desconectar o motor, medir resistencia de isolamento) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 458 Td (  com megohmetro \(500V CC > 100 MOhm\) e girar o eixo da bomba manualmente.) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 426 Td (CODIGO A0046 - Alarme de Sobrecarga no Motor / Superaquecimento PTC:) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 410 Td (  Causa: Corrente acima de 110% por mais de 60s ou ventilacao obstruida.) Tj
+ET
+0.50 0.55 0.62 rg
+BT /F1 8 Tf 44 32 Td (TechManual Offline PWA - Documento Tecnico Indexado Localmente) Tj ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 7 0 R >>
+endobj
+9 0 obj
+<< /Length 2233 >>
+stream
+0.08 0.12 0.22 rg
+36 765 523 48 re f
+0.96 0.62 0.04 rg
+36 762 523 3 re f
+BT
+/F2 11 Tf
+1 1 1 rg
+48 793 Td (MANUAL TECNICO DE CAMPO - INVERSOR CFW500 & BOMBA KSB) Tj
+/F1 9 Tf
+0.96 0.78 0.35 rg
+0 -16 Td (Pagina 3 de 5 | Secao 3: Parametrizacao e Rede RS-485 Modbus RTU) Tj
+ET
+BT
+/F2 10.5 Tf
+0.08 0.22 0.45 rg
+44 730 Td (PARAMETROS ESSENCIAIS DE CONFIGURACAO E COMISSIONAMENTO) Tj
+ET
+0.82 0.85 0.90 RG 0.8 w
+44 716 m 548 716 l S
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 698 Td (P0000 = 0005 : Senha de acesso para liberacao de escrita nos parametros) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 682 Td (P0100 = 10.0 s : Tempo de aceleracao linear \(0 ate 60 Hz\)) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 666 Td (P0101 = 15.0 s : Tempo de desaceleracao segura \(evita falha F0022\)) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 650 Td (P0133 = 18.0 Hz : Frequencia minima de operacao da bomba centrifuga) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 634 Td (P0134 = 60.0 Hz : Frequencia maxima nominal do motor assincrono) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 618 Td (P0202 = 5 \(VVW\) : Modo de controle vetorial de tensao WEG) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 602 Td (P0401 = 31.5 A : Corrente nominal do motor gravada na placa de identificacao) Tj
+ET
+BT
+/F2 10.5 Tf
+0.08 0.22 0.45 rg
+44 570 Td (CONFIGURACAO DA INTERFACE SERIAL RS-485 \(PROTOCOLO MODBUS RTU\)) Tj
+ET
+0.82 0.85 0.90 RG 0.8 w
+44 556 m 548 556 l S
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 538 Td (P0308 = 1 a 247 : Endereco do escravo na rede Modbus RTU \(Padrao: 1\)) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 522 Td (P0310 = 2 : Taxa de transmissao \(Baud Rate\) = 19200 bps) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 506 Td (P0311 = 2 : Formato dos bytes = 8 bits de dados, Paridade Par, 1 Stop Bit) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 490 Td (P0313 = 2 : Acao para erro de comunicacao F0228 \(Causar parada por rampa\)) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 474 Td (Terminacao RS-485: Ativar chaves DIP S1.1 e S1.2 em ON \(resistor 120 Ohms\)) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 458 Td (somente no primeiro e no ultimo equipamento do barramento diferencial A/B.) Tj
+ET
+0.50 0.55 0.62 rg
+BT /F1 8 Tf 44 32 Td (TechManual Offline PWA - Documento Tecnico Indexado Localmente) Tj ET
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 9 0 R >>
+endobj
+11 0 obj
+<< /Length 2274 >>
+stream
+0.08 0.12 0.22 rg
+36 765 523 48 re f
+0.96 0.62 0.04 rg
+36 762 523 3 re f
+BT
+/F2 11 Tf
+1 1 1 rg
+48 793 Td (MANUAL TECNICO DE CAMPO - INVERSOR CFW500 & BOMBA KSB) Tj
+/F1 9 Tf
+0.96 0.78 0.35 rg
+0 -16 Td (Pagina 4 de 5 | Secao 4: Manutencao da Bomba Hidraulica e Selo Mecanico) Tj
+ET
+BT
+/F2 10.5 Tf
+0.08 0.22 0.45 rg
+44 730 Td (ESPECIFICACOES HIDRAULICAS E MECANICAS - BOMBA CENTRIFUGA KSB MEGANORM) Tj
+ET
+0.82 0.85 0.90 RG 0.8 w
+44 716 m 548 716 l S
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 698 Td (Vazao Nominal de Projeto: 120 m3/h | Pressao de Recalque: 6.5 bar \(65 mca\)) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 682 Td ( Pressao Minima de Succao \(NPSH disponivel\): 4.2 mca \(evita cavitacao\)) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 666 Td (Rolamentos do Mancal: Par de rolamentos de esferas SKF 6309-C3) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 650 Td (Lubrificacao: Graxa a base de sabao de litio NLGI 2 a cada 4000 horas.) Tj
+ET
+BT
+/F2 10.5 Tf
+0.08 0.22 0.45 rg
+44 618 Td (PROCEDIMENTO DE SUBSTITUICAO DO SELO MECANICO E ALINHAMENTO) Tj
+ET
+0.82 0.85 0.90 RG 0.8 w
+44 604 m 548 604 l S
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 586 Td (1. Fechar as valvulas de bloqueio de succao e recalque e drenar a carcaca.) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 570 Td (2. Inspecionar as faces lapidadas do selo mecanico de carbeto de silicio;) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 554 Td (   substituir o conjunto caso haja vazamento superior a 3 gotas/minuto.) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 538 Td (3. Verificar a folga axial do rotor \(0.15 mm a 0.25 mm\) com relogio comparador.) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 522 Td (4. Executar alinhamento a laser do acoplamento elastico entre motor e bomba:) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 506 Td (   Desalinhamento radial maximo admissivel: 0.05 mm) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 490 Td (   Desalinhamento angular maximo admissivel: 0.04 mm / 100 mm) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 458 Td (SINTOMA DE CAVITACAO: Ruido de crepitacao metalica na voluta e oscilacao) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 442 Td (de corrente eletrica. Limpar filtro Y da linha de succao imediatamente.) Tj
+ET
+0.50 0.55 0.62 rg
+BT /F1 8 Tf 44 32 Td (TechManual Offline PWA - Documento Tecnico Indexado Localmente) Tj ET
+endstream
+endobj
+12 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 11 0 R >>
+endobj
+13 0 obj
+<< /Length 2205 >>
+stream
+0.08 0.12 0.22 rg
+36 765 523 48 re f
+0.96 0.62 0.04 rg
+36 762 523 3 re f
+BT
+/F2 11 Tf
+1 1 1 rg
+48 793 Td (MANUAL TECNICO DE CAMPO - INVERSOR CFW500 & BOMBA KSB) Tj
+/F1 9 Tf
+0.96 0.78 0.35 rg
+0 -16 Td (Pagina 5 de 5 | Secao 5: Seguranca NR-10, LOTO e Descarga de Capacitores) Tj
+ET
+BT
+/F2 10.5 Tf
+0.08 0.22 0.45 rg
+44 730 Td (PROCEDIMENTO OBRIGATORIO DE BLOQUEIO E ETIQUETAGEM \(NR-10 / LOTO\)) Tj
+ET
+0.82 0.85 0.90 RG 0.8 w
+44 716 m 548 716 l S
+BT
+/F2 10.5 Tf
+0.08 0.22 0.45 rg
+44 698 Td (PERIGO DE CHOQUE ELETRICO MORTAL - TENSAO RESIDUAL NO BARRAMENTO CC!) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 680 Td (Mesmo apos desligar o disjuntor geral Q1, o banco de capacitores eletroliticos) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 664 Td (mantem tensao elevada acima de 540V CC.) Tj
+ET
+BT
+/F2 10.5 Tf
+0.08 0.22 0.45 rg
+44 632 Td (PASSO A PASSO PARA INTERVENCAO SEGURA:) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 614 Td (1. Comandar parada do inversor e abrir a seccionadora sob carga.) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 598 Td (2. Aplicar cadeado de bloqueio individual \(LOTO\) e etiqueta de identificacao.) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 582 Td (3. AGUARDAR NO MINIMO 10 MINUTOS para descarga completa dos capacitores.) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 566 Td (4. Medir a tensao CC entre os bornes \(+UD\) e \(-UD\) com multimetro categoria) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 550 Td (   CAT III 1000V. Somente iniciar manutencao quando a leitura for < 24V CC.) Tj
+ET
+BT
+/F2 10.5 Tf
+0.08 0.22 0.45 rg
+44 518 Td (CHECKLIST DE COMISSIONAMENTO POS-MANUTENCAO) Tj
+ET
+0.82 0.85 0.90 RG 0.8 w
+44 504 m 548 504 l S
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 486 Td ([OK] Resistencia de aterramento PE inferior a 1.0 Ohm) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 470 Td ([OK] Sentido de rotacao horario confirmado via comando JOG \(5 Hz\)) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 454 Td ([OK] Ausencia de vibracao excessiva \(< 2.8 mm/s RMS conforme ISO 10816\)) Tj
+ET
+BT
+/F1 10 Tf
+0.12 0.16 0.23 rg
+44 438 Td ([OK] Parametros salvos na memoria flash \(P0204 = 9 - Backup concluido\)) Tj
+ET
+0.50 0.55 0.62 rg
+BT /F1 8 Tf 44 32 Td (TechManual Offline PWA - Documento Tecnico Indexado Localmente) Tj ET
+endstream
+endobj
+14 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 13 0 R >>
+endobj
+xref
+0 15
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000142 00000 n 
+0000000239 00000 n 
+0000000341 00000 n 
+0000002539 00000 n 
+0000002675 00000 n 
+0000005171 00000 n 
+0000005307 00000 n 
+0000007592 00000 n 
+0000007729 00000 n 
+0000010056 00000 n 
+0000010194 00000 n 
+0000012452 00000 n 
+trailer
+<< /Size 15 /Root 1 0 R >>
+startxref
+12590
+%%EOF
