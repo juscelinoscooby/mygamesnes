@@ -1,5 +1,30 @@
 [
   {
+    "name": "Super Mario All-Stars + Super Mario World",
+    "file": "Super Mario All-Stars + Super Mario World (U) [o1+2C].smc",
+    "size": 3145728
+  },
+  {
+    "name": "Top Gear",
+    "file": "Top Gear (U) [!].smc",
+    "size": 524288
+  },
+  {
+    "name": "Top Gear (Espanhol)",
+    "file": "Top Gear (U) [T+Spa100%_Tanero].smc",
+    "size": 524288
+  },
+  {
+    "name": "Top Gear 2",
+    "file": "Top Gear 2 (U) [b1].smc",
+    "size": 1048576
+  },
+  {
+    "name": "Top Gear 3000",
+    "file": "Top Gear 3000 (U) [!].smc",
+    "size": 1048576
+  },
+  {
     "name": "Super SNES Demo Test",
     "file": "Super_SNES_Demo_Test.sfc",
     "size": 32768
