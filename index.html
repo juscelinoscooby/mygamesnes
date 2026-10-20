@@ -1,331 +1,2125 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="dark">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#0b1120" />
-  <meta name="description" content="PWA 100% offline para consulta ultrarrápida Full-Text Search em manuais técnicos PDF com destaque de termos." />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>TechManual Offline — Busca Ultrarrápida em PDFs</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Game Boy SNES Pocket — Console & Biblioteca</title>
 
-  <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="icon" type="image/svg+xml" href="./icons/icon.svg" />
-  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
-  <link rel="stylesheet" href="./css/styles.css" />
+  <!-- Pré-conexão com o CDN para acelerar o carregamento do emulador -->
+  <link rel="preconnect" href="https://cdn.emulatorjs.org" crossorigin>
+  <link rel="dns-prefetch" href="https://cdn.emulatorjs.org">
+  <link rel="preload" href="https://cdn.emulatorjs.org/stable/data/loader.js" as="script">
 
-  <!-- Import Map local para execução 100% Offline via ES Modules -->
-  <script type="importmap">
-    {
-      "imports": {
-        "dexie": "./js/vendor/dexie.mjs",
-        "minisearch": "./js/vendor/minisearch.mjs",
-        "pdfjs-dist": "./js/vendor/pdf.min.mjs"
-      }
+  <style>
+    :root {
+      /* Tema Padrão: Cinza Clássico Game Boy (DMG) */
+      --shell-bg: #d4d2c8;
+      --shell-border: #b5b3a8;
+      --shell-shadow: #8e8c82;
+      --shell-highlight: #ecebe4;
+      --bezel-bg: #5a5b6b;
+      --bezel-text: #d1d5db;
+      --accent-btn: #8b1d41; /* Botões A/B vinho clássico */
+      --accent-btn-alt: #4f46e5; /* Botões X/Y */
+      --dpad-color: #26272b;
+      --body-bg: #111318;
+      --overlay-opacity: 0.78;
     }
-  </script>
+
+    /* Temas alternativos do Console */
+    body[data-theme="purple"] {
+      --shell-bg: #5b3b8c;
+      --shell-border: #472b72;
+      --shell-shadow: #311c54;
+      --shell-highlight: #7652ad;
+      --bezel-bg: #231b30;
+      --accent-btn: #e11d48;
+      --accent-btn-alt: #06b6d4;
+      --dpad-color: #18181b;
+    }
+
+    body[data-theme="dark"] {
+      --shell-bg: #262930;
+      --shell-border: #1b1d22;
+      --shell-shadow: #0f1014;
+      --shell-highlight: #373b44;
+      --bezel-bg: #14161a;
+      --accent-btn: #ef4444;
+      --accent-btn-alt: #3b82f6;
+      --dpad-color: #111215;
+    }
+
+    body[data-theme="yellow"] {
+      --shell-bg: #eab308;
+      --shell-border: #ca8a04;
+      --shell-shadow: #854d0e;
+      --shell-highlight: #fde047;
+      --bezel-bg: #27272a;
+      --accent-btn: #dc2626;
+      --accent-btn-alt: #2563eb;
+      --dpad-color: #27272a;
+    }
+
+    body[data-theme="blue"] {
+      --shell-bg: #2563eb;
+      --shell-border: #1d4ed8;
+      --shell-shadow: #1e3a8a;
+      --shell-highlight: #60a5fa;
+      --bezel-bg: #1e293b;
+      --accent-btn: #f43f5e;
+      --accent-btn-alt: #eab308;
+      --dpad-color: #18181b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+    }
+
+    body {
+      background: radial-gradient(circle at center, #1e222d 0%, #0b0d12 100%);
+      color: #f3f4f6;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      overflow-x: hidden;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    /* =================================================================
+       CARCAÇA DO CONSOLE GAME BOY
+       ================================================================= */
+    .gameboy-console {
+      width: 100%;
+      max-width: 470px;
+      background: var(--shell-bg);
+      border-radius: 22px 22px 68px 22px;
+      padding: 18px 20px 28px;
+      box-shadow:
+        inset 3px 3px 6px var(--shell-highlight),
+        inset -4px -6px 10px var(--shell-shadow),
+        0 24px 60px rgba(0, 0, 0, 0.75),
+        0 0 0 2px var(--shell-border);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: background 0.25s, box-shadow 0.25s;
+    }
+
+    /* Ranhuras decorativas no topo do Game Boy */
+    .console-top-grooves {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 8px 6px;
+      border-bottom: 3px groove var(--shell-border);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: rgba(0, 0, 0, 0.45);
+    }
+
+    body[data-theme="dark"] .console-top-grooves,
+    body[data-theme="purple"] .console-top-grooves,
+    body[data-theme="blue"] .console-top-grooves {
+      color: rgba(255, 255, 255, 0.55);
+    }
+
+    /* =================================================================
+       MOLDURA E TELA PRINCIPAL DO JOGO
+       ================================================================= */
+    .screen-bezel {
+      background: var(--bezel-bg);
+      border-radius: 14px 14px 36px 14px;
+      padding: 12px 16px 16px;
+      box-shadow:
+        inset 0 4px 10px rgba(0, 0, 0, 0.65),
+        0 2px 0 var(--shell-highlight);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .bezel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: var(--bezel-text);
+      text-transform: uppercase;
+    }
+
+    .bezel-stripes {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .stripe-lines {
+      display: inline-flex;
+      flex-direction: column;
+      gap: 2px;
+      width: 28px;
+    }
+
+    .stripe-lines span:nth-child(1) {
+      height: 2px;
+      background: #991b1b;
+    }
+
+    .stripe-lines span:nth-child(2) {
+      height: 2px;
+      background: #1e3a8a;
+    }
+
+    .battery-indicator {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 9px;
+      color: var(--bezel-text);
+    }
+
+    .battery-led {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #4b1d1d;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.8);
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+
+    .battery-led.on {
+      background: #ef4444;
+      box-shadow: 0 0 10px #ef4444, 0 0 4px #fca5a5;
+    }
+
+    /* Viewport onde o jogo roda */
+    .screen-viewport {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      background: #181c14;
+      border-radius: 6px;
+      border: 3px solid #111318;
+      box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.9);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Efeito opcional de Scanlines CRT */
+    .screen-viewport.scanlines::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 2px,
+        rgba(0, 0, 0, 0.22) 3px
+      );
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    /* Tela Inicial / Standby estilo LCD quando não há jogo rodando */
+    #lcd-standby {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(160deg, #8bac0f 0%, #9bbc0f 50%, #8bac0f 100%);
+      color: #0f380f;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      text-align: center;
+      transition: filter 0.2s;
+    }
+
+    #lcd-standby.dragover {
+      filter: brightness(1.1);
+      outline: 3px dashed #0f380f;
+      outline-offset: -8px;
+    }
+
+    .lcd-logo {
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      border: 2px solid #0f380f;
+      padding: 4px 12px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      background: rgba(15, 56, 15, 0.08);
+    }
+
+    .lcd-sub {
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: #306230;
+    }
+
+    .lcd-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .lcd-btn {
+      background: #0f380f;
+      color: #9bbc0f;
+      border: none;
+      padding: 7px 12px;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+
+    .lcd-btn:hover {
+      background: #306230;
+    }
+
+    #game {
+      width: 100%;
+      height: 100%;
+      display: none;
+      background: #000;
+    }
+
+    #game iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    .bezel-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 2px;
+    }
+
+    .brand-signature {
+      font-style: italic;
+      font-weight: 900;
+      font-size: 13px;
+      color: var(--bezel-text);
+      letter-spacing: 0.6px;
+    }
+
+    .now-playing-badge {
+      font-size: 11px;
+      color: #9ca3af;
+      max-width: 210px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* =================================================================
+       CONTROLES FÍSICOS NO CONSOLE GAME BOY
+       ================================================================= */
+    /* Botões de Ombro L / R + Atalhos Menu / Tela Cheia */
+    .console-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 0 2px;
+    }
+
+    .shoulder-btn {
+      background: #3a3d46;
+      color: #e5e7eb;
+      border: none;
+      border-bottom: 4px solid #1f2127;
+      border-radius: 10px 10px 6px 6px;
+      padding: 7px 22px;
+      font-weight: 800;
+      font-size: 13px;
+      cursor: pointer;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.35);
+      transition: transform 0.06s, border-bottom-width 0.06s;
+      touch-action: none;
+    }
+
+    .shoulder-btn.pressed,
+    .shoulder-btn:active {
+      transform: translateY(2px);
+      border-bottom-width: 2px;
+      background: #4b5563;
+    }
+
+    .utility-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sys-btn {
+      background: #2b2e37;
+      color: #f3f4f6;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-bottom: 3px solid #15171c;
+      border-radius: 999px;
+      padding: 6px 13px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+
+    .sys-btn:active {
+      transform: translateY(1px);
+    }
+
+    .sys-btn.menu-highlight {
+      background: #1d4ed8;
+      border-bottom-color: #1e3a8a;
+    }
+
+    /* Área Principal de Controles: D-Pad (Esquerda) e Botões A/B/X/Y (Direita) */
+    .controls-main-pad {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 6px 4px;
+      position: relative;
+    }
+
+    /* D-PAD em Cruz */
+    .dpad-container {
+      position: relative;
+      width: 132px;
+      height: 132px;
+      flex-shrink: 0;
+      touch-action: none;
+    }
+
+    .dpad-cross-bg {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .dpad-btn {
+      position: absolute;
+      background: var(--dpad-color);
+      color: #71717a;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.45);
+      touch-action: none;
+    }
+
+    .dpad-btn.pressed {
+      background: #3f3f46;
+      color: #f3f4f6;
+      transform: scale(0.96);
+    }
+
+    .dpad-up {
+      top: 0;
+      left: 44px;
+      width: 44px;
+      height: 48px;
+      border-radius: 7px 7px 0 0;
+    }
+
+    .dpad-down {
+      bottom: 0;
+      left: 44px;
+      width: 44px;
+      height: 48px;
+      border-radius: 0 0 7px 7px;
+    }
+
+    .dpad-left {
+      left: 0;
+      top: 44px;
+      width: 48px;
+      height: 44px;
+      border-radius: 7px 0 0 7px;
+    }
+
+    .dpad-right {
+      right: 0;
+      top: 44px;
+      width: 48px;
+      height: 44px;
+      border-radius: 0 7px 7px 0;
+    }
+
+    .dpad-center {
+      position: absolute;
+      top: 44px;
+      left: 44px;
+      width: 44px;
+      height: 44px;
+      background: var(--dpad-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .dpad-center::after {
+      content: "";
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.08), rgba(0,0,0,0.5));
+    }
+
+    /* Cluster Diamante de Botões Y, X, B, A */
+    .abxy-diamond {
+      position: relative;
+      width: 146px;
+      height: 136px;
+      flex-shrink: 0;
+      touch-action: none;
+    }
+
+    .action-btn {
+      position: absolute;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      border: none;
+      color: #fff;
+      font-weight: 900;
+      font-size: 15px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow:
+        inset 0 2px 3px rgba(255,255,255,0.35),
+        0 5px 8px rgba(0,0,0,0.5);
+      transition: transform 0.06s, box-shadow 0.06s;
+      touch-action: none;
+    }
+
+    .action-btn.pressed,
+    .action-btn:active {
+      transform: translateY(3px) scale(0.95);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.5), 0 2px 3px rgba(0,0,0,0.4);
+    }
+
+    /* Botões A e B (Vinho Clássico Game Boy / Vermelho-Amarelo) */
+    .btn-a {
+      right: 0;
+      top: 45px;
+      background: var(--accent-btn);
+    }
+
+    .btn-b {
+      left: 50px;
+      bottom: 0;
+      background: var(--accent-btn);
+    }
+
+    /* Botões X e Y */
+    .btn-x {
+      left: 50px;
+      top: 0;
+      background: var(--accent-btn-alt);
+    }
+
+    .btn-y {
+      left: 0;
+      top: 45px;
+      background: var(--accent-btn-alt);
+    }
+
+    /* Botões SELECT e START inclinados no centro inferior */
+    .select-start-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      margin-top: 4px;
+      padding-bottom: 4px;
+    }
+
+    .pill-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pill-btn {
+      width: 48px;
+      height: 15px;
+      background: #4b4d57;
+      border: none;
+      border-radius: 999px;
+      transform: rotate(-24deg);
+      box-shadow:
+        inset 0 1px 2px rgba(255,255,255,0.25),
+        0 3px 4px rgba(0,0,0,0.45);
+      cursor: pointer;
+      touch-action: none;
+    }
+
+    .pill-btn.pressed,
+    .pill-btn:active {
+      transform: rotate(-24deg) scale(0.92);
+      background: #6b7280;
+    }
+
+    .pill-label {
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 1.2px;
+      color: rgba(0, 0, 0, 0.6);
+      margin-top: 2px;
+    }
+
+    body[data-theme="dark"] .pill-label,
+    body[data-theme="purple"] .pill-label,
+    body[data-theme="blue"] .pill-label {
+      color: rgba(255, 255, 255, 0.65);
+    }
+
+    /* Ranhuras do Alto-Falante (Canto inferior direito do Game Boy) */
+    .speaker-grille {
+      position: absolute;
+      bottom: 18px;
+      right: 22px;
+      display: flex;
+      gap: 5px;
+      transform: rotate(-28deg);
+      pointer-events: none;
+    }
+
+    .speaker-slot {
+      width: 4px;
+      height: 28px;
+      border-radius: 99px;
+      background: rgba(0, 0, 0, 0.38);
+      box-shadow: inset 1px 1px 2px rgba(0,0,0,0.7);
+    }
+
+    /* =================================================================
+       MODO TELA CHEIA COM BOTÕES SOBREPOSTOS AO JOGO
+       ================================================================= */
+    body.fullscreen-mode {
+      padding: 0;
+      background: #000;
+    }
+
+    body.fullscreen-mode .gameboy-console {
+      max-width: 100vw;
+      width: 100vw;
+      height: 100vh;
+      border-radius: 0;
+      padding: 0;
+      background: #000;
+      box-shadow: none;
+    }
+
+    body.fullscreen-mode .console-top-grooves,
+    body.fullscreen-mode .bezel-header,
+    body.fullscreen-mode .bezel-footer,
+    body.fullscreen-mode .speaker-grille {
+      display: none;
+    }
+
+    body.fullscreen-mode .screen-bezel {
+      padding: 0;
+      border-radius: 0;
+      background: #000;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    body.fullscreen-mode .screen-viewport {
+      width: 100vw;
+      height: 100vh;
+      aspect-ratio: auto;
+      border: none;
+      border-radius: 0;
+    }
+
+    /* Em tela cheia, oculta os botões do joystick do console para não duplicar! */
+    body.fullscreen-mode .controls-main-pad,
+    body.fullscreen-mode .select-start-row,
+    body.fullscreen-mode .shoulder-btn {
+      display: none !important;
+    }
+
+    body.fullscreen-mode .console-top-bar {
+      position: fixed;
+      top: 12px;
+      right: 16px;
+      left: auto;
+      z-index: 50;
+      opacity: var(--overlay-opacity);
+      pointer-events: none;
+    }
+
+    body.fullscreen-mode .console-top-bar > .utility-bar {
+      pointer-events: auto;
+    }
+
+    /* =================================================================
+       MODAIS: MENU DE GERENCIAMENTO (JOGOS & APLICAÇÃO) E UPLOAD
+       ================================================================= */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.78);
+      backdrop-filter: blur(5px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      padding: 14px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .menu-modal-card {
+      background: #181b22;
+      border: 1px solid #2e3444;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 620px;
+      max-height: 88vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8);
+    }
+
+    .menu-header {
+      padding: 14px 18px;
+      background: #12141a;
+      border-bottom: 1px solid #2e3444;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .menu-header-title {
+      font-size: 16px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .close-modal-btn {
+      background: #262b38;
+      color: #e5e7eb;
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Abas do Menu */
+    .menu-tabs {
+      display: flex;
+      background: #14171e;
+      border-bottom: 1px solid #2e3444;
+    }
+
+    .menu-tab-btn {
+      flex: 1;
+      padding: 12px;
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      color: #9ca3af;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .menu-tab-btn.active {
+      color: #3b82f6;
+      border-bottom-color: #3b82f6;
+      background: rgba(59, 130, 246, 0.06);
+    }
+
+    .menu-tab-content {
+      display: none;
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .menu-tab-content.active {
+      display: flex;
+    }
+
+    /* Botões utilitários nos modais */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #f3f4f6;
+      background: #262b38;
+      transition: background 0.15s;
+    }
+
+    .btn:hover {
+      background: #32394a;
+    }
+
+    .btn-primary {
+      background: #3b82f6;
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #2563eb;
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.16);
+      color: #f87171;
+    }
+
+    .btn-danger:hover {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    .btn-sm {
+      padding: 6px 10px;
+      font-size: 12px;
+      border-radius: 6px;
+    }
+
+    /* Busca e Histórico dentro do Menu */
+    .library-toolbar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .search-input {
+      flex: 1;
+      background: #0f1115;
+      border: 1px solid #2e3444;
+      color: #f3f4f6;
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: #3b82f6;
+    }
+
+    .sort-select {
+      background: #0f1115;
+      color: #f3f4f6;
+      border: 1px solid #2e3444;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 12px;
+      outline: none;
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 320px;
+      overflow-y: auto;
+    }
+
+    .history-item {
+      background: #222631;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .history-item:hover {
+      background: #2a2f3d;
+      border-color: #3b4254;
+    }
+
+    .history-item.active {
+      border-color: #3b82f6;
+      background: rgba(59, 130, 246, 0.14);
+    }
+
+    .game-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .game-title {
+      font-size: 14px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .game-meta {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 2px;
+    }
+
+    .game-actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    /* Seções da Aba de Gerenciamento da Aplicação */
+    .settings-group {
+      background: #20242e;
+      border: 1px solid #2e3444;
+      border-radius: 10px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .settings-group-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #e5e7eb;
+    }
+
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 8px;
+    }
+
+    .theme-option-btn {
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 2px solid #2e3444;
+      background: #14171e;
+      color: #f3f4f6;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .theme-option-btn.active {
+      border-color: #3b82f6;
+      background: rgba(59, 130, 246, 0.15);
+    }
+
+    .swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      display: inline-block;
+      border: 1px solid rgba(255,255,255,0.4);
+    }
+
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 13px;
+    }
+
+    /* Modal de Nomear Jogo no Upload */
+    .naming-card {
+      background: #181b22;
+      border: 1px solid #2e3444;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 410px;
+      padding: 20px;
+      z-index: 250;
+    }
+
+    .form-input {
+      width: 100%;
+      background: #0f1115;
+      border: 1px solid #2e3444;
+      color: #f3f4f6;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin: 8px 0 16px;
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: #3b82f6;
+    }
+  </style>
 </head>
-<body>
-  <!-- CABEÇALHO PRINCIPAL -->
-  <header class="app-header">
-    <div class="header-inner">
-      <div class="brand-group">
-        <div class="brand-logo" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.3">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-            <polyline points="14 2 14 8 20 8"></polyline>
-            <circle cx="11.5" cy="14.5" r="2.5"></circle>
-            <line x1="13.5" y1="16.5" x2="16" y2="19"></line>
-          </svg>
-        </div>
-        <div class="brand-titles">
-          <h1 class="brand-name">TechManual Offline</h1>
-          <span class="brand-subtitle">Full-Text Search &amp; Leitor PDF para Campo</span>
-        </div>
-      </div>
+<body data-theme="dmg">
 
-      <div class="header-actions">
-        <div id="offline-status-badge" class="status-pill status-online" aria-live="polite">
-          <span class="status-dot"></span>
-          <span>Offline Ready</span>
-        </div>
+  <!-- Input de arquivo oculto -->
+  <input type="file" id="rom-file" accept=".smc,.sfc,.fig,.swc,.zip">
 
-        <button id="install-pwa-btn" type="button" class="btn btn-sm btn-primary" hidden>
-          Instalar App
-        </button>
-
-        <button id="theme-toggle-btn" type="button" class="icon-btn" aria-label="Alternar tema">
-          <!-- Ícone injetado pelo app.js -->
-        </button>
-      </div>
+  <!-- =================================================================
+       CONSOLE GAME BOY PRINCIPAL
+       ================================================================= -->
+  <main class="gameboy-console" id="console-root">
+    <div class="console-top-grooves">
+      <span>◀ OFF • ON ▶</span>
+      <span>SUPER GAME BOY POCKET</span>
     </div>
-  </header>
 
-  <!-- CONTEÚDO PRINCIPAL -->
-  <main class="app-main">
-    <!-- MÉTRICAS DE INDEXAÇÃO LOCAL -->
-    <section class="stats-strip" aria-label="Estatísticas do banco de dados local">
-      <div class="stat-box">
-        <span class="stat-label">Manuais Offline</span>
-        <span id="stat-manuals-count" class="stat-value">0</span>
+    <!-- Moldura e Tela Principal -->
+    <section class="screen-bezel">
+      <div class="bezel-header">
+        <div class="bezel-stripes">
+          <div class="stripe-lines"><span></span><span></span></div>
+          <span>DOT MATRIX WITH STEREO SOUND</span>
+        </div>
       </div>
-      <div class="stat-box">
-        <span class="stat-label">Páginas Indexadas</span>
-        <span id="stat-pages-count" class="stat-value">0</span>
+
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <!-- Indicador de Bateria Lateral -->
+        <div class="battery-indicator" style="flex-direction: column;">
+          <div class="battery-led" id="battery-led"></div>
+          <span>BATTERY</span>
+        </div>
+
+        <!-- Tela onde o jogo é exibido -->
+        <div class="screen-viewport" id="screen-viewport">
+          <div id="lcd-standby">
+            <div class="lcd-logo">NINTENDO SNES</div>
+            <div class="lcd-sub" id="lcd-status-text"> PASTA GAMES — MYGAMESNES</div>
+            <div id="lcd-games-list" style="width:100%;max-height:115px;overflow-y:auto;margin-bottom:10px;display:flex;flex-direction:column;gap:4px;text-align:left;padding:0 4px;"></div>
+            <div class="lcd-actions">
+              <label class="lcd-btn" for="rom-file">➕ Upload</label>
+              <button type="button" class="lcd-btn" id="lcd-open-menu-btn">📚 Lista Completa</button>
+              <button type="button" class="lcd-btn" id="lcd-sync-github-btn">🔄 GitHub</button>
+              <button type="button" class="lcd-btn" id="demo-rom-btn">🧪 Demo</button>
+            </div>
+          </div>
+
+          <div id="game"></div>
+        </div>
       </div>
-      <div class="stat-box">
-        <span class="stat-label">Tempo de Busca</span>
-        <span id="stat-search-speed" class="stat-value accent">0 ms</span>
+
+      <div class="bezel-footer">
+        <div class="brand-signature">Nintendo <span style="font-style: normal; font-size: 11px;">SNES BOY</span></div>
+        <div class="now-playing-badge" id="current-game-label">Standby</div>
       </div>
     </section>
 
-    <!-- MOTOR DE BUSCA FULL-TEXT -->
-    <section class="search-hero-card" aria-label="Pesquisa em manuais técnicos">
-      <div class="search-input-wrapper">
-        <span class="search-leading-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-        </span>
-        <input
-          id="search-input"
-          type="search"
-          class="search-input"
-          placeholder="Buscar código de falha, torque, tensão, parâmetro (ex: F0021, 25 Nm, RS-485)..."
-          autocomplete="off"
-          autocorrect="off"
-          autocapitalize="off"
-          spellcheck="false"
-          aria-label="Pesquisar nos manuais PDF indexados"
-        />
-        <button id="clear-search-btn" type="button" class="clear-search-btn" aria-label="Limpar pesquisa" hidden>
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
+    <!-- Barra Superior de Controles: L, MENU, TELA CHEIA, R -->
+    <section class="console-top-bar">
+      <button type="button" class="shoulder-btn joy-btn" data-btn="10">L</button>
+
+      <div class="utility-bar">
+        <button type="button" class="sys-btn menu-highlight" id="open-menu-btn">
+          ☰ MENU
+        </button>
+        <button type="button" class="sys-btn" id="toggle-fullscreen-btn">
+          ⛶ TELA CHEIA
         </button>
       </div>
 
-      <div class="search-controls-row">
-        <div class="filter-select-group">
-          <select id="manual-filter-select" class="manual-filter-select" aria-label="Filtrar por manual">
-            <option value="all">Todos os Manuais (0)</option>
+      <button type="button" class="shoulder-btn joy-btn" data-btn="11">R</button>
+    </section>
+
+    <!-- Controles Principais: D-Pad (Esquerda) e Botões Y/X/B/A (Direita) -->
+    <section class="controls-main-pad">
+      <!-- D-Pad em Cruz -->
+      <div class="dpad-container" id="dpad">
+        <button type="button" class="dpad-btn dpad-up joy-btn" data-btn="4" aria-label="Cima">▲</button>
+        <button type="button" class="dpad-btn dpad-down joy-btn" data-btn="5" aria-label="Baixo">▼</button>
+        <button type="button" class="dpad-btn dpad-left joy-btn" data-btn="6" aria-label="Esquerda">◀</button>
+        <button type="button" class="dpad-btn dpad-right joy-btn" data-btn="7" aria-label="Direita">▶</button>
+        <div class="dpad-center"></div>
+      </div>
+
+      <!-- Botões de Ação em Diamante (Y, X, B, A) -->
+      <div class="abxy-diamond">
+        <button type="button" class="action-btn btn-x joy-btn" data-btn="9">X</button>
+        <button type="button" class="action-btn btn-y joy-btn" data-btn="1">Y</button>
+        <button type="button" class="action-btn btn-a joy-btn" data-btn="8">A</button>
+        <button type="button" class="action-btn btn-b joy-btn" data-btn="0">B</button>
+      </div>
+    </section>
+
+    <!-- SELECT e START -->
+    <section class="select-start-row">
+      <div class="pill-wrap">
+        <button type="button" class="pill-btn joy-btn" data-btn="2" aria-label="Select"></button>
+        <span class="pill-label">SELECT</span>
+      </div>
+      <div class="pill-wrap">
+        <button type="button" class="pill-btn joy-btn" data-btn="3" aria-label="Start"></button>
+        <span class="pill-label">START</span>
+      </div>
+    </section>
+
+    <!-- Alto-falante decorativo do Game Boy -->
+    <div class="speaker-grille">
+      <div class="speaker-slot"></div>
+      <div class="speaker-slot"></div>
+      <div class="speaker-slot"></div>
+      <div class="speaker-slot"></div>
+      <div class="speaker-slot"></div>
+      <div class="speaker-slot"></div>
+    </div>
+  </main>
+
+  <!-- =================================================================
+       MODAL DE MENU: GERENCIAMENTO DE JOGOS E DA APLICAÇÃO
+       ================================================================= -->
+  <div class="modal-backdrop" id="system-menu-modal">
+    <div class="menu-modal-card">
+      <div class="menu-header">
+        <div class="menu-header-title">
+          🕹️ Menu do Console (<span id="history-count">0</span> jogos)
+        </div>
+        <button type="button" class="close-modal-btn" id="close-menu-btn">✕</button>
+      </div>
+
+      <div class="menu-tabs">
+        <button type="button" class="menu-tab-btn active" data-tab="tab-games">
+          📚 Jogos (GitHub /games & Local)
+        </button>
+        <button type="button" class="menu-tab-btn" data-tab="tab-app">
+          ⚙️ Gerenciar Aplicação & Console
+        </button>
+      </div>
+
+      <!-- ABA 1: GERENCIAMENTO DE JOGOS (GITHUB /games, UPLOAD, HISTÓRICO E BUSCA) -->
+      <div class="menu-tab-content active" id="tab-games">
+        <div style="background:#14171e;border:1px solid #2e3444;border-radius:10px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+          <div style="font-size:12px;">
+            <div style="font-weight:700;color:#60a5fa;">☁️ Repositório GitHub conectado:</div>
+            <a href="https://github.com/juscelinoscooby/mygamesnes/tree/main/games" target="_blank" rel="noopener" style="color:#9ca3af;text-decoration:underline;font-size:11px;">
+              github.com/juscelinoscooby/mygamesnes/games
+            </a>
+            <div id="github-sync-status" style="font-size:11px;color:#10b981;margin-top:2px;">Buscando pasta games/...</div>
+          </div>
+          <button type="button" class="btn btn-sm" id="sync-github-btn">
+            🔄 Atualizar do GitHub
+          </button>
+        </div>
+
+        <div class="library-toolbar">
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <label class="btn btn-primary" for="rom-file">
+              ➕ Adicionar ROM Local (.smc / .sfc / .zip)
+            </label>
+            <button type="button" class="btn" id="menu-demo-btn">
+              🧪 Adicionar ROM Demo
+            </button>
+          </div>
+          <button type="button" class="btn btn-danger btn-sm" id="clear-all-btn" style="display: none;">
+            🗑️ Limpar Locais
+          </button>
+        </div>
+
+        <div class="search-row">
+          <input
+            type="text"
+            id="search-input"
+            class="search-input"
+            placeholder="🔍 Buscar jogo na pasta games/ ou histórico..."
+            autocomplete="off"
+          >
+          <select id="sort-select" class="sort-select">
+            <option value="recent">Recentes</option>
+            <option value="az">Nome (A-Z)</option>
           </select>
         </div>
 
-        <label class="fuzzy-toggle-label" title="Tolerar pequenos erros de digitação e buscar prefixos">
-          <input id="fuzzy-toggle-checkbox" type="checkbox" checked />
-          <span>Busca Fuzzy + Prefixo</span>
-        </label>
+        <div class="history-list" id="history-list"></div>
       </div>
 
-      <!-- ATALHOS DE CONSULTA RÁPIDA DE CAMPO -->
-      <div class="quick-chips-row" aria-label="Termos rápidos de teste">
-        <span class="quick-chip-label">Testar busca:</span>
-        <button type="button" class="quick-chip" data-action="quick-query" data-query="F0021">F0021</button>
-        <button type="button" class="quick-chip" data-action="quick-query" data-query="torque 25 Nm">Torque 25 Nm</button>
-        <button type="button" class="quick-chip" data-action="quick-query" data-query="RS-485 Modbus">RS-485 Modbus</button>
-        <button type="button" class="quick-chip" data-action="quick-query" data-query="selo mecanico">Selo Mecânico</button>
-        <button type="button" class="quick-chip" data-action="quick-query" data-query="NR-10 capacitores">NR-10 Capacitores</button>
-      </div>
-
-      <!-- SUGESTÕES DE AUTOCOMPLETAR -->
-      <div id="search-suggestions-bar" class="suggestions-bar" hidden></div>
-
-      <div class="search-status-meta">
-        <span id="search-status-meta">Inicializando motor de busca offline...</span>
-      </div>
-    </section>
-
-    <!-- BANNER DE PROGRESSO DE EXTRAÇÃO EM BACKGROUND -->
-    <section id="indexing-progress-banner" class="progress-banner" aria-live="polite" hidden>
-      <div class="progress-header">
-        <span id="progress-file-name" class="progress-file-name">Processando manual.pdf</span>
-        <span id="progress-page-status" class="progress-page-status">Extraindo página 1...</span>
-      </div>
-      <div class="progress-track">
-        <div id="progress-bar-fill" class="progress-fill"></div>
-      </div>
-    </section>
-
-    <!-- RESULTADOS DA BUSCA -->
-    <section id="search-results-section" aria-label="Resultados da pesquisa" hidden>
-      <div class="section-header">
-        <h2 class="section-title">
-          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2">
-            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-          </svg>
-          Ocorrências Encontradas
-        </h2>
-      </div>
-      <div id="search-results-list" class="results-grid"></div>
-    </section>
-
-    <!-- ÁREA DE UPLOAD DIRETO DE PDF -->
-    <section id="upload-dropzone" class="upload-dropzone" aria-label="Upload de arquivos PDF">
-      <div class="upload-info">
-        <div class="upload-icon-circle" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="17 8 12 3 7 8"></polyline>
-            <line x1="12" y1="3" x2="12" y2="15"></line>
-          </svg>
-        </div>
-        <div>
-          <h2 class="upload-title">Adicionar Manuais Técnicos em PDF</h2>
-          <p class="upload-subtitle">
-            Processamento 100% no dispositivo. O texto de cada página é extraído e indexado localmente.
-          </p>
-        </div>
-      </div>
-
-      <div class="upload-buttons">
-        <input
-          id="pdf-file-input"
-          type="file"
-          accept=".pdf,application/pdf"
-          multiple
-          hidden
-        />
-        <button type="button" class="btn btn-primary" data-action="trigger-upload">
-          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-            <polyline points="14 2 14 8 20 8"></polyline>
-            <line x1="12" y1="18" x2="12" y2="12"></line>
-            <line x1="9" y1="15" x2="15" y2="15"></line>
-          </svg>
-          Selecionar PDF
-        </button>
-
-        <button id="load-demo-btn" type="button" class="btn btn-accent-outline">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-          </svg>
-          Manual Demo (5 págs)
-        </button>
-      </div>
-    </section>
-
-    <!-- BIBLIOTECA DE MANUAIS SALVOS NO DISPOSITIVO -->
-    <section aria-label="Biblioteca de manuais armazenados">
-      <div class="section-header">
-        <h2 class="section-title">
-          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2">
-            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-          </svg>
-          Biblioteca Offline (IndexedDB)
-        </h2>
-
-        <button id="clear-all-btn" type="button" class="btn btn-sm btn-danger-ghost" hidden>
-          Limpar Biblioteca
-        </button>
-      </div>
-
-      <div id="manuals-grid" class="manuals-grid"></div>
-    </section>
-  </main>
-
-  <!-- MODAL DO LEITOR DE PDF COM DESTAQUE DE TERMOS -->
-  <div
-    id="pdf-reader-modal"
-    class="reader-modal"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="reader-manual-title"
-    hidden
-  >
-    <div id="reader-modal-backdrop" class="reader-backdrop"></div>
-
-    <div class="reader-dialog">
-      <!-- Barra superior do Leitor -->
-      <header class="reader-topbar">
-        <div class="reader-title-group">
-          <h2 id="reader-manual-title" class="reader-manual-title">Manual Técnico</h2>
-          <span id="reader-highlight-count" class="reader-highlight-badge" hidden>0 destaques</span>
-        </div>
-
-        <div class="header-actions">
-          <button
-            id="reader-toggle-text-btn"
-            type="button"
-            class="btn btn-sm btn-secondary"
-            title="Mostrar/ocultar texto extraído com grifos"
-          >
-            Texto Destacado
-          </button>
-          <button id="reader-close-btn" type="button" class="icon-btn" aria-label="Fechar leitor de PDF">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-        </div>
-      </header>
-
-      <!-- Barra de salto rápido entre páginas que contêm o termo pesquisado -->
-      <div id="reader-matches-bar" class="reader-matches-bar" hidden>
-        <span class="reader-matches-label">Páginas com o termo:</span>
-        <div id="reader-matches-pills" class="reader-matches-pills"></div>
-      </div>
-
-      <!-- Palco de renderização Canvas + Camada de Highlight + Gaveta de Texto -->
-      <div class="reader-body">
-        <div id="pdf-canvas-stage" class="pdf-canvas-stage">
-          <div class="pdf-page-wrapper">
-            <canvas id="pdf-reader-canvas" class="pdf-reader-canvas"></canvas>
-            <div id="pdf-highlight-layer" class="pdf-highlight-layer"></div>
+      <!-- ABA 2: GERENCIAMENTO DA APLICAÇÃO E APARÊNCIA DO CONSOLE -->
+      <div class="menu-tab-content" id="tab-app">
+        <!-- Controles do Jogo em Execução -->
+        <div class="settings-group">
+          <div class="settings-group-title">🎮 Controle da Sessão Atual</div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button type="button" class="btn btn-primary" id="app-fullscreen-btn">
+              ⛶ Alternar Tela Cheia com Botões
+            </button>
+            <button type="button" class="btn" id="restart-game-btn">
+              🔄 Reiniciar Jogo Atual
+            </button>
+            <button type="button" class="btn btn-danger" id="stop-game-btn">
+              ⏹ Desligar Console / Parar Jogo
+            </button>
           </div>
         </div>
 
-        <aside id="reader-text-drawer" class="reader-text-drawer" hidden>
-          <div class="reader-text-drawer-header">
-            Texto Extraído da Página (Termos Grifados)
+        <!-- Aparência / Cor da Carcaça do Game Boy -->
+        <div class="settings-group">
+          <div class="settings-group-title">🎨 Cor do Console Game Boy</div>
+          <div class="theme-grid" id="theme-selector">
+            <button type="button" class="theme-option-btn active" data-theme-choice="dmg">
+              <span class="swatch" style="background: #d4d2c8;"></span> Clássico Cinza
+            </button>
+            <button type="button" class="theme-option-btn" data-theme-choice="purple">
+              <span class="swatch" style="background: #5b3b8c;"></span> Roxo Gamer
+            </button>
+            <button type="button" class="theme-option-btn" data-theme-choice="dark">
+              <span class="swatch" style="background: #262930;"></span> Preto Grafite
+            </button>
+            <button type="button" class="theme-option-btn" data-theme-choice="yellow">
+              <span class="swatch" style="background: #eab308;"></span> Amarelo Pocket
+            </button>
+            <button type="button" class="theme-option-btn" data-theme-choice="blue">
+              <span class="swatch" style="background: #2563eb;"></span> Azul SNES
+            </button>
           </div>
-          <div id="reader-extracted-text" class="reader-extracted-text"></div>
-        </aside>
+        </div>
+
+        <!-- Ajustes de Tela e Controles -->
+        <div class="settings-group">
+          <div class="settings-group-title">🛠️ Ajustes de Tela & Joystick</div>
+
+          <div class="setting-row">
+            <span>Transparência dos botões na Tela Cheia:</span>
+            <input type="range" id="opacity-slider" min="30" max="100" value="78">
+          </div>
+
+          <div class="setting-row">
+            <span>Efeito retrô Scanlines CRT na tela:</span>
+            <input type="checkbox" id="scanlines-toggle">
+          </div>
+
+          <div class="setting-row">
+            <span>Vibração ao pressionar botões (Mobile):</span>
+            <input type="checkbox" id="vibrate-toggle" checked>
+          </div>
+
+          <div class="setting-row">
+            <span>Armazenamento local utilizado:</span>
+            <span id="storage-usage-label" style="color: #9ca3af; font-weight: 600;">0 KB</span>
+          </div>
+        </div>
       </div>
-
-      <!-- Controles inferiores de paginação e zoom -->
-      <footer class="reader-bottombar">
-        <div class="reader-nav-controls">
-          <button id="reader-prev-page" type="button" class="btn btn-sm btn-secondary" aria-label="Página anterior">
-            ← Anterior
-          </button>
-          <input
-            id="reader-page-input"
-            type="number"
-            min="1"
-            value="1"
-            class="page-jump-input"
-            aria-label="Número da página atual"
-          />
-          <span id="reader-total-pages" class="reader-total-pages">de 1</span>
-          <button id="reader-next-page" type="button" class="btn btn-sm btn-secondary" aria-label="Próxima página">
-            Próxima →
-          </button>
-        </div>
-
-        <div class="reader-zoom-controls">
-          <button id="reader-zoom-out" type="button" class="btn btn-sm btn-secondary" aria-label="Diminuir zoom">
-            −
-          </button>
-          <button id="reader-zoom-reset" type="button" class="btn btn-sm btn-secondary" aria-label="Redefinir zoom">
-            <span id="reader-zoom-label" class="reader-zoom-label">100%</span>
-          </button>
-          <button id="reader-zoom-in" type="button" class="btn btn-sm btn-secondary" aria-label="Aumentar zoom">
-            +
-          </button>
-        </div>
-      </footer>
     </div>
   </div>
 
-  <!-- CONTAINER DE TOASTS -->
-  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+  <!-- =================================================================
+       MODAL DE NOMEAÇÃO NA HORA DO UPLOAD
+       ================================================================= -->
+  <div class="modal-backdrop" id="upload-modal">
+    <div class="naming-card">
+      <div style="font-size: 16px; font-weight: 800; margin-bottom: 4px;">🏷️ Dar Nome ao Jogo</div>
+      <div id="modal-file-info" style="font-size: 12px; color: #9ca3af;">arquivo.smc</div>
 
-  <!-- SCRIPT PRINCIPAL (ES MODULE) -->
-  <script type="module" src="./js/app.js"></script>
+      <form id="upload-form">
+        <input
+          type="text"
+          id="custom-game-name"
+          class="form-input"
+          placeholder="Ex: Super Mario World"
+          required
+          maxlength="80"
+        >
+        <div style="display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap;">
+          <button type="button" class="btn" id="modal-cancel-btn">Cancelar</button>
+          <button type="button" class="btn" id="modal-save-only-btn">Só Salvar</button>
+          <button type="submit" class="btn btn-primary">▶ Salvar e Jogar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    /******************************************************************
+     * 1. BANCO DE DADOS LOCAL (IndexedDB) — RÁPIDO E PERSISTENTE
+     ******************************************************************/
+    const DB_NAME = 'SNESGameBoyDB';
+    const DB_VERSION = 1;
+    const STORE_NAME = 'roms';
+
+    let dbInstance = null;
+
+    function openDB() {
+      if (dbInstance) return Promise.resolve(dbInstance);
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.open(DB_NAME, DB_VERSION);
+        req.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains(STORE_NAME)) {
+            db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+          }
+        };
+        req.onsuccess = (e) => {
+          dbInstance = e.target.result;
+          resolve(dbInstance);
+        };
+        req.onerror = (e) => reject(e.target.error);
+      });
+    }
+
+    async function saveRomToDB(record) {
+      const db = await openDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        tx.objectStore(STORE_NAME).put(record);
+        tx.oncomplete = () => resolve(record);
+        tx.onerror = (e) => reject(e.target.error);
+      });
+    }
+
+    async function getAllRoms() {
+      const db = await openDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readonly');
+        const req = tx.objectStore(STORE_NAME).getAll();
+        req.onsuccess = () => resolve(req.result || []);
+        req.onerror = (e) => reject(e.target.error);
+      });
+    }
+
+    async function getRomById(id) {
+      const db = await openDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readonly');
+        const req = tx.objectStore(STORE_NAME).get(id);
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = (e) => reject(e.target.error);
+      });
+    }
+
+    async function deleteRomFromDB(id) {
+      const db = await openDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        tx.objectStore(STORE_NAME).delete(id);
+        tx.oncomplete = () => resolve();
+        tx.onerror = (e) => reject(e.target.error);
+      });
+    }
+
+    async function clearAllRomsFromDB() {
+      const db = await openDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        tx.objectStore(STORE_NAME).clear();
+        tx.oncomplete = () => resolve();
+        tx.onerror = (e) => reject(e.target.error);
+      });
+    }
+
+    /******************************************************************
+     * 2. ELEMENTOS E ESTADO GLOBAL
+     ******************************************************************/
+    const fileInput = document.getElementById('rom-file');
+    const lcdStandby = document.getElementById('lcd-standby');
+    const gameDiv = document.getElementById('game');
+    const batteryLed = document.getElementById('battery-led');
+    const currentGameLabel = document.getElementById('current-game-label');
+    const screenViewport = document.getElementById('screen-viewport');
+
+    const systemMenuModal = document.getElementById('system-menu-modal');
+    const historyListEl = document.getElementById('history-list');
+    const historyCountEl = document.getElementById('history-count');
+    const searchInput = document.getElementById('search-input');
+    const sortSelect = document.getElementById('sort-select');
+    const clearAllBtn = document.getElementById('clear-all-btn');
+    const storageUsageLabel = document.getElementById('storage-usage-label');
+
+    const uploadModal = document.getElementById('upload-modal');
+    const uploadForm = document.getElementById('upload-form');
+    const customGameNameInput = document.getElementById('custom-game-name');
+    const modalFileInfo = document.getElementById('modal-file-info');
+
+    let gamesCache = [];
+    let currentPlayingId = null;
+    let pendingUploadFile = null;
+    let activeIframe = null;
+    let vibrationEnabled = true;
+
+    function formatBytes(bytes) {
+      if (!bytes) return '0 KB';
+      const kb = bytes / 1024;
+      return kb >= 1024 ? `${(kb / 1024).toFixed(2)} MB` : `${Math.round(kb)} KB`;
+    }
+
+    function cleanFileName(fileName) {
+      return fileName.replace(/\.[^/.]+$/, '').replace(/[_-]+/g, ' ').trim() || 'Jogo SNES';
+    }
+
+    /******************************************************************
+     * 3. JOYSTICK VIRTUAL DO GAME BOY E BOTÕES EM TELA CHEIA
+     * Envia os comandos diretamente para o core do EmulatorJS via
+     * gameManager.simulateInput(0, buttonIndex, valor)
+     ******************************************************************/
+    const FALLBACK_KEY_MAP = {
+      0: { key: 'x', code: 'KeyX', keyCode: 88 },         // B
+      1: { key: 's', code: 'KeyS', keyCode: 83 },         // Y
+      2: { key: 'v', code: 'KeyV', keyCode: 86 },         // SELECT
+      3: { key: 'Enter', code: 'Enter', keyCode: 13 },    // START
+      4: { key: 'ArrowUp', code: 'ArrowUp', keyCode: 38 },
+      5: { key: 'ArrowDown', code: 'ArrowDown', keyCode: 40 },
+      6: { key: 'ArrowLeft', code: 'ArrowLeft', keyCode: 37 },
+      7: { key: 'ArrowRight', code: 'ArrowRight', keyCode: 39 },
+      8: { key: 'z', code: 'KeyZ', keyCode: 90 },         // A
+      9: { key: 'a', code: 'KeyA', keyCode: 65 },         // X
+      10: { key: 'q', code: 'KeyQ', keyCode: 81 },        // L
+      11: { key: 'w', code: 'KeyW', keyCode: 87 }         // R
+    };
+
+    function sendInputToEmulator(btnIndex, isPressed) {
+      if (!activeIframe || !activeIframe.contentWindow) return;
+      try {
+        const win = activeIframe.contentWindow;
+        const ejs = win.EJS_emulator;
+        if (ejs && ejs.gameManager && typeof ejs.gameManager.simulateInput === 'function') {
+          ejs.gameManager.simulateInput(0, Number(btnIndex), isPressed ? 1 : 0);
+          return;
+        }
+        // Fallback caso o core ainda esteja inicializando
+        const map = FALLBACK_KEY_MAP[btnIndex];
+        if (map && win.document) {
+          const evt = new KeyboardEvent(isPressed ? 'keydown' : 'keyup', {
+            key: map.key,
+            code: map.code,
+            keyCode: map.keyCode,
+            which: map.keyCode,
+            bubbles: true
+          });
+          win.document.dispatchEvent(evt);
+        }
+      } catch (err) {}
+    }
+
+    // Vincula todos os botões do Game Boy (suporta Multi-Touch!)
+    document.querySelectorAll('.joy-btn').forEach((btn) => {
+      const btnIndex = Number(btn.dataset.btn);
+
+      const press = (e) => {
+        e.preventDefault();
+        if (!btn.classList.contains('pressed')) {
+          btn.classList.add('pressed');
+          if (vibrationEnabled && navigator.vibrate) {
+            navigator.vibrate(12);
+          }
+          sendInputToEmulator(btnIndex, true);
+        }
+      };
+
+      const release = (e) => {
+        e.preventDefault();
+        if (btn.classList.contains('pressed')) {
+          btn.classList.remove('pressed');
+          sendInputToEmulator(btnIndex, false);
+        }
+      };
+
+      btn.addEventListener('pointerdown', (e) => {
+        try { btn.setPointerCapture(e.pointerId); } catch (_) {}
+        press(e);
+      });
+      btn.addEventListener('pointerup', release);
+      btn.addEventListener('pointercancel', release);
+      btn.addEventListener('lostpointercapture', release);
+    });
+
+    /******************************************************************
+     * 4. EXECUÇÃO DO EMULADOR NO VISOR DO GAME BOY
+     ******************************************************************/
+    async function playGameFromHistory(id) {
+      const record = await getRomById(id);
+      if (!record || !record.blob) return;
+      record.updatedAt = Date.now();
+      await saveRomToDB(record);
+      closeMenuModal();
+      launchEmulator(record);
+      refreshHistory();
+    }
+
+    function stopEmulator() {
+      if (activeIframe) {
+        try {
+          activeIframe.src = 'about:blank';
+          activeIframe.remove();
+        } catch (e) {}
+        activeIframe = null;
+      }
+      gameDiv.innerHTML = '';
+      gameDiv.style.display = 'none';
+      lcdStandby.style.display = 'flex';
+      batteryLed.classList.remove('on');
+      currentPlayingId = null;
+      currentGameLabel.textContent = 'Standby';
+      renderHistoryList();
+    }
+
+    function launchEmulator(record) {
+      stopEmulator();
+
+      currentPlayingId = record.id;
+      currentGameLabel.textContent = record.name;
+      batteryLed.classList.add('on');
+      lcdStandby.style.display = 'none';
+      gameDiv.style.display = 'block';
+      renderHistoryList();
+
+      const iframe = document.createElement('iframe');
+      iframe.setAttribute('allow', 'autoplay; fullscreen; gamepad');
+      iframe.setAttribute('allowfullscreen', 'true');
+      gameDiv.appendChild(iframe);
+      activeIframe = iframe;
+
+      const safeSaveKey = record.name.replace(/[^a-zA-Z0-9_-]/g, '_') || 'snes_game';
+      iframe.contentWindow.__romBlob = record.blob;
+      iframe.contentWindow.__gameName = safeSaveKey;
+
+      const doc = iframe.contentDocument || iframe.contentWindow.document;
+      doc.open();
+      doc.write(`<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      overflow: hidden;
+    }
+    #emulator-target {
+      width: 100%;
+      height: 100%;
+    }
+    /* No modo Console Game Boy compacto, oculta o gamepad interno do EmulatorJS para não duplicar com os botões da carcaça */
+    body:not(.is-fullscreen) .ejs_virtualGamepad_parent,
+    body:not(.is-fullscreen) .ejs_virtualGamepad_open {
+      display: none !important;
+    }
+  </style>
+</head>
+<body class="${document.body.classList.contains('fullscreen-mode') ? 'is-fullscreen' : ''}">
+  <div id="emulator-target"></div>
+  <script>
+    const romUrl = URL.createObjectURL(window.__romBlob);
+    window.EJS_player = '#emulator-target';
+    window.EJS_core = 'snes';
+    window.EJS_gameUrl = romUrl;
+    window.EJS_gameName = window.__gameName;
+    window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
+    window.EJS_virtualGamepad = true;
+    window.EJS_startOnLoaded = true;
+
+    document.addEventListener('fullscreenchange', () => {
+      if (document.fullscreenElement) {
+        document.body.classList.add('is-fullscreen');
+      } else if (!window.parent.document.body.classList.contains('fullscreen-mode')) {
+        document.body.classList.remove('is-fullscreen');
+      }
+    });
+
+    window.addEventListener('unload', () => {
+      URL.revokeObjectURL(romUrl);
+    });
+  <\/script>
+  <script src="https://cdn.emulatorjs.org/stable/data/loader.js"><\/script>
+</body>
+</html>`);
+      doc.close();
+
+      setTimeout(() => {
+        iframe.focus();
+      }, 100);
+    }
+
+    /******************************************************************
+     * 5. MODO TELA CHEIA (SEM DUPLICAR OS BOTÕES DO JOYSTICK)
+     ******************************************************************/
+    const toggleFullscreenBtn = document.getElementById('toggle-fullscreen-btn');
+
+    function syncIframeFullscreenClass(isFull) {
+      if (activeIframe && activeIframe.contentDocument && activeIframe.contentDocument.body) {
+        activeIframe.contentDocument.body.classList.toggle('is-fullscreen', isFull);
+      }
+    }
+
+    async function toggleFullscreenMode() {
+      const isFull = document.body.classList.toggle('fullscreen-mode');
+      toggleFullscreenBtn.textContent = isFull ? '✕ SAIR TELA CHEIA' : '⛶ TELA CHEIA';
+      syncIframeFullscreenClass(isFull);
+
+      if (isFull) {
+        if (document.documentElement.requestFullscreen) {
+          try { await document.documentElement.requestFullscreen(); } catch (_) {}
+        }
+      } else {
+        if (document.fullscreenElement && document.exitFullscreen) {
+          try { await document.exitFullscreen(); } catch (_) {}
+        }
+      }
+      if (activeIframe) activeIframe.focus();
+    }
+
+    toggleFullscreenBtn.addEventListener('click', toggleFullscreenMode);
+
+    document.getElementById('app-fullscreen-btn').addEventListener('click', () => {
+      closeMenuModal();
+      if (!document.body.classList.contains('fullscreen-mode')) {
+        toggleFullscreenMode();
+      }
+    });
+
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement && document.body.classList.contains('fullscreen-mode')) {
+        document.body.classList.remove('fullscreen-mode');
+        toggleFullscreenBtn.textContent = '⛶ TELA CHEIA';
+        syncIframeFullscreenClass(false);
+      }
+    });
+
+    /******************************************************************
+     * 6. INTEGRAÇÃO COM REPOSITÓRIO GITHUB (juscelinoscooby/mygamesnes/games)
+     *    + HISTÓRICO LOCAL (IndexedDB), BUSCA E UPLOAD COM NOMEAÇÃO
+     ******************************************************************/
+    const GITHUB_OWNER = 'juscelinoscooby';
+    const GITHUB_REPO = 'mygamesnes';
+    const GITHUB_GAMES_FOLDER = 'games';
+    const VALID_ROM_EXT = /\.(smc|sfc|fig|swc|zip)$/i;
+
+    const githubSyncStatusEl = document.getElementById('github-sync-status');
+    const lcdGamesListEl = document.getElementById('lcd-games-list');
+    const lcdStatusTextEl = document.getElementById('lcd-status-text');
+
+    let remoteGitHubGames = [];
+
+    // Busca automaticamente os arquivos dentro da pasta games/ do repositório no GitHub
+    async function fetchGitHubGames() {
+      if (githubSyncStatusEl) {
+        githubSyncStatusEl.textContent = '🔄 Sincronizando pasta games/ no GitHub...';
+        githubSyncStatusEl.style.color = '#fbbf24';
+      }
+
+      const foundMap = new Map();
+
+      // 1. Consulta a pasta games/ no repositório GitHub juscelinoscooby/mygamesnes
+      const endpoints = [
+        `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_GAMES_FOLDER}`,
+        `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents`
+      ];
+
+      for (const url of endpoints) {
+        try {
+          const res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' } });
+          if (res.ok) {
+            const items = await res.json();
+            if (Array.isArray(items)) {
+              items.forEach((item) => {
+                if (item.type === 'file' && VALID_ROM_EXT.test(item.name) && item.download_url) {
+                  foundMap.set(item.name.toLowerCase(), {
+                    id: 'gh_' + item.name,
+                    name: localStorage.getItem('custom_name_' + item.name) || cleanFileName(item.name),
+                    fileName: item.name,
+                    size: item.size || 0,
+                    downloadUrl: item.download_url,
+                    source: 'github',
+                    updatedAt: Date.now()
+                  });
+                }
+              });
+            }
+          }
+        } catch (err) {
+          console.warn('Aviso ao consultar GitHub API:', err);
+        }
+      }
+
+      // 2. Fallback também para ./games/games.json local (caso hospedado junto com a pasta games/)
+      try {
+        const localRes = await fetch('./games/games.json', { cache: 'no-store' });
+        if (localRes.ok) {
+          const localList = await localRes.json();
+          if (Array.isArray(localList)) {
+            localList.forEach((entry) => {
+              const fileName = typeof entry === 'string' ? entry : entry.file;
+              if (fileName && VALID_ROM_EXT.test(fileName) && !foundMap.has(fileName.toLowerCase())) {
+                foundMap.set(fileName.toLowerCase(), {
+                  id: 'gh_' + fileName,
+                  name: (entry && entry.name) || localStorage.getItem('custom_name_' + fileName) || cleanFileName(fileName),
+                  fileName: fileName,
+                  size: (entry && entry.size) || 0,
+                  downloadUrl: `./games/${encodeURIComponent(fileName)}`,
+                  source: 'github',
+                  updatedAt: Date.now()
+                });
+              }
+            });
+          }
+        }
+      } catch (_) {}
+
+      remoteGitHubGames = Array.from(foundMap.values());
+
+      if (githubSyncStatusEl) {
+        if (remoteGitHubGames.length > 0) {
+          githubSyncStatusEl.textContent = `✅ ${remoteGitHubGames.length} jogo(s) encontrado(s) na pasta games/`;
+          githubSyncStatusEl.style.color = '#10b981';
+        } else {
+          githubSyncStatusEl.textContent = 'ℹ️ Pasta games/ do GitHub ainda vazia (adicione ROMs lá ou via Upload)';
+          githubSyncStatusEl.style.color = '#9ca3af';
+        }
+      }
+
+      await refreshHistory();
+    }
+
+    // Baixa a ROM do repositório GitHub na primeira vez, salva no IndexedDB e inicia o jogo
+    async function playGitHubGame(ghGame) {
+      // Verifica se já está em cache no IndexedDB
+      const cached = gamesCache.find(
+        (g) => g.id === ghGame.id || g.fileName.toLowerCase() === ghGame.fileName.toLowerCase()
+      );
+      if (cached && cached.blob) {
+        return playGameFromHistory(cached.id);
+      }
+
+      try {
+        currentGameLabel.textContent = 'Baixando ROM...';
+        if (lcdStatusTextEl) lcdStatusTextEl.textContent = `BAIXANDO: ${ghGame.name.toUpperCase()}...`;
+
+        const res = await fetch(ghGame.downloadUrl);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const blob = await res.blob();
+
+        const record = {
+          id: ghGame.id,
+          name: ghGame.name,
+          fileName: ghGame.fileName,
+          size: blob.size || ghGame.size,
+          blob: blob,
+          source: 'github',
+          createdAt: Date.now(),
+          updatedAt: Date.now()
+        };
+
+        await saveRomToDB(record);
+        closeMenuModal();
+        launchEmulator(record);
+        await refreshHistory();
+      } catch (err) {
+        alert('Erro ao baixar a ROM da pasta games/: ' + err.message);
+        currentGameLabel.textContent = 'Standby';
+        if (lcdStatusTextEl) lcdStatusTextEl.textContent = 'PASTA GAMES — MYGAMESNES';
+      }
+    }
+
+    function getUnifiedGamesList() {
+      const map = new Map();
+      // Primeiro adiciona os jogos salvos no IndexedDB local
+      gamesCache.forEach((g) => {
+        map.set(g.fileName.toLowerCase(), { ...g, isCached: true });
+      });
+      // Mescla com os jogos da pasta games/ do repositório GitHub
+      remoteGitHubGames.forEach((gh) => {
+        const key = gh.fileName.toLowerCase();
+        if (map.has(key)) {
+          const existing = map.get(key);
+          map.set(key, { ...existing, source: 'github', isCached: true });
+        } else {
+          map.set(key, { ...gh, isCached: false });
+        }
+      });
+      return Array.from(map.values());
+    }
+
+    async function refreshHistory() {
+      gamesCache = await getAllRoms();
+      const totalBytes = gamesCache.reduce((acc, g) => acc + (g.size || 0), 0);
+      storageUsageLabel.textContent = `${gamesCache.length} jogo(s) em cache • ${formatBytes(totalBytes)}`;
+      renderHistoryList();
+      renderLcdGamesList();
+    }
+
+    // Exibe a lista de jogos diretamente na tela LCD verde do Game Boy
+    function renderLcdGamesList() {
+      if (!lcdGamesListEl) return;
+      const allGames = getUnifiedGamesList();
+      lcdGamesListEl.innerHTML = '';
+
+      if (allGames.length === 0) {
+        if (lcdStatusTextEl) lcdStatusTextEl.textContent = 'NENHUM JOGO NA PASTA GAMES AINDA';
+        return;
+      }
+
+      if (lcdStatusTextEl) lcdStatusTextEl.textContent = `JOGOS DISPONÍVEIS (${allGames.length}) — TOQUE PARA JOGAR:`;
+
+      allGames.forEach((game) => {
+        const row = document.createElement('button');
+        row.type = 'button';
+        row.style.cssText =
+          'width:100%;display:flex;align-items:center;justify-content:space-between;background:rgba(15,56,15,0.16);border:1px solid #0f380f;color:#0f380f;padding:5px 8px;border-radius:4px;font-size:11px;font-weight:800;cursor:pointer;text-align:left;';
+        const tag = game.source === 'github' ? '☁️' : '💾';
+        row.innerHTML = `<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">▶ ${tag} ${game.name}</span><span style="font-size:9px;margin-left:6px;flex-shrink:0;">${formatBytes(game.size)}</span>`;
+        row.onclick = () => {
+          if (game.isCached) {
+            playGameFromHistory(game.id);
+          } else {
+            playGitHubGame(game);
+          }
+        };
+        lcdGamesListEl.appendChild(row);
+      });
+    }
+
+    function renderHistoryList() {
+      const query = searchInput.value.trim().toLowerCase();
+      const unified = getUnifiedGamesList();
+      historyCountEl.textContent = unified.length;
+      clearAllBtn.style.display = gamesCache.length > 0 ? 'inline-flex' : 'none';
+
+      let filtered = unified.filter((g) => {
+        if (!query) return true;
+        return g.name.toLowerCase().includes(query) || g.fileName.toLowerCase().includes(query);
+      });
+
+      filtered.sort((a, b) => {
+        if (sortSelect.value === 'az') return a.name.localeCompare(b.name, 'pt-BR');
+        return (b.updatedAt || 0) - (a.updatedAt || 0);
+      });
+
+      historyListEl.innerHTML = '';
+
+      if (filtered.length === 0) {
+        historyListEl.innerHTML = `<div style="text-align:center;color:#9ca3af;padding:24px 12px;font-size:13px;">
+          ${query ? 'Nenhum jogo encontrado para essa busca.' : 'Nenhum jogo encontrado. Coloque arquivos .sfc/.smc na pasta <b>games/</b> do repositório <b>mygamesnes</b> ou clique em "Adicionar ROM Local"!'}
+        </div>`;
+        return;
+      }
+
+      const frag = document.createDocumentFragment();
+      filtered.forEach((game) => {
+        const item = document.createElement('div');
+        item.className = 'history-item' + (game.id === currentPlayingId ? ' active' : '');
+
+        const originBadge = game.source === 'github'
+          ? (game.isCached ? '☁️ GitHub (Salvo)' : '☁️ GitHub /games')
+          : '💾 Upload Local';
+
+        const info = document.createElement('div');
+        info.className = 'game-info';
+        info.innerHTML = `
+          <div class="game-title"></div>
+          <div class="game-meta">${originBadge} • ${game.fileName} • ${formatBytes(game.size)}</div>
+        `;
+        info.querySelector('.game-title').textContent = game.name;
+
+        const actions = document.createElement('div');
+        actions.className = 'game-actions';
+
+        const playBtn = document.createElement('button');
+        playBtn.className = 'btn btn-primary btn-sm';
+        playBtn.textContent = '▶ Jogar';
+        playBtn.onclick = (e) => {
+          e.stopPropagation();
+          if (game.isCached) {
+            playGameFromHistory(game.id);
+          } else {
+            playGitHubGame(game);
+          }
+        };
+
+        const renameBtn = document.createElement('button');
+        renameBtn.className = 'btn btn-sm';
+        renameBtn.textContent = '✏️';
+        renameBtn.onclick = async (e) => {
+          e.stopPropagation();
+          const newName = prompt('Novo nome do jogo:', game.name);
+          if (newName && newName.trim()) {
+            const trimmed = newName.trim();
+            localStorage.setItem('custom_name_' + game.fileName, trimmed);
+            game.name = trimmed;
+            if (game.isCached) {
+              const dbRec = await getRomById(game.id);
+              if (dbRec) {
+                dbRec.name = trimmed;
+                dbRec.updatedAt = Date.now();
+                await saveRomToDB(dbRec);
+              }
+            }
+            if (currentPlayingId === game.id) currentGameLabel.textContent = trimmed;
+            refreshHistory();
+          }
+        };
+
+        actions.append(playBtn, renameBtn);
+
+        if (game.isCached) {
+          const delBtn = document.createElement('button');
+          delBtn.className = 'btn btn-danger btn-sm';
+          delBtn.textContent = '🗑️';
+          delBtn.title = 'Remover do armazenamento local';
+          delBtn.onclick = async (e) => {
+            e.stopPropagation();
+            if (confirm(`Remover "${game.name}" da memória local?`)) {
+              await deleteRomFromDB(game.id);
+              if (currentPlayingId === game.id) stopEmulator();
+              refreshHistory();
+            }
+          };
+          actions.appendChild(delBtn);
+        }
+
+        item.append(info, actions);
+        item.onclick = () => {
+          if (game.isCached) {
+            playGameFromHistory(game.id);
+          } else {
+            playGitHubGame(game);
+          }
+        };
+        frag.appendChild(item);
+      });
+
+      historyListEl.appendChild(frag);
+    }
+
+    function openNamingModal(file) {
+      pendingUploadFile = file;
+      modalFileInfo.textContent = `${file.name} (${formatBytes(file.size)})`;
+      customGameNameInput.value = cleanFileName(file.name);
+      uploadModal.classList.add('open');
+      setTimeout(() => {
+        customGameNameInput.focus();
+        customGameNameInput.select();
+      }, 30);
+    }
+
+    function closeNamingModal() {
+      uploadModal.classList.remove('open');
+      pendingUploadFile = null;
+      fileInput.value = '';
+    }
+
+    async function processPendingUpload(playNow) {
+      if (!pendingUploadFile) return;
+      const customName = customGameNameInput.value.trim() || cleanFileName(pendingUploadFile.name);
+      const file = pendingUploadFile;
+
+      const record = {
+        id: 'rom_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+        name: customName,
+        fileName: file.name,
+        size: file.size,
+        blob: file,
+        source: 'local',
+        createdAt: Date.now(),
+        updatedAt: Date.now()
+      };
+
+      closeNamingModal();
+      await saveRomToDB(record);
+      await refreshHistory();
+
+      if (playNow) {
+        closeMenuModal();
+        launchEmulator(record);
+      }
+    }
+
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) openNamingModal(file);
+    });
+
+    uploadForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      processPendingUpload(true);
+    });
+
+    document.getElementById('modal-save-only-btn').addEventListener('click', () => {
+      processPendingUpload(false);
+    });
+
+    document.getElementById('modal-cancel-btn').addEventListener('click', closeNamingModal);
+
+    // Gerador de ROM Demo para teste imediato
+    function triggerDemoRom() {
+      const rom = new Uint8Array(32768);
+      const code = [
+        0x78, 0x18, 0xFB, 0xA9, 0x8F, 0x8D, 0x00, 0x21,
+        0xA9, 0x00, 0x8D, 0x21, 0x21, 0xA9, 0x15, 0x8D,
+        0x22, 0x21, 0xA9, 0x58, 0x8D, 0x22, 0x21, 0xA9,
+        0x0F, 0x8D, 0x00, 0x21, 0x80, 0xFE
+      ];
+      rom.set(code, 0);
+      const title = 'SNES DEMO TEST ROM   ';
+      for (let i = 0; i < 21; i++) rom[0x7FC0 + i] = title.charCodeAt(i);
+      rom[0x7FD5] = 0x20; rom[0x7FD6] = 0x00; rom[0x7FD7] = 0x05;
+      rom[0x7FD8] = 0x00; rom[0x7FD9] = 0x01;
+      rom[0x7FDC] = 0xFF; rom[0x7FDD] = 0xFF;
+      rom[0x7FFC] = 0x00; rom[0x7FFD] = 0x80;
+
+      const demoFile = new File([rom], 'Super_SNES_Demo_Test.sfc', { type: 'application/octet-stream' });
+      openNamingModal(demoFile);
+    }
+
+    document.getElementById('demo-rom-btn').addEventListener('click', triggerDemoRom);
+    document.getElementById('menu-demo-btn').addEventListener('click', triggerDemoRom);
+    document.getElementById('sync-github-btn').addEventListener('click', fetchGitHubGames);
+    document.getElementById('lcd-sync-github-btn').addEventListener('click', fetchGitHubGames);
+
+    /******************************************************************
+     * 7. MENU DO SISTEMA E CONFIGURAÇÕES DO CONSOLE
+     ******************************************************************/
+    function openMenuModal() {
+      refreshHistory();
+      systemMenuModal.classList.add('open');
+    }
+
+    function closeMenuModal() {
+      systemMenuModal.classList.remove('open');
+      if (activeIframe) activeIframe.focus();
+    }
+
+    document.getElementById('open-menu-btn').addEventListener('click', openMenuModal);
+    document.getElementById('lcd-open-menu-btn').addEventListener('click', openMenuModal);
+    document.getElementById('close-menu-btn').addEventListener('click', closeMenuModal);
+
+    // Alternância de Abas no Menu
+    document.querySelectorAll('.menu-tab-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.menu-tab-btn').forEach((b) => b.classList.remove('active'));
+        document.querySelectorAll('.menu-tab-content').forEach((c) => c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    // Seleção de Cor / Tema do Game Boy
+    document.querySelectorAll('[data-theme-choice]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const theme = btn.dataset.themeChoice;
+        document.body.setAttribute('data-theme', theme);
+        localStorage.setItem('snes_gb_theme', theme);
+        document.querySelectorAll('[data-theme-choice]').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+
+    // Opacidade dos botões em Tela Cheia
+    document.getElementById('opacity-slider').addEventListener('input', (e) => {
+      document.documentElement.style.setProperty('--overlay-opacity', (e.target.value / 100).toFixed(2));
+    });
+
+    // Scanlines CRT
+    document.getElementById('scanlines-toggle').addEventListener('change', (e) => {
+      screenViewport.classList.toggle('scanlines', e.target.checked);
+    });
+
+    // Vibração
+    document.getElementById('vibrate-toggle').addEventListener('change', (e) => {
+      vibrationEnabled = e.target.checked;
+    });
+
+    // Reiniciar e Parar Jogo
+    document.getElementById('restart-game-btn').addEventListener('click', () => {
+      if (currentPlayingId) {
+        playGameFromHistory(currentPlayingId);
+      }
+    });
+
+    document.getElementById('stop-game-btn').addEventListener('click', () => {
+      stopEmulator();
+      closeMenuModal();
+    });
+
+    searchInput.addEventListener('input', renderHistoryList);
+    sortSelect.addEventListener('change', renderHistoryList);
+
+    clearAllBtn.addEventListener('click', async () => {
+      if (confirm('Apagar todos os jogos salvos no armazenamento local?')) {
+        stopEmulator();
+        await clearAllRomsFromDB();
+        refreshHistory();
+      }
+    });
+
+    // Restaura tema salvo, carrega histórico local e busca jogos da pasta games/ no GitHub
+    const savedTheme = localStorage.getItem('snes_gb_theme');
+    if (savedTheme) {
+      document.body.setAttribute('data-theme', savedTheme);
+      document.querySelectorAll('[data-theme-choice]').forEach((b) => {
+        b.classList.toggle('active', b.dataset.themeChoice === savedTheme);
+      });
+    }
+
+    refreshHistory();
+    fetchGitHubGames();
+  </script>
 </body>
 </html>

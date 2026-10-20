@@ -1,9 +1,0 @@
-{
-  "name": "manual-offline-pwa",
-  "version": "1.0.0",
-  "description": "PWA 100% offline para consulta ultrarrápida Full-Text Search de manuais técnicos em PDF",
-  "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
-  }
-}
