@@ -5,8 +5,23 @@
   "description": "SNES Game Boy emulator PWA - ultra-fast standalone build with local WASM core",
   "scripts": {
     "start": "node server.js",
-    "serve": "node server.js"
+    "serve": "node server.js",
+    "build": "vite build",
+    "prepare:cap": "node scripts/prepare-capacitor-dist.mjs",
+    "cap:add": "npx cap add android",
+    "cap:sync": "npx cap sync",
+    "cap:open": "npx cap open android",
+    "cap:apk:debug": "vite build && node scripts/prepare-capacitor-dist.mjs && npx cap sync && npx cap build android --no-open",
+    "apk": "npm run cap:apk:debug"
   },
   "keywords": ["snes", "emulator", "game-boy", "pwa", "wasm", "mobile"],
-  "author": "Juscelino"
+  "author": "Juscelino",
+  "devDependencies": {
+    "vite": "^5.4.21"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.5.3",
+    "@capacitor/cli": "^8.5.3",
+    "@capacitor/core": "^8.5.3"
+  }
 }

@@ -4,3 +4,6 @@ dist/
 .DS_Store
 games/recovery-codes.txt
 *recovery-codes*
+android/
+*.keystore
+*.jks

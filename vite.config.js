@@ -1,19 +1,27 @@
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-  base: '/',
+  base: './',
   build: {
+    outDir: 'dist',
     target: 'es2020',
-    modulePreload: { polyfill: true },
+    emptyOutDir: false,
     chunkSizeWarningLimit: 1000,
+    copyPublicDir: false,
+    assetsDir: '',
     rollupOptions: {
+      input: 'index.html',
       output: {
-        manualChunks: {
-          emulator: ['emulatorjs'],
+        entryFileNames: '[name].js',
+        chunkFileNames: '[name].js',
+        assetFileNames: (info) => {
+          if (info.name && info.name.endsWith('.html')) return '[name][extname]'
+          return '[name][extname]'
         },
       },
     },
   },
+  publicDir: false,
   server: {
     port: 5173,
     host: true,
@@ -22,10 +30,5 @@ export default defineConfig({
   preview: {
     port: 5173,
     host: true,
-  },
-  resolve: {
-    alias: {
-      // Permite que o EmulatorJS localize seus assets via caminho relativo
-    },
   },
 })
