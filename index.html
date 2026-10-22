@@ -941,7 +941,7 @@
     }
 
     /* =================================================================
-       MODO TELA CHEIA — preenche 100% da viewport (menu e jogo)
+       MODO TELA CHEIA — menu e jogo preenchem 100% da viewport
        ================================================================= */
     body.fullscreen-mode {
       padding: 0;
@@ -950,37 +950,99 @@
       height: 100dvh;
       overflow: hidden;
     }
-
-    /* Menu em tela cheia (sem jogo): console ocupa toda a tela, mantendo grips */
     body.fullscreen-mode:not(:has(#game.active)) {
       align-items: stretch;
       justify-content: stretch;
     }
+    /* Menu em tela cheia: escala por altura (vmin) para não cortar no celular deitado */
     body.fullscreen-mode:not(:has(#game.active)) .gameboy-console {
       width: 100vw;
       width: 100dvw;
       height: 100dvh;
       height: 100vh;
       max-width: none;
+      max-height: 100dvh;
+      max-height: 100vh;
       border-radius: 0;
       box-shadow: none;
-      padding: max(6px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
-      gap: clamp(6px, 1.2vw, 18px);
-      align-items: stretch;
-      align-content: stretch;
+      box-sizing: border-box;
+      overflow: hidden;
+      padding: max(4px, env(safe-area-inset-top)) max(4px, env(safe-area-inset-right)) max(4px, env(safe-area-inset-bottom)) max(4px, env(safe-area-inset-left));
+      gap: clamp(4px, 0.9vmin, 12px);
+      align-items: center;
+      align-content: center;
+      grid-template-columns: minmax(0, 0.82fr) minmax(0, 2.7fr) minmax(0, 0.82fr);
     }
+    body.fullscreen-mode:not(:has(#game.active)) .grip {
+      min-height: 0;
+      max-height: 100%;
+      overflow: hidden;
+      gap: clamp(6px, 1.4vmin, 14px);
+      justify-content: center;
+    }
+    body.fullscreen-mode:not(:has(#game.active)) .shoulder-btn {
+      width: clamp(56px, 10vmin, 112px);
+      height: clamp(20px, 3.2vmin, 34px);
+      font-size: clamp(8px, 1.35vmin, 13px);
+      top: 2px;
+    }
+    body.fullscreen-mode:not(:has(#game.active)) .shoulder-left { left: clamp(8px, 2.5vmin, 74px); }
+    body.fullscreen-mode:not(:has(#game.active)) .shoulder-right { right: clamp(8px, 2.5vmin, 74px); }
+    body.fullscreen-mode:not(:has(#game.active)) .stick-base {
+      width: clamp(36px, 7vmin, 82px);
+      height: clamp(36px, 7vmin, 82px);
+    }
+    body.fullscreen-mode:not(:has(#game.active)) .stick-cap {
+      width: clamp(24px, 4.2vmin, 52px);
+      height: clamp(24px, 4.2vmin, 52px);
+    }
+    body.fullscreen-mode:not(:has(#game.active)) .dpad-container {
+      width: clamp(68px, 12vmin, 132px);
+      height: clamp(68px, 12vmin, 132px);
+    }
+    body.fullscreen-mode:not(:has(#game.active)) .abxy-diamond {
+      width: clamp(76px, 13vmin, 146px);
+      height: clamp(72px, 11.5vmin, 136px);
+    }
+    body.fullscreen-mode:not(:has(#game.active)) .action-btn {
+      width: clamp(28px, 4.6vmin, 48px);
+      height: clamp(28px, 4.6vmin, 48px);
+      font-size: clamp(9px, 1.6vmin, 15px);
+    }
+    body.fullscreen-mode:not(:has(#game.active)) .round-btn {
+      width: clamp(30px, 4.8vmin, 46px);
+      height: clamp(30px, 4.8vmin, 46px);
+      font-size: clamp(12px, 1.8vmin, 18px);
+    }
+    body.fullscreen-mode:not(:has(#game.active)) .pill-btn {
+      width: clamp(36px, 5vmin, 54px);
+      height: clamp(11px, 1.6vmin, 17px);
+    }
+    body.fullscreen-mode:not(:has(#game.active)) .pill-label { font-size: clamp(6px, 0.9vmin, 9px); }
+    body.fullscreen-mode:not(:has(#game.active)) .select-start-row { gap: clamp(10px, 1.6vmin, 22px); }
     body.fullscreen-mode:not(:has(#game.active)) .screen-bezel {
       height: 100%;
       min-height: 0;
+      max-height: 100%;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
+      padding: 4px 6px 4px;
+      gap: 3px;
+    }
+    body.fullscreen-mode:not(:has(#game.active)) .bezel-header,
+    body.fullscreen-mode:not(:has(#game.active)) .bezel-footer {
+      flex-shrink: 0;
+      font-size: clamp(6px, 1vmin, 9px);
     }
     body.fullscreen-mode:not(:has(#game.active)) .screen-viewport {
       flex: 1 1 auto;
       min-height: 0;
+      max-height: 100%;
       height: auto;
       aspect-ratio: auto;
-      border-radius: 8px;
+      border-radius: 6px;
+      overflow: hidden;
     }
 
     /* Jogo ativo em tela cheia: foco total no jogo, oculta carcaça */
@@ -1785,38 +1847,12 @@
       .rotate-hint { display: flex; }
     }
 
-    /* ---- Tela cheia: menu ocupa 100% da tela; jogo foca total ---- */
-    body.fullscreen-mode:not(:has(#game.active)) .gameboy-console {
-      width: 100dvw;
-      width: 100vw;
-      height: 100dvh;
-      height: 100vh;
-      max-width: none;
-      border-radius: 0;
-      box-shadow: none;
-      padding: max(6px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
-      gap: clamp(6px, 1.2vw, 18px);
-      align-items: stretch;
-      align-content: stretch;
-    }
-    body.fullscreen-mode:not(:has(#game.active)) .screen-bezel {
-      height: 100%;
-      min-height: 0;
-      display: flex;
-      flex-direction: column;
-    }
-    body.fullscreen-mode:not(:has(#game.active)) .screen-viewport {
-      flex: 1 1 auto;
-      min-height: 0;
-      height: auto;
-      aspect-ratio: auto;
-      border-radius: 8px;
-    }
+    /* Menu fullscreen usa mesmas regras vmin do bloco principal (sem duplicar) */
     body.fullscreen-mode:has(#game.active) .gameboy-console {
       display: block;
       max-width: none;
-      width: 100dvw;
       width: 100vw;
+      width: 100dvw;
       height: 100dvh;
       height: 100vh;
       padding: 0;
@@ -1858,8 +1894,8 @@
       display: block;
     }
     body.fullscreen-mode:has(#game.active) .screen-viewport {
-      width: 100dvw;
       width: 100vw;
+      width: 100dvw;
       height: 100dvh;
       height: 100vh;
       aspect-ratio: auto;
