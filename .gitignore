@@ -2,3 +2,5 @@ index.html.bak
 node_modules/
 dist/
 .DS_Store
+games/recovery-codes.txt
+*recovery-codes*
