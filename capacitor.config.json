@@ -1,0 +1,29 @@
+{
+  "appId": "com.snesboy.pocket",
+  "appName": "Super Game Boy SNES Pocket",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https",
+    "cleartext": true
+  },
+  "android": {
+    "allowMixedContent": true,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": true
+  },
+  "ios": {
+    "contentInset": "always",
+    "scrollEnabled": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1500,
+      "backgroundColor": "#0a0a0c",
+      "showSpinner": false
+    },
+    "ScreenOrientation": {
+      "orientation": "landscape"
+    }
+  }
+}

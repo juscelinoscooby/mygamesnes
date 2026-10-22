@@ -1,32 +1,1742 @@
 [
   {
-    "name": "Super Mario All-Stars + Super Mario World",
-    "file": "Super Mario All-Stars + Super Mario World (U) [o1+2C].smc",
+    "name": "3 Ninjas Kick Back",
+    "file": "A/3 Ninjas Kick Back.smc",
+    "folder": "A",
+    "size": 2097664
+  },
+  {
+    "name": "7th Saga The",
+    "file": "A/7th Saga The.smc",
+    "folder": "A",
+    "size": 1573376
+  },
+  {
+    "name": "ADDAMS FAMILY VALUES",
+    "file": "A/ADDAMS FAMILY VALUES.smc",
+    "folder": "A",
+    "size": 2097664
+  },
+  {
+    "name": "Aaahh!!! Real Monsters",
+    "file": "A/Aaahh!!! Real Monsters.smc",
+    "folder": "A",
+    "size": 2097152
+  },
+  {
+    "name": "ActRaiser 2",
+    "file": "A/ActRaiser 2.smc",
+    "folder": "A",
+    "size": 1572864
+  },
+  {
+    "name": "ActRaiser",
+    "file": "A/ActRaiser.sfc",
+    "folder": "A",
+    "size": 2097152
+  },
+  {
+    "name": "Addams Family The Pugsley's Scavenger Hunt",
+    "file": "A/Addams Family The Pugsley's Scavenger Hunt.sfc",
+    "folder": "A",
+    "size": 1048576
+  },
+  {
+    "name": "Adventures of Dr Franken",
+    "file": "A/Adventures of Dr Franken .smc",
+    "folder": "A",
+    "size": 1048576
+  },
+  {
+    "name": "Aero Fighters",
+    "file": "A/Aero Fighters.sfc",
+    "folder": "A",
+    "size": 1572864
+  },
+  {
+    "name": "Aerobiz",
+    "file": "A/Aerobiz.sfc",
+    "folder": "A",
+    "size": 1048576
+  },
+  {
+    "name": "Air Cavalry",
+    "file": "A/Air Cavalry.sfc",
+    "folder": "A",
+    "size": 1048576
+  },
+  {
+    "name": "Aladdin",
+    "file": "A/Aladdin.smc",
+    "folder": "A",
+    "size": 1310720
+  },
+  {
+    "name": "Alcahest",
+    "file": "A/Alcahest.sfc",
+    "folder": "A",
+    "size": 1179648
+  },
+  {
+    "name": "Alien 3",
+    "file": "A/Alien 3.smc",
+    "folder": "A",
+    "size": 1049088
+  },
+  {
+    "name": "Alien vs Predator",
+    "file": "A/Alien vs Predator.smc",
+    "folder": "A",
+    "size": 1049088
+  },
+  {
+    "name": "Animaniacs",
+    "file": "A/Animaniacs.smc",
+    "folder": "A",
+    "size": 1049088
+  },
+  {
+    "name": "Arcana",
+    "file": "A/Arcana.smc",
+    "folder": "A",
+    "size": 1049088
+  },
+  {
+    "name": "Arkanoid Doh It Again",
+    "file": "A/Arkanoid Doh It Again.smc",
+    "folder": "A",
+    "size": 524800
+  },
+  {
+    "name": "BS Legend of Zelda The",
+    "file": "B/BS Legend of Zelda The.sfc",
+    "folder": "B",
+    "size": 2097152
+  },
+  {
+    "name": "BS Radical Dreamers",
+    "file": "B/BS Radical Dreamers.smc",
+    "folder": "B",
+    "size": 2097152
+  },
+  {
+    "name": "Bahamut Lagoon",
+    "file": "B/Bahamut Lagoon.smc",
+    "folder": "B",
+    "size": 8388608
+  },
+  {
+    "name": "Battle Cars",
+    "file": "B/Battle Cars.smc",
+    "folder": "B",
+    "size": 1048576
+  },
+  {
+    "name": "Battle Soccer Field no Hasha",
+    "file": "B/Battle Soccer Field no Hasha.smc",
+    "folder": "B",
+    "size": 1048576
+  },
+  {
+    "name": "Battletoads & Double Dragon",
+    "file": "B/Battletoads & Double Dragon.smc",
+    "folder": "B",
+    "size": 1048576
+  },
+  {
+    "name": "Battletoads in Battlemaniacs",
+    "file": "B/Battletoads in Battlemaniacs.smc",
+    "folder": "B",
+    "size": 1049088
+  },
+  {
+    "name": "Biker Mice from Mars",
+    "file": "B/Biker Mice from Mars.smc",
+    "folder": "B",
+    "size": 1180160
+  },
+  {
+    "name": "BioMetal",
+    "file": "B/BioMetal.smc",
+    "folder": "B",
+    "size": 1049088
+  },
+  {
+    "name": "Bishoujo Senshi Sailor Moon R",
+    "file": "B/Bishoujo Senshi Sailor Moon R.smc",
+    "folder": "B",
     "size": 3145728
   },
   {
-    "name": "Top Gear",
-    "file": "Top Gear (U) [!].smc",
+    "name": "Blackthorne",
+    "file": "B/Blackthorne.sfc",
+    "folder": "B",
+    "size": 1048576
+  },
+  {
+    "name": "Blues Brothers The",
+    "file": "B/Blues Brothers The.sfc",
+    "folder": "B",
     "size": 524288
   },
   {
-    "name": "Top Gear (Espanhol)",
-    "file": "Top Gear (U) [T+Spa100%_Tanero].smc",
+    "name": "Bobby's World",
+    "file": "B/Bobby's World.smc",
+    "folder": "B",
+    "size": 1048576
+  },
+  {
+    "name": "Bonkers",
+    "file": "B/Bonkers.sfc",
+    "folder": "B",
+    "size": 1048576
+  },
+  {
+    "name": "Brain Lord",
+    "file": "B/Brain Lord.smc",
+    "folder": "B",
+    "size": 1573376
+  },
+  {
+    "name": "Brainies The",
+    "file": "B/Brainies The.sfc",
+    "folder": "B",
+    "size": 524288
+  },
+  {
+    "name": "Brandish",
+    "file": "B/Brandish.smc",
+    "folder": "B",
+    "size": 1573376
+  },
+  {
+    "name": "Breath of Fire II",
+    "file": "B/Breath of Fire II.smc",
+    "folder": "B",
+    "size": 3146240
+  },
+  {
+    "name": "Breath of Fire",
+    "file": "B/Breath of Fire.smc",
+    "folder": "B",
+    "size": 1573376
+  },
+  {
+    "name": "Bubsy II",
+    "file": "B/Bubsy II.sfc",
+    "folder": "B",
+    "size": 2097152
+  },
+  {
+    "name": "Bubsy in Claws Encounters of the Furred Kind",
+    "file": "B/Bubsy in Claws Encounters of the Furred Kind.sfc",
+    "folder": "B",
+    "size": 2097152
+  },
+  {
+    "name": "Bugs Bunny Rabbit Rampage",
+    "file": "B/Bugs Bunny Rabbit Rampage.sfc",
+    "folder": "B",
+    "size": 1572864
+  },
+  {
+    "name": "Captain America and the Avengers",
+    "file": "C/Captain America and the Avengers.smc",
+    "folder": "C",
+    "size": 1048576
+  },
+  {
+    "name": "Captain Commando",
+    "file": "C/Captain Commando.smc",
+    "folder": "C",
+    "size": 2097152
+  },
+  {
+    "name": "Captain Tsubasa V Hasha no Shougou Campione",
+    "file": "C/Captain Tsubasa V Hasha no Shougou Campione.smc",
+    "folder": "C",
+    "size": 2097152
+  },
+  {
+    "name": "Castlevania Dracula X",
+    "file": "C/Castlevania Dracula X.sfc",
+    "folder": "C",
+    "size": 2097152
+  },
+  {
+    "name": "Chaos Seed   Fuusui Kairouki",
+    "file": "C/Chaos Seed - Fuusui Kairouki.sfc",
+    "folder": "C",
+    "size": 3145728
+  },
+  {
+    "name": "Choplifter III Rescue & Survive",
+    "file": "C/Choplifter III Rescue & Survive.smc",
+    "folder": "C",
+    "size": 524288
+  },
+  {
+    "name": "Chrono Trigger",
+    "file": "C/Chrono Trigger.smc",
+    "folder": "C",
+    "size": 4194304
+  },
+  {
+    "name": "Civilization",
+    "file": "C/Civilization.sfc",
+    "folder": "C",
+    "size": 2097152
+  },
+  {
+    "name": "Claymates",
+    "file": "C/Claymates.sfc",
+    "folder": "C",
+    "size": 1048576
+  },
+  {
+    "name": "Cliffhanger",
+    "file": "C/Cliffhanger.sfc",
+    "folder": "C",
+    "size": 1048576
+  },
+  {
+    "name": "Clock Tower",
+    "file": "C/Clock Tower.smc",
+    "folder": "C",
+    "size": 3276800
+  },
+  {
+    "name": "Combatribes The",
+    "file": "C/Combatribes The.sfc",
+    "folder": "C",
+    "size": 1572864
+  },
+  {
+    "name": "Congos Caper",
+    "file": "C/Congos Caper.sfc",
+    "folder": "C",
+    "size": 524288
+  },
+  {
+    "name": "Contra III The Alien Wars",
+    "file": "C/Contra III The Alien Wars.sfc",
+    "folder": "C",
+    "size": 1048576
+  },
+  {
+    "name": "Cool Spot",
+    "file": "C/Cool Spot.sfc",
+    "folder": "C",
+    "size": 1048576
+  },
+  {
+    "name": "Cooly Skunk",
+    "file": "C/Cooly Skunk.sfc",
+    "folder": "C",
+    "size": 2097152
+  },
+  {
+    "name": "Cutthroat Island",
+    "file": "C/Cutthroat Island.smc",
+    "folder": "C",
+    "size": 2097664
+  },
+  {
+    "name": "Cybernator",
+    "file": "C/Cybernator.smc",
+    "folder": "C",
+    "size": 1049088
+  },
+  {
+    "name": "Daffy Duck The Marvin Missions",
+    "file": "D/Daffy Duck The Marvin Missions.smc",
+    "folder": "D",
+    "size": 1048576
+  },
+  {
+    "name": "Dark Half",
+    "file": "D/Dark Half.sfc",
+    "folder": "D",
+    "size": 4194304
+  },
+  {
+    "name": "Daze Before Christmas",
+    "file": "D/Daze Before Christmas.smc",
+    "folder": "D",
+    "size": 2097152
+  },
+  {
+    "name": "Death and Return of Superman The",
+    "file": "D/Death and Return of Superman The.sfc",
+    "folder": "D",
+    "size": 2097152
+  },
+  {
+    "name": "Demolition Man",
+    "file": "D/Demolition Man.smc",
+    "folder": "D",
+    "size": 2097152
+  },
+  {
+    "name": "Demon's Crest",
+    "file": "D/Demon's Crest.smc",
+    "folder": "D",
+    "size": 2097664
+  },
+  {
+    "name": "Disney’s Pinocchio",
+    "file": "D/Disney’s Pinocchio.smc",
+    "folder": "D",
+    "size": 3146240
+  },
+  {
+    "name": "Donkey Kong Country 2 Diddy's Kong Quest",
+    "file": "D/Donkey Kong Country 2 Diddy's Kong Quest.smc",
+    "folder": "D",
+    "size": 6291456
+  },
+  {
+    "name": "Donkey Kong Country 3 Dixie Kong's Double Trouble!",
+    "file": "D/Donkey Kong Country 3 Dixie Kong's Double Trouble!.sfc",
+    "folder": "D",
+    "size": 4194304
+  },
+  {
+    "name": "Donkey Kong Country",
+    "file": "D/Donkey Kong Country.smc",
+    "folder": "D",
+    "size": 4194816
+  },
+  {
+    "name": "Dottie dreads nought",
+    "file": "D/Dottie dreads nought.sfc",
+    "folder": "D",
+    "size": 1048576
+  },
+  {
+    "name": "Dragon Ball Z   Super Gokuu Den   Totsugeki Hen",
+    "file": "D/Dragon Ball Z - Super Gokuu Den - Totsugeki Hen.sfc",
+    "folder": "D",
+    "size": 2097152
+  },
+  {
+    "name": "Dragon Ball Z Hyper Dimension",
+    "file": "D/Dragon Ball Z Hyper Dimension.smc",
+    "folder": "D",
+    "size": 4194816
+  },
+  {
+    "name": "Dragon Ball Z La Legende Saien",
+    "file": "D/Dragon Ball Z La Legende Saien.smc",
+    "folder": "D",
+    "size": 1049088
+  },
+  {
+    "name": "Dragon Ball Z Super Butouden",
+    "file": "D/Dragon Ball Z Super Butouden.smc",
+    "folder": "D",
+    "size": 2097152
+  },
+  {
+    "name": "Dragon Ball Z Super Saiya Densetsu",
+    "file": "D/Dragon Ball Z Super Saiya Densetsu.smc",
+    "folder": "D",
+    "size": 1049088
+  },
+  {
+    "name": "Dragon Ball Z Ultime Menace",
+    "file": "D/Dragon Ball Z Ultime Menace.smc",
+    "folder": "D",
+    "size": 2097152
+  },
+  {
+    "name": "Dragon Quest I & II",
+    "file": "D/Dragon Quest I & II.smc",
+    "folder": "D",
+    "size": 2097664
+  },
+  {
+    "name": "Dragon Quest III Soshite Densetsu e...",
+    "file": "D/Dragon Quest III Soshite Densetsu e....sfc",
+    "folder": "D",
+    "size": 6291456
+  },
+  {
+    "name": "Dragon The Bruce Lee Story",
+    "file": "D/Dragon The Bruce Lee Story.smc",
+    "folder": "D",
+    "size": 2097152
+  },
+  {
+    "name": "Dragon's Lair",
+    "file": "D/Dragon's Lair.sfc",
+    "folder": "D",
+    "size": 524288
+  },
+  {
+    "name": "E.V.O. Search for Eden",
+    "file": "E/E.V.O. Search for Eden.smc",
+    "folder": "E",
+    "size": 2097152
+  },
+  {
+    "name": "EarthBound",
+    "file": "E/EarthBound.smc",
+    "folder": "E",
+    "size": 4194304
+  },
+  {
+    "name": "Earthworm Jim 2",
+    "file": "E/Earthworm Jim 2.sfc",
+    "folder": "E",
+    "size": 3145728
+  },
+  {
+    "name": "Earthworm Jim",
+    "file": "E/Earthworm Jim.sfc",
+    "folder": "E",
+    "size": 3145728
+  },
+  {
+    "name": "Eyra   The Crow Maiden",
+    "file": "E/Eyra - The Crow Maiden.sfc",
+    "folder": "E",
+    "size": 2097152
+  },
+  {
+    "name": "Final Fantasy II",
+    "file": "F/Final Fantasy II.smc",
+    "folder": "F",
+    "size": 1049088
+  },
+  {
+    "name": "Final Fantasy III",
+    "file": "F/Final Fantasy III.smc",
+    "folder": "F",
+    "size": 4194816
+  },
+  {
+    "name": "Final Fantasy IV",
+    "file": "F/Final Fantasy IV.smc",
+    "folder": "F",
+    "size": 1049088
+  },
+  {
+    "name": "Final Fantasy Mystic Quest",
+    "file": "F/Final Fantasy Mystic Quest.sfc",
+    "folder": "F",
+    "size": 1048576
+  },
+  {
+    "name": "Final Fantasy V",
+    "file": "F/Final Fantasy V.smc",
+    "folder": "F",
+    "size": 2621952
+  },
+  {
+    "name": "Final Fantasy VI",
+    "file": "F/Final Fantasy VI.sfc",
+    "folder": "F",
+    "size": 3145728
+  },
+  {
+    "name": "Final Fight 2",
+    "file": "F/Final Fight 2.smc",
+    "folder": "F",
+    "size": 1311232
+  },
+  {
+    "name": "Final Fight 3",
+    "file": "F/Final Fight 3.sfc",
+    "folder": "F",
+    "size": 3145728
+  },
+  {
+    "name": "Final Fight Guy",
+    "file": "F/Final Fight Guy.smc",
+    "folder": "F",
+    "size": 1049088
+  },
+  {
+    "name": "Final Fight",
+    "file": "F/Final Fight.smc",
+    "folder": "F",
+    "size": 1048576
+  },
+  {
+    "name": "Fire Striker",
+    "file": "F/Fire Striker.smc",
+    "folder": "F",
+    "size": 1048576
+  },
+  {
+    "name": "Firepower 2000",
+    "file": "F/Firepower 2000.sfc",
+    "folder": "F",
+    "size": 1048576
+  },
+  {
+    "name": "Flashback The Quest for Identity",
+    "file": "F/Flashback The Quest for Identity.smc",
+    "folder": "F",
+    "size": 2097664
+  },
+  {
+    "name": "Front Mission Gun Hazard",
+    "file": "F/Front Mission Gun Hazard.smc",
+    "folder": "F",
+    "size": 3146240
+  },
+  {
+    "name": "Front Mission",
+    "file": "F/Front Mission.smc",
+    "folder": "F",
+    "size": 3441152
+  },
+  {
+    "name": "Futebol Brasileiro '96",
+    "file": "F/Futebol Brasileiro '96.smc",
+    "folder": "F",
+    "size": 2097152
+  },
+  {
+    "name": "GP 1   Part II",
+    "file": "G/GP-1 - Part II (USA) (PT-BR).sfc",
+    "folder": "G",
+    "size": 1572864
+  },
+  {
+    "name": "Ganpuru   Gunman's Proof",
+    "file": "G/Ganpuru - Gunman's Proof (Japan) (Translated En) (PT-BR).smc",
+    "folder": "G",
+    "size": 3146240
+  },
+  {
+    "name": "Ghoul Patrol",
+    "file": "G/Ghoul Patrol.smc",
+    "folder": "G",
+    "size": 1048576
+  },
+  {
+    "name": "Go Go Ackman",
+    "file": "G/Go Go Ackman (Japan) (Translated En) (PT-BR).smc",
+    "folder": "G",
+    "size": 1310720
+  },
+  {
+    "name": "Go Go Ackman 3",
+    "file": "G/Go Go Ackman 3 (Japan) (PT-BR).sfc",
+    "folder": "G",
+    "size": 2097152
+  },
+  {
+    "name": "Goemon 2   O Estranho General MacGuiness",
+    "file": "G/Goemon 2 - O Estranho General MacGuiness (PT-BR).sfc",
+    "folder": "G",
+    "size": 4194304
+  },
+  {
+    "name": "Goof Troop Kaizo",
+    "file": "G/Goof Troop Kaizo.sfc",
+    "folder": "G",
+    "size": 1048576
+  },
+  {
+    "name": "Goof Troop Paradise",
+    "file": "G/Goof Troop Paradise.sfc",
+    "folder": "G",
+    "size": 1048576
+  },
+  {
+    "name": "Goof Troop ST",
+    "file": "G/Goof Troop ST.sfc",
+    "folder": "G",
+    "size": 1048576
+  },
+  {
+    "name": "Goof Troop",
+    "file": "G/Goof Troop.smc",
+    "folder": "G",
+    "size": 524800
+  },
+  {
+    "name": "Gradius III",
+    "file": "G/Gradius III (USA) (PT-BR).smc",
+    "folder": "G",
+    "size": 524288
+  },
+  {
+    "name": "Great Circus Mystery Starring Mickey & Minnie, The",
+    "file": "G/Great Circus Mystery Starring Mickey & Minnie, The (USA) (PT-BR).smc",
+    "folder": "G",
+    "size": 1573376
+  },
+  {
+    "name": "Hameln no Violin Hiki",
+    "file": "H/Hameln no Violin Hiki.smc",
+    "folder": "H",
+    "size": 1572864
+  },
+  {
+    "name": "Harley's Humongous Adventure",
+    "file": "H/Harley's Humongous Adventure.sfc",
+    "folder": "H",
+    "size": 524288
+  },
+  {
+    "name": "Harvest Moon",
+    "file": "H/Harvest Moon.smc",
+    "folder": "H",
+    "size": 2097152
+  },
+  {
+    "name": "Hook",
+    "file": "H/Hook.sfc",
+    "folder": "H",
+    "size": 1048576
+  },
+  {
+    "name": "Hyper V Ball",
+    "file": "H/Hyper V Ball.smc",
+    "folder": "H",
+    "size": 1048576
+  },
+  {
+    "name": "Ignition Factor The",
+    "file": "I/Ignition Factor The.smc",
+    "folder": "I",
+    "size": 1048576
+  },
+  {
+    "name": "Illusion of Gaia",
+    "file": "I/Illusion of Gaia.smc",
+    "folder": "I",
+    "size": 2097664
+  },
+  {
+    "name": "Inazuma Serve da! Super Beach Volley",
+    "file": "I/Inazuma Serve da! Super Beach Volley.SMC",
+    "folder": "I",
+    "size": 1048576
+  },
+  {
+    "name": "Inindo Way of the Ninja",
+    "file": "I/Inindo Way of the Ninja.sfc",
+    "folder": "I",
+    "size": 1048576
+  },
+  {
+    "name": "Inspector Gadget",
+    "file": "I/Inspector Gadget.smc",
+    "folder": "I",
+    "size": 1572864
+  },
+  {
+    "name": "International Super Star Soccer Deluxe Futebol Brasileiro 2007",
+    "file": "I/International Super Star Soccer Deluxe Futebol Brasileiro 2007.smc",
+    "folder": "I",
+    "size": 2295552
+  },
+  {
+    "name": "International Super Star Soccer Deluxe Futebol Brasileiro 2008",
+    "file": "I/International Super Star Soccer Deluxe Futebol Brasileiro 2008.smc",
+    "folder": "I",
+    "size": 2295552
+  },
+  {
+    "name": "International Super Star Soccer Deluxe Ronaldinho Soccer 97",
+    "file": "I/International Super Star Soccer Deluxe Ronaldinho Soccer 97.smc",
+    "folder": "I",
+    "size": 2097152
+  },
+  {
+    "name": "International Super Star Soccer Deluxe World Cup France 98",
+    "file": "I/International Super Star Soccer Deluxe World Cup France 98.smc",
+    "folder": "I",
+    "size": 2097152
+  },
+  {
+    "name": "International Superstar Soccer Deluxe",
+    "file": "I/International Superstar Soccer Deluxe (Narração Milton Leite).smc",
+    "folder": "I",
+    "size": 2097152
+  },
+  {
+    "name": "International Superstar Soccer Deluxe",
+    "file": "I/International Superstar Soccer Deluxe.smc",
+    "folder": "I",
+    "size": 2097152
+  },
+  {
+    "name": "Iron Commando Koutetsu no Senshi",
+    "file": "I/Iron Commando Koutetsu no Senshi.sfc",
+    "folder": "I",
+    "size": 1310720
+  },
+  {
+    "name": "J.R.R. Tolkien's The Lord of the Rings Volume 1",
+    "file": "J/J.R.R. Tolkien's The Lord of the Rings Volume 1.smc",
+    "folder": "J",
+    "size": 1048576
+  },
+  {
+    "name": "Jelly Boy 2",
+    "file": "J/Jelly Boy 2.fig",
+    "folder": "J",
+    "size": 1573376
+  },
+  {
+    "name": "Jelly Boy",
+    "file": "J/Jelly Boy.fig",
+    "folder": "J",
+    "size": 1573376
+  },
+  {
+    "name": "Jetsons The Invasion of the Planet Pirates",
+    "file": "J/Jetsons The Invasion of the Planet Pirates.sfc",
+    "folder": "J",
+    "size": 1048576
+  },
+  {
+    "name": "Joe & Mac",
+    "file": "J/Joe & Mac.sfc",
+    "folder": "J",
+    "size": 1048576
+  },
+  {
+    "name": "Joe e Mac 2 Lost in the Tropics",
+    "file": "J/Joe e Mac 2 Lost in the Tropics.sfc",
+    "folder": "J",
+    "size": 1048576
+  },
+  {
+    "name": "Jungle Book The",
+    "file": "J/Jungle Book The.sfc",
+    "folder": "J",
+    "size": 2097152
+  },
+  {
+    "name": "Jurassic Park II The Chaos Continues",
+    "file": "J/Jurassic Park II The Chaos Continues.smc",
+    "folder": "J",
+    "size": 2097152
+  },
+  {
+    "name": "Kendo Rage",
+    "file": "K/Kendo Rage.smc",
+    "folder": "K",
+    "size": 1048576
+  },
+  {
+    "name": "Killer Instinct",
+    "file": "K/Killer Instinct.smc",
+    "folder": "K",
+    "size": 4194304
+  },
+  {
+    "name": "King Arthur's World",
+    "file": "K/King Arthur's World.smc",
+    "folder": "K",
+    "size": 524288
+  },
+  {
+    "name": "King of Dragons The",
+    "file": "K/King of Dragons The.sfc",
+    "folder": "K",
+    "size": 2097152
+  },
+  {
+    "name": "Knights of the Round .sfc",
+    "file": "K/Knights of the Round .sfc.sfc",
+    "folder": "K",
+    "size": 2097151
+  },
+  {
+    "name": "Kyuuyaku Megami Tensei",
+    "file": "K/Kyuuyaku Megami Tensei (PT-BR).sfc",
+    "folder": "K",
+    "size": 2359296
+  },
+  {
+    "name": "Lamborghini American Challenge",
+    "file": "L/Lamborghini American Challenge.smc",
+    "folder": "L",
+    "size": 524288
+  },
+  {
+    "name": "Laplace no Ma",
+    "file": "L/Laplace no Ma.sfc",
+    "folder": "L",
+    "size": 2097152
+  },
+  {
+    "name": "Last Action Hero",
+    "file": "L/Last Action Hero.sfc",
+    "folder": "L",
+    "size": 1048576
+  },
+  {
+    "name": "Legend of Zelda The A Link to the Past",
+    "file": "L/Legend of Zelda The A Link to the Past.sfc",
+    "folder": "L",
+    "size": 2097152
+  },
+  {
+    "name": "Legend",
+    "file": "L/Legend.sfc",
+    "folder": "L",
+    "size": 1048576
+  },
+  {
+    "name": "Lemmings",
+    "file": "L/Lemmings.smc",
+    "folder": "L",
+    "size": 1048576
+  },
+  {
+    "name": "Lion King The",
+    "file": "L/Lion King The.smc",
+    "folder": "L",
+    "size": 3145728
+  },
+  {
+    "name": "Live A Live",
+    "file": "L/Live A Live.sfc",
+    "folder": "L",
+    "size": 2621440
+  },
+  {
+    "name": "Looney Tunes B Ball",
+    "file": "L/Looney Tunes B Ball.sfc",
+    "folder": "L",
+    "size": 2097152
+  },
+  {
+    "name": "Lost Vikings 2",
+    "file": "L/Lost Vikings 2.smc",
+    "folder": "L",
+    "size": 1048576
+  },
+  {
+    "name": "Lost Vikings The",
+    "file": "L/Lost Vikings The.smc",
+    "folder": "L",
+    "size": 1049088
+  },
+  {
+    "name": "Lufia & The Fortress of Doom",
+    "file": "L/Lufia & The Fortress of Doom.sfc",
+    "folder": "L",
+    "size": 6291456
+  },
+  {
+    "name": "Madou Monogatari Hanamaru Daiyouchienji",
+    "file": "M/Madou Monogatari Hanamaru Daiyouchienji.sfc",
+    "folder": "M",
+    "size": 2097152
+  },
+  {
+    "name": "Magic Knight Rayearth",
+    "file": "M/Magic Knight Rayearth.smc",
+    "folder": "M",
+    "size": 1572864
+  },
+  {
+    "name": "Magical Pop'n",
+    "file": "M/Magical Pop'n.sfc",
+    "folder": "M",
+    "size": 2228224
+  },
+  {
+    "name": "Magical Quest Starring Mickey Mouse The",
+    "file": "M/Magical Quest Starring Mickey Mouse The.smc",
+    "folder": "M",
+    "size": 1049088
+  },
+  {
+    "name": "Mahou Kishi Rayearth",
+    "file": "M/Mahou Kishi Rayearth.smc",
+    "folder": "M",
+    "size": 1572864
+  },
+  {
+    "name": "Majuu Ou",
+    "file": "M/Majuu Ou.sfc",
+    "folder": "M",
+    "size": 1572864
+  },
+  {
+    "name": "Marvel Super Heroes War of the Gems",
+    "file": "M/Marvel Super Heroes War of the Gems.smc",
+    "folder": "M",
+    "size": 2097152
+  },
+  {
+    "name": "Marvelous",
+    "file": "M/Marvelous.sfc",
+    "folder": "M",
+    "size": 4194304
+  },
+  {
+    "name": "Mask The",
+    "file": "M/Mask The.sfc",
+    "folder": "M",
+    "size": 2097152
+  },
+  {
+    "name": "Mega Man 7",
+    "file": "M/Mega Man 7.smc",
+    "folder": "M",
+    "size": 2097664
+  },
+  {
+    "name": "Mega Man X",
+    "file": "M/Mega Man X.smc",
+    "folder": "M",
+    "size": 1572864
+  },
+  {
+    "name": "Mega Man X2",
+    "file": "M/Mega Man X2.smc",
+    "folder": "M",
+    "size": 1572864
+  },
+  {
+    "name": "Mega Man X3",
+    "file": "M/Mega Man X3.smc",
+    "folder": "M",
+    "size": 2097152
+  },
+  {
+    "name": "Megaman & Bass",
+    "file": "M/Megaman & Bass.smc",
+    "folder": "M",
+    "size": 4194304
+  },
+  {
+    "name": "Metal Warriors",
+    "file": "M/Metal Warriors.smc",
+    "folder": "M",
+    "size": 2097152
+  },
+  {
+    "name": "Mickey Mania The Timeless Adventures of Mickey Mouse",
+    "file": "M/Mickey Mania The Timeless Adventures of Mickey Mouse.smc",
+    "folder": "M",
+    "size": 2097152
+  },
+  {
+    "name": "Mickey no Tokyo Disneyland Daibouken",
+    "file": "M/Mickey no Tokyo Disneyland Daibouken.sfc",
+    "folder": "M",
+    "size": 1572864
+  },
+  {
+    "name": "Mickey to Donald Magical Adventure 3",
+    "file": "M/Mickey to Donald Magical Adventure 3.smc",
+    "folder": "M",
+    "size": 2621440
+  },
+  {
+    "name": "Monstania",
+    "file": "M/Monstania.smc",
+    "folder": "M",
+    "size": 3146240
+  },
+  {
+    "name": "Mortal Kombat 3",
+    "file": "M/Mortal Kombat 3.sfc",
+    "folder": "M",
+    "size": 4194304
+  },
+  {
+    "name": "Mortal Kombat II",
+    "file": "M/Mortal Kombat II.smc",
+    "folder": "M",
+    "size": 3145728
+  },
+  {
+    "name": "Mortal Kombat",
+    "file": "M/Mortal Kombat.sfc",
+    "folder": "M",
+    "size": 2097152
+  },
+  {
+    "name": "NBA Live 95",
+    "file": "N/NBA Live 95.smc",
+    "folder": "N",
+    "size": 1572864
+  },
+  {
+    "name": "Neugier Umi to Kaze no Kodō",
+    "file": "N/Neugier Umi to Kaze no Kodō.sfc",
+    "folder": "N",
+    "size": 1572864
+  },
+  {
+    "name": "Ninja Gaiden Trilogy",
+    "file": "N/Ninja Gaiden Trilogy.smc",
+    "folder": "N",
+    "size": 1606144
+  },
+  {
+    "name": "Ogre Battle The March of the Black Queen",
+    "file": "O/Ogre Battle The March of the Black Queen.smc",
+    "folder": "O",
+    "size": 1572864
+  },
+  {
+    "name": "Panic in Nakayoshi World",
+    "file": "P/Panic in Nakayoshi World.smc",
+    "folder": "P",
+    "size": 524288
+  },
+  {
+    "name": "Paperboy 2",
+    "file": "P/Paperboy 2.sfc",
+    "folder": "P",
+    "size": 524288
+  },
+  {
+    "name": "Pirates of Dark Water The",
+    "file": "P/Pirates of Dark Water The.smc",
+    "folder": "P",
+    "size": 1048576
+  },
+  {
+    "name": "Pitfall The Mayan Adventure",
+    "file": "P/Pitfall The Mayan Adventure.sfc",
+    "folder": "P",
+    "size": 2097152
+  },
+  {
+    "name": "Popeye Ijiwaru Majo Sea Hag no Maki",
+    "file": "P/Popeye Ijiwaru Majo Sea Hag no Maki.sfc",
+    "folder": "P",
+    "size": 1572864
+  },
+  {
+    "name": "Power Drive",
+    "file": "P/Power Drive.sfc",
+    "folder": "P",
+    "size": 1048576
+  },
+  {
+    "name": "Prince of Persia 2 The Shadow & The Flame",
+    "file": "P/Prince of Persia 2 The Shadow & The Flame.smc",
+    "folder": "P",
+    "size": 2097152
+  },
+  {
+    "name": "Prince of Persia",
+    "file": "P/Prince of Persia.smc",
+    "folder": "P",
+    "size": 1049088
+  },
+  {
+    "name": "Radical Dreamers",
+    "file": "R/Radical Dreamers.smc",
+    "folder": "R",
+    "size": 2097152
+  },
+  {
+    "name": "Raiden Trad",
+    "file": "R/Raiden Trad.smc",
+    "folder": "R",
+    "size": 1048576
+  },
+  {
+    "name": "Ranma 1 2 Akanekodan Teki Hihou",
+    "file": "R/Ranma 1 2 Akanekodan Teki Hihou.smc",
+    "folder": "R",
+    "size": 1572864
+  },
+  {
+    "name": "Rock n' Roll Racing",
+    "file": "R/Rock n' Roll Racing.smc",
+    "folder": "R",
+    "size": 1048576
+  },
+  {
+    "name": "Rockman & Forte",
+    "file": "R/Rockman & Forte.smc",
+    "folder": "R",
+    "size": 4194304
+  },
+  {
+    "name": "Rocko's Modern Life Spunky's Dangerous Day",
+    "file": "R/Rocko's Modern Life Spunky's Dangerous Day.sfc",
+    "folder": "R",
+    "size": 1572864
+  },
+  {
+    "name": "Romancing SaGa 3",
+    "file": "R/Romancing SaGa 3.smc",
+    "folder": "R",
+    "size": 4194304
+  },
+  {
+    "name": "Ronaldinho Soccer 97",
+    "file": "R/Ronaldinho Soccer 97.smc",
+    "folder": "R",
+    "size": 2097152
+  },
+  {
+    "name": "Ronaldinho futebol brasileiro 2011",
+    "file": "R/Ronaldinho futebol brasileiro 2011.smc",
+    "folder": "R",
+    "size": 3145728
+  },
+  {
+    "name": "Rudra no Hihou",
+    "file": "R/Rudra no Hihou.sfc",
+    "folder": "R",
+    "size": 4194304
+  },
+  {
+    "name": "Rushing Beat Shura",
+    "file": "R/Rushing Beat Shura.sfc",
+    "folder": "R",
+    "size": 1048576
+  },
+  {
+    "name": "Sailor Moon   Another Story",
+    "file": "S/Sailor Moon - Another Story.sfc",
+    "folder": "S",
+    "size": 4194304
+  },
+  {
+    "name": "Saturday Night Slam Masters",
+    "file": "S/Saturday Night Slam Masters.smc",
+    "folder": "S",
+    "size": 3145728
+  },
+  {
+    "name": "Scooby Doo Mystery",
+    "file": "S/Scooby Doo Mystery.sfc",
+    "folder": "S",
+    "size": 2097152
+  },
+  {
+    "name": "Secret of Evermore",
+    "file": "S/Secret of Evermore.sfc",
+    "folder": "S",
+    "size": 4194304
+  },
+  {
+    "name": "Secret of Mana",
+    "file": "S/Secret of Mana.smc",
+    "folder": "S",
+    "size": 2097152
+  },
+  {
+    "name": "Secret of the Stars",
+    "file": "S/Secret of the Stars.smc",
+    "folder": "S",
+    "size": 1573376
+  },
+  {
+    "name": "Seiken Densetsu 3",
+    "file": "S/Seiken Densetsu 3.sfc",
+    "folder": "S",
+    "size": 4194304
+  },
+  {
+    "name": "Shadow The",
+    "file": "S/Shadow The.sfc",
+    "folder": "S",
+    "size": 2097152
+  },
+  {
+    "name": "Shadowrun",
+    "file": "S/Shadowrun.smc",
+    "folder": "S",
+    "size": 6291456
+  },
+  {
+    "name": "Shin Kidou Senki Gundam W Endless Duel",
+    "file": "S/Shin Kidou Senki Gundam W Endless Duel.smc",
+    "folder": "S",
+    "size": 2097152
+  },
+  {
+    "name": "Side Pocket",
+    "file": "S/Side Pocket.sfc",
+    "folder": "S",
+    "size": 1048576
+  },
+  {
+    "name": "SimCity",
+    "file": "S/SimCity.smc",
+    "folder": "S",
+    "size": 524288
+  },
+  {
+    "name": "Skyblazer",
+    "file": "S/Skyblazer.smc",
+    "folder": "S",
+    "size": 1049088
+  },
+  {
+    "name": "Snoopy Concert",
+    "file": "S/Snoopy Concert.smc",
+    "folder": "S",
+    "size": 2097152
+  },
+  {
+    "name": "Soldiers of Fortune",
+    "file": "S/Soldiers of Fortune.smc",
+    "folder": "S",
+    "size": 1572864
+  },
+  {
+    "name": "Sonic the Hedgehog",
+    "file": "S/Sonic the Hedgehog.sfc",
+    "folder": "S",
+    "size": 1049088
+  },
+  {
+    "name": "Soul Blazer",
+    "file": "S/Soul Blazer.sfc",
+    "folder": "S",
+    "size": 1048576
+  },
+  {
+    "name": "Space Ace",
+    "file": "S/Space Ace.smc",
+    "folder": "S",
+    "size": 1048576
+  },
+  {
+    "name": "Sparkster",
+    "file": "S/Sparkster.sfc",
+    "folder": "S",
+    "size": 1048576
+  },
+  {
+    "name": "Spawn",
+    "file": "S/Spawn.smc",
+    "folder": "S",
+    "size": 3145728
+  },
+  {
+    "name": "Speedy Gonzales Los Gatos Bandidos",
+    "file": "S/Speedy Gonzales Los Gatos Bandidos.sfc",
+    "folder": "S",
+    "size": 1048576
+  },
+  {
+    "name": "SpellCraft",
+    "file": "S/SpellCraft.smc",
+    "folder": "S",
+    "size": 1049088
+  },
+  {
+    "name": "Spider Man & Venom Separation Anxiety",
+    "file": "S/Spider Man & Venom Separation Anxiety.smc",
+    "folder": "S",
+    "size": 3145728
+  },
+  {
+    "name": "Spider Man and the X Men Arcade's Revenge",
+    "file": "S/Spider Man and the X Men Arcade's Revenge.sfc",
+    "folder": "S",
+    "size": 1048576
+  },
+  {
+    "name": "Star Fox 2",
+    "file": "S/Star Fox 2.sfc",
+    "folder": "S",
+    "size": 1048576
+  },
+  {
+    "name": "Star Fox",
+    "file": "S/Star Fox.smc",
+    "folder": "S",
+    "size": 1048576
+  },
+  {
+    "name": "Star Ocean",
+    "file": "S/Star Ocean.smc",
+    "folder": "S",
+    "size": 6291456
+  },
+  {
+    "name": "Stargate",
+    "file": "S/Stargate.smc",
+    "folder": "S",
+    "size": 2097664
+  },
+  {
+    "name": "Stone Protectors",
+    "file": "S/Stone Protectors.smc",
+    "folder": "S",
+    "size": 2097152
+  },
+  {
+    "name": "Street Fighter II Turbo Hyper Fighting",
+    "file": "S/Street Fighter II Turbo Hyper Fighting.smc",
+    "folder": "S",
+    "size": 2621440
+  },
+  {
+    "name": "Street Fighter II",
+    "file": "S/Street Fighter II.smc",
+    "folder": "S",
+    "size": 2097152
+  },
+  {
+    "name": "Strike Gunner",
+    "file": "S/Strike Gunner.smc",
+    "folder": "S",
+    "size": 1048576
+  },
+  {
+    "name": "Sunset Riders",
+    "file": "S/Sunset Riders.sfc",
+    "folder": "S",
+    "size": 1048576
+  },
+  {
+    "name": "Super Adventure Island II",
+    "file": "S/Super Adventure Island II.sfc",
+    "folder": "S",
+    "size": 2097152
+  },
+  {
+    "name": "Super Adventure Island",
+    "file": "S/Super Adventure Island.sfc",
+    "folder": "S",
+    "size": 1048576
+  },
+  {
+    "name": "Super Aleste",
+    "file": "S/Super Aleste.sfc",
+    "folder": "S",
+    "size": 1048576
+  },
+  {
+    "name": "Super Bomberman 2",
+    "file": "S/Super Bomberman 2.smc",
+    "folder": "S",
+    "size": 1049088
+  },
+  {
+    "name": "Super Castlevania IV",
+    "file": "S/Super Castlevania IV.smc",
+    "folder": "S",
+    "size": 1114624
+  },
+  {
+    "name": "Super Copa",
+    "file": "S/Super Copa.sfc",
+    "folder": "S",
+    "size": 1048576
+  },
+  {
+    "name": "Super Mario All Stars + Super Mario World",
+    "file": "S/Super Mario All Stars + Super Mario World.sfc",
+    "folder": "S",
+    "size": 2621440
+  },
+  {
+    "name": "Super Mario All Stars",
+    "file": "S/Super Mario All Stars.sfc",
+    "folder": "S",
+    "size": 2097152
+  },
+  {
+    "name": "Super Mario All Stars + Super Mario World",
+    "file": "S/Super Mario All-Stars + Super Mario World (U) [o1+2C].smc",
+    "folder": "S",
+    "size": 3145728
+  },
+  {
+    "name": "Super Mario Kart",
+    "file": "S/Super Mario Kart.smc",
+    "folder": "S",
+    "size": 786944
+  },
+  {
+    "name": "Super Mario RPG Legend of the Seven Stars",
+    "file": "S/Super Mario RPG Legend of the Seven Stars.smc",
+    "folder": "S",
+    "size": 4194304
+  },
+  {
+    "name": "Super Mario World 2 Yoshi's Island",
+    "file": "S/Super Mario World 2 Yoshi's Island.sfc",
+    "folder": "S",
+    "size": 2097152
+  },
+  {
+    "name": "Super Mario World 2025",
+    "file": "S/Super Mario World 2025 (PT-BR) .sfc",
+    "folder": "S",
+    "size": 4194304
+  },
+  {
+    "name": "Super Mario World",
+    "file": "S/Super Mario World.sfc",
+    "folder": "S",
+    "size": 1048576
+  },
+  {
+    "name": "Super Metroid",
+    "file": "S/Super Metroid.smc",
+    "folder": "S",
+    "size": 3145728
+  },
+  {
+    "name": "Super Morph",
+    "file": "S/Super Morph.sfc",
+    "folder": "S",
+    "size": 1048576
+  },
+  {
+    "name": "Super R Type",
+    "file": "S/Super R Type.smc",
+    "folder": "S",
+    "size": 1048576
+  },
+  {
+    "name": "Super Soccer",
+    "file": "S/Super Soccer.smc",
+    "folder": "S",
+    "size": 524288
+  },
+  {
+    "name": "Super Street Fighter II",
+    "file": "S/Super Street Fighter II.smc",
+    "folder": "S",
+    "size": 4194816
+  },
+  {
+    "name": "Super SNES Demo Test",
+    "file": "S/Super_SNES_Demo_Test.sfc",
+    "folder": "S",
+    "size": 32768
+  },
+  {
+    "name": "Tales of Phantasia",
+    "file": "T/Tales of Phantasia.smc",
+    "folder": "T",
+    "size": 6291968
+  },
+  {
+    "name": "Tecmo Secret of the Stars",
+    "file": "T/Tecmo Secret of the Stars.smc",
+    "folder": "T",
+    "size": 1573376
+  },
+  {
+    "name": "Teenage Mutant Ninja Turtles IV Turtles in Time",
+    "file": "T/Teenage Mutant Ninja Turtles IV Turtles in Time.sfc",
+    "folder": "T",
+    "size": 1048576
+  },
+  {
+    "name": "Teenage Mutant Ninja Turtles Tournament Fighters",
+    "file": "T/Teenage Mutant Ninja Turtles Tournament Fighters.sfc",
+    "folder": "T",
+    "size": 2097152
+  },
+  {
+    "name": "Tenchi Muyou! Game Hen",
+    "file": "T/Tenchi Muyou! Game Hen.smc",
+    "folder": "T",
+    "size": 3145776
+  },
+  {
+    "name": "Terranigma",
+    "file": "T/Terranigma.smc",
+    "folder": "T",
+    "size": 4194304
+  },
+  {
+    "name": "The Adventures of Batman & Robin",
+    "file": "T/The Adventures of Batman & Robin.sfc",
+    "folder": "T",
+    "size": 4194304
+  },
+  {
+    "name": "The Ignition Factor",
+    "file": "T/The Ignition Factor.smc",
+    "folder": "T",
+    "size": 1049088
+  },
+  {
+    "name": "The Legend of the Mystical Ninja",
+    "file": "T/The Legend of the Mystical Ninja (Ganbare Goemon).sfc",
+    "folder": "T",
+    "size": 2097152
+  },
+  {
+    "name": "Theme Park",
+    "file": "T/Theme Park.smc",
+    "folder": "T",
+    "size": 1048576
+  },
+  {
+    "name": "Tick The",
+    "file": "T/Tick The.smc",
+    "folder": "T",
+    "size": 2097152
+  },
+  {
+    "name": "Time Slip",
+    "file": "T/Time Slip.sfc",
+    "folder": "T",
+    "size": 1048576
+  },
+  {
+    "name": "Timecop",
+    "file": "T/Timecop.sfc",
+    "folder": "T",
+    "size": 2097152
+  },
+  {
+    "name": "Tiny Toon Adventures Wacky Sports Challenge",
+    "file": "T/Tiny Toon Adventures Wacky Sports Challenge.smc",
+    "folder": "T",
+    "size": 1049088
+  },
+  {
+    "name": "Tom e Jerry",
+    "file": "T/Tom e Jerry.sfc",
+    "folder": "T",
+    "size": 524288
+  },
+  {
+    "name": "Top Gear",
+    "file": "T/Top Gear (U) [!].smc",
+    "folder": "T",
+    "size": 524288
+  },
+  {
+    "name": "Top Gear",
+    "file": "T/Top Gear (U) [T+Spa100%_Tanero].smc",
+    "folder": "T",
     "size": 524288
   },
   {
     "name": "Top Gear 2",
-    "file": "Top Gear 2 (U) [b1].smc",
+    "file": "T/Top Gear 2 (U) [b1].smc",
+    "folder": "T",
+    "size": 1048576
+  },
+  {
+    "name": "Top Gear 2",
+    "file": "T/Top Gear 2.smc",
+    "folder": "T",
     "size": 1048576
   },
   {
     "name": "Top Gear 3000",
-    "file": "Top Gear 3000 (U) [!].smc",
+    "file": "T/Top Gear 3000 (U) [!].smc",
+    "folder": "T",
     "size": 1048576
   },
   {
-    "name": "Super SNES Demo Test",
-    "file": "Super_SNES_Demo_Test.sfc",
-    "size": 32768
+    "name": "Top Gear 3000",
+    "file": "T/Top Gear 3000.sfc",
+    "folder": "T",
+    "size": 1048576
+  },
+  {
+    "name": "Top Gear",
+    "file": "T/Top Gear.sfc",
+    "folder": "T",
+    "size": 1048576
+  },
+  {
+    "name": "Treasure of Rudras",
+    "file": "T/Treasure of Rudras.sfc",
+    "folder": "T",
+    "size": 4194304
+  },
+  {
+    "name": "Trials of Mana",
+    "file": "T/Trials of Mana.sfc",
+    "folder": "T",
+    "size": 4194304
+  },
+  {
+    "name": "True Lies",
+    "file": "T/True Lies.smc",
+    "folder": "T",
+    "size": 2097152
+  },
+  {
+    "name": "TwinBee Rainbow Bell Adventure",
+    "file": "T/TwinBee Rainbow Bell Adventure.sfc",
+    "folder": "T",
+    "size": 1572864
+  },
+  {
+    "name": "U.N. Squadron",
+    "file": "U/U.N. Squadron.smc",
+    "folder": "U",
+    "size": 1048576
+  },
+  {
+    "name": "Ultimate Mortal Kombat 3",
+    "file": "U/Ultimate Mortal Kombat 3.smc",
+    "folder": "U",
+    "size": 4194816
+  },
+  {
+    "name": "Umihara Kawase",
+    "file": "U/Umihara Kawase.sfc",
+    "folder": "U",
+    "size": 1048576
+  },
+  {
+    "name": "Warlock",
+    "file": "W/Warlock.smc",
+    "folder": "W",
+    "size": 2097664
+  },
+  {
+    "name": "Winter Olympic Games Lillehammer '94",
+    "file": "W/Winter Olympic Games Lillehammer '94.sfc",
+    "folder": "W",
+    "size": 2097152
+  },
+  {
+    "name": "Wolfchild",
+    "file": "W/Wolfchild.sfc",
+    "folder": "W",
+    "size": 1048576
+  },
+  {
+    "name": "Wonder Project J Kikai no Shounen Pino",
+    "file": "W/Wonder Project J Kikai no Shounen Pino.smc",
+    "folder": "W",
+    "size": 3211264
+  },
+  {
+    "name": "World Cup France 98",
+    "file": "W/World Cup France 98.smc",
+    "folder": "W",
+    "size": 2097152
+  },
+  {
+    "name": "World Cup USA 94",
+    "file": "W/World Cup USA 94.sfc",
+    "folder": "W",
+    "size": 1572864
+  },
+  {
+    "name": "Worms",
+    "file": "W/Worms.smc",
+    "folder": "W",
+    "size": 2097664
+  },
+  {
+    "name": "X Men Mutant Apocalypse",
+    "file": "X/X Men Mutant Apocalypse.smc",
+    "folder": "X",
+    "size": 2097152
   }
 ]

@@ -1,0 +1,13 @@
+{
+  "name": "super-game-boy-pwa",
+  "version": "2.0.0",
+  "type": "module",
+  "description": "SNES Game Boy emulator PWA - ultra-fast standalone build with local WASM core",
+  "scripts": {
+    "start": "node server.js",
+    "serve": "node server.js",
+    "test": "node ../outputs/test-real-games.js"
+  },
+  "keywords": ["snes", "emulator", "game-boy", "pwa", "wasm", "mobile"],
+  "author": "Juscelino"
+}

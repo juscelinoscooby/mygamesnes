@@ -2,13 +2,22 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Game Boy SNES Pocket — Console & Biblioteca</title>
 
-  <!-- Pré-conexão com o CDN para acelerar o carregamento do emulador -->
+  <!-- PWA: instalação como app em dispositivos móveis -->
+  <link rel="manifest" href="./manifest.webmanifest">
+  <meta name="theme-color" content="#d4d2c8">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SNES Boy">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+
+  <!-- Pré-conexão com o CDN como fallback (o núcleo local em ./emulator/ é a primeira opção) -->
   <link rel="preconnect" href="https://cdn.emulatorjs.org" crossorigin>
   <link rel="dns-prefetch" href="https://cdn.emulatorjs.org">
-  <link rel="preload" href="https://cdn.emulatorjs.org/stable/data/loader.js" as="script">
 
   <style>
     :root {
@@ -238,74 +247,337 @@
       z-index: 5;
     }
 
-    /* Tela Inicial / Standby estilo LCD quando não há jogo rodando */
-    #lcd-standby {
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(160deg, #8bac0f 0%, #9bbc0f 50%, #8bac0f 100%);
-      color: #0f380f;
+    /* =================================================================
+       TELA LCD INTERATIVA: MENU DO CONSOLE (NAVEGÁVEL PELO JOYSTICK)
+       ================================================================= */
+    #lcd-screen {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 18px;
-      text-align: center;
-      transition: filter 0.2s;
-    }
-
-    #lcd-standby.dragover {
-      filter: brightness(1.1);
-      outline: 3px dashed #0f380f;
-      outline-offset: -8px;
-    }
-
-    .lcd-logo {
-      font-size: 18px;
-      font-weight: 900;
-      letter-spacing: 1.5px;
-      border: 2px solid #0f380f;
-      padding: 4px 12px;
-      border-radius: 4px;
-      margin-bottom: 8px;
-      background: rgba(15, 56, 15, 0.08);
-    }
-
-    .lcd-sub {
-      font-size: 12px;
+      background: linear-gradient(160deg, #8bac0f 0%, #9bbc0f 50%, #8bac0f 100%);
+      color: #0f380f;
+      font-family: "Courier New", ui-monospace, SFMono-Regular, Menlo, monospace;
       font-weight: 700;
-      margin-bottom: 14px;
-      color: #306230;
+      line-height: 1.25;
+      overflow: hidden;
+      container-type: inline-size;
     }
 
-    .lcd-actions {
+    #lcd-screen::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(15, 56, 15, 0.05) 0px,
+        rgba(15, 56, 15, 0.05) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      pointer-events: none;
+    }
+
+    .lcd-header {
+      flex: 0 0 auto;
       display: flex;
+      align-items: center;
+      justify-content: space-between;
       gap: 8px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .lcd-btn {
-      background: #0f380f;
-      color: #9bbc0f;
-      border: none;
-      padding: 7px 12px;
-      border-radius: 5px;
-      font-size: 11px;
-      font-weight: 800;
-      cursor: pointer;
-      letter-spacing: 0.4px;
+      padding: 7px 9px 4px;
+      border-bottom: 2px solid #0f380f;
+      font-size: clamp(9px, 3.1cqw, 13px);
+      font-weight: 900;
+      letter-spacing: 0.6px;
       text-transform: uppercase;
     }
 
-    .lcd-btn:hover {
-      background: #306230;
+    .lcd-title {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    #game {
+    .lcd-title::before {
+      content: "● ";
+      color: #306230;
+    }
+
+    .lcd-header-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+      font-size: clamp(8px, 2.5cqw, 11px);
+      font-weight: 800;
+    }
+
+    .lcd-chip {
+      background: #0f380f;
+      color: #9bbc0f;
+      border-radius: 3px;
+      padding: 2px 5px;
+      font-size: 0.82em;
+      font-weight: 900;
+      letter-spacing: 0.3px;
+    }
+
+    .lcd-chip.syncing {
+      animation: lcd-pulse 1.1s ease-in-out infinite;
+    }
+
+    @keyframes lcd-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
+    }
+
+    /* Abas GAMES / OPTIONS / HELP */
+    .lcd-tabbar {
+      flex: 0 0 auto;
+      display: flex;
+      gap: 4px;
+      padding: 5px 8px 0;
+      font-size: clamp(8px, 2.7cqw, 12px);
+      letter-spacing: 0.5px;
+    }
+
+    .lcd-tab {
+      flex: 1;
+      min-width: 0;
+      background: rgba(15, 56, 15, 0.1);
+      color: #306230;
+      border: 1px solid #306230;
+      border-bottom: none;
+      border-radius: 4px 4px 0 0;
+      padding: 3px 4px;
+      font: inherit;
+      font-weight: 900;
+      text-transform: uppercase;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .lcd-tab.active {
+      background: #0f380f;
+      color: #9bbc0f;
+    }
+
+    .lcd-body {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      border: 2px solid #0f380f;
+      border-radius: 0;
+      margin: 0 8px;
+      overflow: hidden;
+    }
+
+    #lcd-screen:focus {
+      outline: none;
+    }
+
+    /* Menu aberto por cima de um jogo em execução (pausa) */
+    .screen-viewport.menu-open #lcd-screen {
+      z-index: 4;
+    }
+
+    .lcd-list {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 3px 0;
+      scrollbar-width: none;
+      overscroll-behavior: contain;
+    }
+
+    .lcd-list::-webkit-scrollbar {
+      display: none;
+    }
+
+    .lcd-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
       width: 100%;
-      height: 100%;
+      padding: 3px 7px;
+      background: none;
+      border: none;
+      color: inherit;
+      font: inherit;
+      font-size: clamp(9px, 3cqw, 13px);
+      text-align: left;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .lcd-row .cursor {
+      flex: 0 0 0.9em;
+      visibility: hidden;
+      font-weight: 900;
+    }
+
+    .lcd-row.sel {
+      background: #0f380f;
+      color: #9bbc0f;
+    }
+
+    .lcd-row.sel .cursor {
+      visibility: visible;
+    }
+
+    .lcd-row .row-icon {
+      flex: 0 0 auto;
+      font-size: 0.95em;
+    }
+
+    .lcd-row.is-folder .row-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.35em;
+      height: 1.35em;
+      border: 1px solid currentColor;
+      border-radius: 3px;
+      font-size: 0.82em;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .lcd-row .row-label {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 800;
+    }
+
+    .lcd-row .row-meta {
+      flex: 0 0 auto;
+      font-size: 0.78em;
+      font-weight: 700;
+      opacity: 0.75;
+      white-space: nowrap;
+    }
+
+    .lcd-empty {
+      padding: 14px 10px;
+      text-align: center;
+      font-size: clamp(9px, 2.8cqw, 12px);
+      line-height: 1.5;
+      color: #306230;
+    }
+
+    .lcd-help {
+      padding: 7px 10px;
+      font-size: clamp(8px, 2.6cqw, 12px);
+      line-height: 1.55;
+      color: #0f380f;
+    }
+
+    .lcd-help b {
+      display: inline-block;
+      background: #0f380f;
+      color: #9bbc0f;
+      border-radius: 3px;
+      padding: 0 4px;
+      margin-right: 3px;
+      font-size: 0.85em;
+    }
+
+    .lcd-help p + p {
+      margin-top: 4px;
+    }
+
+    .lcd-help a {
+      color: #0f380f;
+      text-decoration: underline;
+      word-break: break-all;
+    }
+
+    .lcd-donate {
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px dashed #306230;
+    }
+
+    .lcd-donate-title {
+      font-size: 0.95em;
+      font-weight: 900;
+      letter-spacing: 0.3px;
+      margin-bottom: 4px;
+    }
+
+    .lcd-donate p {
+      margin: 0;
+      line-height: 1.4;
+    }
+
+    .lcd-qr {
+      display: flex;
+      justify-content: center;
+      margin: 8px 0 4px;
+    }
+
+    .lcd-qr img {
+      width: min(148px, 52cqw);
+      height: auto;
+      image-rendering: pixelated;
+      background: #fff;
+      padding: 6px;
+      border: 2px solid #0f380f;
+      border-radius: 6px;
+    }
+
+    .lcd-qr-caption {
+      text-align: center;
+      font-size: 0.82em;
+      font-weight: 800;
+      color: #1a4a1a;
+    }
+
+    .lcd-footer {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      padding: 4px 9px 6px;
+      font-size: clamp(7px, 2.35cqw, 10px);
+      font-weight: 800;
+      letter-spacing: 0.2px;
+      color: #306230;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .lcd-footer .hint {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .lcd-footer .scroll-indicator {
+      flex-shrink: 0;
+      font-weight: 900;
+      color: #0f380f;
+    }
+
+    /* Camada do emulador: fica acima da tela quando um jogo está rodando */
+    #game {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
       display: none;
       background: #000;
+    }
+
+    #game.active {
+      display: block;
     }
 
     #game iframe {
@@ -1019,6 +1291,481 @@
     .form-input:focus {
       border-color: #3b82f6;
     }
+
+    /* =================================================================
+       OTIMIZAÇÕES RESPONSIVAS E TOUCH PARA DISPOSITIVOS MÓVEIS (SMARTPHONES/TABLETS)
+       ================================================================= */
+    @media (max-width: 520px) {
+      body {
+        padding: max(6px, env(safe-area-inset-top, 0px))
+                 max(6px, env(safe-area-inset-right, 0px))
+                 max(8px, env(safe-area-inset-bottom, 0px))
+                 max(6px, env(safe-area-inset-left, 0px));
+        justify-content: flex-start;
+      }
+
+      .gameboy-console {
+        max-width: 100%;
+        padding: 12px 14px 22px;
+        gap: 10px;
+        border-radius: 18px 18px 48px 18px;
+      }
+
+      .screen-bezel {
+        padding: 8px 10px 12px;
+        border-radius: 10px 10px 24px 10px;
+      }
+
+      .screen-viewport {
+        border-width: 3px;
+      }
+
+      .dpad-container {
+        width: 120px;
+        height: 120px;
+      }
+
+      .abxy-diamond {
+        width: 120px;
+        height: 120px;
+      }
+
+      .action-btn {
+        width: 44px;
+        height: 44px;
+        font-size: 14px;
+      }
+
+      .shoulder-btn {
+        padding: 6px 14px;
+        font-size: 11px;
+      }
+
+      .sys-btn {
+        padding: 6px 10px;
+        font-size: 11px;
+      }
+
+      .pill-btn {
+        width: 44px;
+        height: 14px;
+      }
+
+      .controls-main-pad {
+        padding: 0 4px;
+      }
+    }
+
+    /* =================================================================
+       NOVO DESIGN — PORTÁTIL HORIZONTAL COM ACENTOS LARANJA
+       (sobrescreve o layout vertical antigo mantendo IDs e classes)
+       ================================================================= */
+    :root {
+      --console-body: #1c1c20;
+      --console-body-2: #0f0f12;
+      --console-edge: #303038;
+      --accent-orange: #ff7a18;
+      --accent-orange-2: #e8620a;
+      --btn-dark: #2a2a30;
+    }
+
+    body {
+      background: radial-gradient(circle at 50% -10%, #2a2f3a 0%, #14161b 45%, #08090b 100%);
+      padding: 18px;
+      justify-content: center;
+    }
+
+    /* ---- Carcaça horizontal ---- */
+    .gameboy-console {
+      width: 100%;
+      max-width: 1180px;
+      padding: 30px 38px 32px;
+      border-radius: 46px;
+      background: linear-gradient(180deg, #2a2a2f 0%, #1a1a1e 42%, #101013 100%);
+      box-shadow:
+        inset 0 2px 1px rgba(255, 255, 255, 0.16),
+        inset 0 -12px 24px rgba(0, 0, 0, 0.75),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+        0 36px 90px rgba(0, 0, 0, 0.82);
+      display: grid;
+      grid-template-columns: minmax(130px, 0.92fr) minmax(0, 2.7fr) minmax(130px, 0.92fr);
+      grid-template-areas: "left screen right";
+      align-items: center;
+      gap: 24px;
+      position: relative;
+      transition: none;
+    }
+
+    /* Recorte decorativo laranja nas laterais */
+    .gameboy-console::before,
+    .gameboy-console::after {
+      content: "";
+      position: absolute;
+      top: 22%;
+      width: 5px;
+      height: 56%;
+      border-radius: 99px;
+      background: linear-gradient(180deg, transparent, var(--accent-orange), transparent);
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .gameboy-console::before { left: 14px; }
+    .gameboy-console::after { right: 14px; }
+
+    .grip {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      min-width: 0;
+    }
+    .grip-left { grid-area: left; }
+    .grip-right { grid-area: right; }
+
+    /* ---- Botões de ombro ---- */
+    .shoulder-btn {
+      position: absolute;
+      top: 6px;
+      width: 112px;
+      height: 34px;
+      padding: 0;
+      border: none;
+      border-radius: 18px 18px 9px 9px;
+      background: linear-gradient(180deg, #ff8f34 0%, var(--accent-orange) 45%, var(--accent-orange-2) 100%);
+      color: #2b1200;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 1.2px;
+      box-shadow:
+        inset 0 2px 0 rgba(255, 255, 255, 0.38),
+        0 6px 14px rgba(0, 0, 0, 0.6);
+      cursor: pointer;
+      touch-action: none;
+      z-index: 5;
+    }
+    .shoulder-left { left: 74px; }
+    .shoulder-right { right: 74px; }
+    .shoulder-btn.pressed,
+    .shoulder-btn:active {
+      transform: translateY(3px);
+      background: linear-gradient(180deg, #e8620a 0%, #b94b00 100%);
+      border-bottom-width: 0;
+    }
+
+    /* ---- Analógicos (decorativos, estilo do console de referência) ---- */
+    .stick-base {
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 50% 38%, #32323a 0%, #17171b 60%, #0a0a0c 100%);
+      box-shadow:
+        inset 0 5px 12px rgba(0, 0, 0, 0.9),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.05),
+        0 1px 0 rgba(255, 255, 255, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      pointer-events: none;
+    }
+    .stick-cap {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 36% 30%, #50505b 0%, #24242a 62%, #111114 100%);
+      box-shadow:
+        0 5px 10px rgba(0, 0, 0, 0.75),
+        inset 0 1px 2px rgba(255, 255, 255, 0.2);
+    }
+
+    /* ---- D-Pad laranja ---- */
+    .dpad-container {
+      width: 132px;
+      height: 132px;
+    }
+    .dpad-btn {
+      background: linear-gradient(180deg, #ff8b2e 0%, var(--accent-orange) 48%, var(--accent-orange-2) 100%);
+      color: rgba(60, 26, 0, 0.8);
+      box-shadow:
+        0 4px 8px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    }
+    .dpad-btn.pressed {
+      background: linear-gradient(180deg, #d55c00, #a84400);
+      color: #fff;
+      transform: scale(0.96);
+    }
+    .dpad-center {
+      background: linear-gradient(180deg, #ff8b2e 0%, var(--accent-orange) 48%, var(--accent-orange-2) 100%);
+    }
+    .dpad-center::after {
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.3), rgba(0, 0, 0, 0.35));
+    }
+
+    /* ---- SELECT / START ---- */
+    .select-start-row {
+      gap: 22px;
+      margin-top: 0;
+      padding-bottom: 0;
+    }
+    .pill-btn {
+      width: 54px;
+      height: 17px;
+      background: linear-gradient(180deg, #ff8f34, var(--accent-orange-2));
+      transform: none;
+      box-shadow:
+        inset 0 1px 2px rgba(255, 255, 255, 0.4),
+        0 3px 6px rgba(0, 0, 0, 0.5);
+    }
+    .pill-btn.pressed,
+    .pill-btn:active {
+      transform: scale(0.92);
+      background: #b94b00;
+    }
+    .pill-label {
+      color: rgba(255, 255, 255, 0.55);
+      font-size: 9px;
+      letter-spacing: 1.4px;
+      margin-top: 0;
+    }
+
+    /* ---- ABXY + atalhos ---- */
+    .abxy-diamond {
+      width: 146px;
+      height: 136px;
+    }
+    .action-btn {
+      width: 48px;
+      height: 48px;
+      font-size: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .btn-a,
+    .btn-b {
+      background: linear-gradient(180deg, #ff8f34, var(--accent-orange-2));
+      color: #2b1200;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+    .btn-x,
+    .btn-y {
+      background: linear-gradient(180deg, #3c3c45, #1e1e24);
+      color: #e9e9ef;
+    }
+
+    .utility-cluster {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .round-btn {
+      width: 46px;
+      height: 46px;
+      padding: 0;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      background: radial-gradient(circle at 40% 28%, #34343d 0%, #17171b 70%);
+      color: #d9d9e0;
+      font-size: 18px;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.13),
+        0 4px 10px rgba(0, 0, 0, 0.55);
+      touch-action: manipulation;
+      transition: transform 0.08s, color 0.15s;
+    }
+    .round-btn:hover { color: #fff; }
+    .round-btn:active { transform: translateY(2px) scale(0.96); }
+    .round-btn .btn-ico { font-size: 19px; }
+
+    /* ---- Moldura da tela ---- */
+    .screen-bezel {
+      grid-area: screen;
+      background: #0a0a0c;
+      border: 2px solid #2b2b32;
+      border-radius: 18px;
+      padding: 10px 12px 8px;
+      gap: 6px;
+      box-shadow:
+        inset 0 0 0 7px #060608,
+        inset 0 8px 22px rgba(0, 0, 0, 0.95),
+        0 2px 0 rgba(255, 255, 255, 0.05);
+    }
+    .bezel-header {
+      font-size: 9px;
+      color: #6e6e7a;
+      letter-spacing: 1px;
+    }
+    .stripe-lines span:nth-child(1) { background: var(--accent-orange); }
+    .stripe-lines span:nth-child(2) { background: #3ca0ff; }
+    .battery-indicator { font-size: 8px; color: #6e6e7a; }
+    .battery-led { width: 8px; height: 8px; }
+
+    .screen-viewport {
+      aspect-ratio: 4 / 3;
+      border: none;
+      border-radius: 5px;
+      box-shadow: inset 0 0 34px rgba(0, 0, 0, 0.95);
+    }
+
+    .bezel-footer { margin-top: 4px; }
+    .brand-signature {
+      font-size: 11px;
+      color: #7f7f8b;
+      letter-spacing: 1.4px;
+    }
+    .brand-signature span { color: var(--accent-orange); }
+    .now-playing-badge {
+      font-size: 10px;
+      color: #6f6f7b;
+      max-width: 240px;
+    }
+
+    /* ---- Detalhes da carcaça ---- */
+    .speaker-grille {
+      position: absolute;
+      bottom: 14px;
+      left: 50%;
+      right: auto;
+      transform: translateX(-50%);
+      gap: 4px;
+    }
+    .speaker-slot {
+      width: 3px;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.13);
+      box-shadow: none;
+    }
+
+    /* ---- Aviso de rotação ---- */
+    .rotate-hint {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: rgba(8, 9, 11, 0.95);
+      backdrop-filter: blur(6px);
+      color: #e5e7eb;
+      text-align: center;
+      padding: 28px;
+      font-size: 15px;
+    }
+    .rotate-hint .rotate-icon {
+      font-size: 52px;
+      color: var(--accent-orange);
+      animation: rotate-hint-spin 2.4s ease-in-out infinite;
+    }
+    .rotate-hint p { font-weight: 800; font-size: 17px; }
+    .rotate-hint span { font-size: 12px; color: #9ca3af; max-width: 280px; }
+    @keyframes rotate-hint-spin {
+      0%, 40% { transform: rotate(0deg); }
+      60%, 100% { transform: rotate(90deg); }
+    }
+
+    /* ---- Responsivo ---- */
+    @media (max-width: 900px) {
+      .gameboy-console {
+        padding: 26px 20px 28px;
+        gap: 14px;
+        border-radius: 34px;
+        grid-template-columns: minmax(104px, 0.9fr) minmax(0, 2.6fr) minmax(104px, 0.9fr);
+      }
+      .shoulder-left { left: 34px; }
+      .shoulder-right { right: 34px; }
+      .stick-base { width: 68px; height: 68px; }
+      .stick-cap { width: 44px; height: 44px; }
+      .abxy-diamond { width: 132px; height: 124px; }
+      .action-btn { width: 44px; height: 44px; }
+      .round-btn { width: 42px; height: 42px; }
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 8px; }
+      .gameboy-console {
+        padding: 20px 12px 22px;
+        gap: 8px;
+        border-radius: 26px;
+        grid-template-columns: minmax(84px, 0.85fr) minmax(0, 2.4fr) minmax(84px, 0.85fr);
+      }
+      .gameboy-console::before,
+      .gameboy-console::after { display: none; }
+      .shoulder-btn { width: 84px; height: 28px; font-size: 11px; top: 4px; }
+      .shoulder-left { left: 16px; }
+      .shoulder-right { right: 16px; }
+      .stick-base { width: 56px; height: 56px; }
+      .stick-cap { width: 36px; height: 36px; }
+      .dpad-container { width: 106px; height: 106px; }
+      .abxy-diamond { width: 108px; height: 102px; }
+      .action-btn { width: 38px; height: 38px; font-size: 12px; }
+      .round-btn { width: 36px; height: 36px; font-size: 15px; }
+      .pill-btn { width: 42px; height: 13px; }
+      .pill-label { font-size: 8px; }
+      .bezel-header { font-size: 8px; }
+    }
+
+    @media (max-width: 780px) and (orientation: portrait) {
+      .rotate-hint { display: flex; }
+    }
+
+    /* ---- Tela cheia (mantém apenas o jogo e os atalhos) ---- */
+    body.fullscreen-mode .gameboy-console {
+      display: block;
+      max-width: none;
+      width: 100vw;
+      height: 100vh;
+      padding: 0;
+      border-radius: 0;
+      background: #000;
+      box-shadow: none;
+    }
+    body.fullscreen-mode .gameboy-console::before,
+    body.fullscreen-mode .gameboy-console::after,
+    body.fullscreen-mode .grip-left,
+    body.fullscreen-mode .shoulder-btn,
+    body.fullscreen-mode .speaker-grille,
+    body.fullscreen-mode .bezel-header,
+    body.fullscreen-mode .bezel-footer {
+      display: none !important;
+    }
+    body.fullscreen-mode .grip-right {
+      position: fixed;
+      top: 10px;
+      right: 12px;
+      z-index: 60;
+      display: block;
+      opacity: 0.5;
+      transition: opacity 0.2s;
+    }
+    body.fullscreen-mode .grip-right:hover { opacity: 1; }
+    body.fullscreen-mode .grip-right .abxy-diamond,
+    body.fullscreen-mode .grip-right .stick-base {
+      display: none !important;
+    }
+    body.fullscreen-mode .screen-bezel {
+      position: absolute;
+      inset: 0;
+      padding: 0;
+      border: none;
+      border-radius: 0;
+      background: #000;
+      box-shadow: none;
+      display: block;
+    }
+    body.fullscreen-mode .screen-viewport {
+      width: 100vw;
+      height: 100vh;
+      aspect-ratio: auto;
+      border: none;
+      border-radius: 0;
+    }
   </style>
 </head>
 <body data-theme="dmg">
@@ -1030,69 +1777,17 @@
        CONSOLE GAME BOY PRINCIPAL
        ================================================================= -->
   <main class="gameboy-console" id="console-root">
-    <div class="console-top-grooves">
-      <span>◀ OFF • ON ▶</span>
-      <span>SUPER GAME BOY POCKET</span>
-    </div>
+    <!-- Botões de Ombro L / R -->
+    <button type="button" class="shoulder-btn shoulder-left joy-btn" data-btn="10" aria-label="L">L</button>
+    <button type="button" class="shoulder-btn shoulder-right joy-btn" data-btn="11" aria-label="R">R</button>
 
-    <!-- Moldura e Tela Principal -->
-    <section class="screen-bezel">
-      <div class="bezel-header">
-        <div class="bezel-stripes">
-          <div class="stripe-lines"><span></span><span></span></div>
-          <span>DOT MATRIX WITH STEREO SOUND</span>
-        </div>
+    <!-- ============ EMPUNHADURA ESQUERDA ============ -->
+    <section class="grip grip-left">
+      <!-- Analógico esquerdo -->
+      <div class="stick-base" aria-hidden="true">
+        <div class="stick-cap"></div>
       </div>
 
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <!-- Indicador de Bateria Lateral -->
-        <div class="battery-indicator" style="flex-direction: column;">
-          <div class="battery-led" id="battery-led"></div>
-          <span>BATTERY</span>
-        </div>
-
-        <!-- Tela onde o jogo é exibido -->
-        <div class="screen-viewport" id="screen-viewport">
-          <div id="lcd-standby">
-            <div class="lcd-logo">NINTENDO SNES</div>
-            <div class="lcd-sub" id="lcd-status-text"> PASTA GAMES — MYGAMESNES</div>
-            <div id="lcd-games-list" style="width:100%;max-height:115px;overflow-y:auto;margin-bottom:10px;display:flex;flex-direction:column;gap:4px;text-align:left;padding:0 4px;"></div>
-            <div class="lcd-actions">
-              <label class="lcd-btn" for="rom-file">➕ Upload</label>
-              <button type="button" class="lcd-btn" id="lcd-open-menu-btn">📚 Lista Completa</button>
-              <button type="button" class="lcd-btn" id="lcd-sync-github-btn">🔄 GitHub</button>
-              <button type="button" class="lcd-btn" id="demo-rom-btn">🧪 Demo</button>
-            </div>
-          </div>
-
-          <div id="game"></div>
-        </div>
-      </div>
-
-      <div class="bezel-footer">
-        <div class="brand-signature">Nintendo <span style="font-style: normal; font-size: 11px;">SNES BOY</span></div>
-        <div class="now-playing-badge" id="current-game-label">Standby</div>
-      </div>
-    </section>
-
-    <!-- Barra Superior de Controles: L, MENU, TELA CHEIA, R -->
-    <section class="console-top-bar">
-      <button type="button" class="shoulder-btn joy-btn" data-btn="10">L</button>
-
-      <div class="utility-bar">
-        <button type="button" class="sys-btn menu-highlight" id="open-menu-btn">
-          ☰ MENU
-        </button>
-        <button type="button" class="sys-btn" id="toggle-fullscreen-btn">
-          ⛶ TELA CHEIA
-        </button>
-      </div>
-
-      <button type="button" class="shoulder-btn joy-btn" data-btn="11">R</button>
-    </section>
-
-    <!-- Controles Principais: D-Pad (Esquerda) e Botões Y/X/B/A (Direita) -->
-    <section class="controls-main-pad">
       <!-- D-Pad em Cruz -->
       <div class="dpad-container" id="dpad">
         <button type="button" class="dpad-btn dpad-up joy-btn" data-btn="4" aria-label="Cima">▲</button>
@@ -1102,6 +1797,79 @@
         <div class="dpad-center"></div>
       </div>
 
+      <!-- SELECT e START -->
+      <div class="select-start-row">
+        <div class="pill-wrap">
+          <button type="button" class="pill-btn joy-btn" data-btn="2" aria-label="Select"></button>
+          <span class="pill-label">SELECT</span>
+        </div>
+        <div class="pill-wrap">
+          <button type="button" class="pill-btn joy-btn" data-btn="3" aria-label="Start"></button>
+          <span class="pill-label">START</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TELA CENTRAL ============ -->
+    <section class="screen-bezel">
+      <div class="bezel-header">
+        <div class="bezel-stripes">
+          <div class="stripe-lines"><span></span><span></span></div>
+          <span>DOT MATRIX WITH STEREO SOUND</span>
+        </div>
+
+        <!-- Indicador de Bateria -->
+        <div class="battery-indicator">
+          <div class="battery-led" id="battery-led"></div>
+          <span>BATTERY</span>
+        </div>
+      </div>
+
+      <!-- Tela onde o jogo é exibido -->
+      <div class="screen-viewport" id="screen-viewport">
+        <!-- Menu do console desenhado na própria tela LCD -->
+        <div id="lcd-screen" aria-label="Menu do console" tabindex="-1">
+          <div class="lcd-header">
+            <div class="lcd-title" id="lcd-title">SNES BOY</div>
+            <div class="lcd-header-right">
+              <span class="lcd-chip" id="lcd-status-chip">INICIANDO</span>
+              <span class="lcd-chip" id="lcd-game-count">0 JOGOS</span>
+            </div>
+          </div>
+
+          <div class="lcd-tabbar" id="lcd-tabbar" role="tablist">
+            <button type="button" class="lcd-tab active" data-lcd-tab="games" role="tab" tabindex="-1">Jogos</button>
+            <button type="button" class="lcd-tab" data-lcd-tab="options" role="tab" tabindex="-1">Opções</button>
+            <button type="button" class="lcd-tab" data-lcd-tab="help" role="tab" tabindex="-1">Ajuda</button>
+          </div>
+
+          <div class="lcd-body">
+            <div class="lcd-list" id="lcd-list" role="listbox" aria-label="Menu do console"></div>
+          </div>
+
+          <div class="lcd-footer">
+            <span class="hint" id="lcd-hint">▲▼ Escolher · A Jogar · ◀▶ Abas</span>
+            <span class="scroll-indicator" id="lcd-scroll-indicator"></span>
+          </div>
+        </div>
+
+        <div id="game"></div>
+      </div>
+
+      <div class="bezel-footer">
+        <div class="brand-signature">SNES <span>BOY</span> POCKET</div>
+        <div class="now-playing-badge" id="current-game-label">Standby</div>
+      </div>
+    </section>
+
+    <!-- ============ EMPUNHADURA DIREITA ============ -->
+    <section class="grip grip-right">
+      <!-- Atalhos do sistema -->
+      <div class="utility-cluster">
+        <button type="button" class="round-btn" id="open-menu-btn" aria-label="Menu do console">☰</button>
+        <button type="button" class="round-btn" id="toggle-fullscreen-btn" aria-label="Alternar tela cheia"><span class="btn-ico">⛶</span></button>
+      </div>
+
       <!-- Botões de Ação em Diamante (Y, X, B, A) -->
       <div class="abxy-diamond">
         <button type="button" class="action-btn btn-x joy-btn" data-btn="9">X</button>
@@ -1109,21 +1877,14 @@
         <button type="button" class="action-btn btn-a joy-btn" data-btn="8">A</button>
         <button type="button" class="action-btn btn-b joy-btn" data-btn="0">B</button>
       </div>
-    </section>
 
-    <!-- SELECT e START -->
-    <section class="select-start-row">
-      <div class="pill-wrap">
-        <button type="button" class="pill-btn joy-btn" data-btn="2" aria-label="Select"></button>
-        <span class="pill-label">SELECT</span>
-      </div>
-      <div class="pill-wrap">
-        <button type="button" class="pill-btn joy-btn" data-btn="3" aria-label="Start"></button>
-        <span class="pill-label">START</span>
+      <!-- Analógico direito -->
+      <div class="stick-base" aria-hidden="true">
+        <div class="stick-cap"></div>
       </div>
     </section>
 
-    <!-- Alto-falante decorativo do Game Boy -->
+    <!-- Alto-falante decorativo -->
     <div class="speaker-grille">
       <div class="speaker-slot"></div>
       <div class="speaker-slot"></div>
@@ -1133,6 +1894,13 @@
       <div class="speaker-slot"></div>
     </div>
   </main>
+
+  <!-- Aviso para girar o aparelho em modo retrato -->
+  <div class="rotate-hint" id="rotate-hint" aria-hidden="true">
+    <div class="rotate-icon">⟳</div>
+    <p>Gire o dispositivo para a horizontal</p>
+    <span>O console foi desenhado para uso em modo paisagem.</span>
+  </div>
 
   <!-- =================================================================
        MODAL DE MENU: GERENCIAMENTO DE JOGOS E DA APLICAÇÃO
@@ -1377,7 +2145,7 @@
      * 2. ELEMENTOS E ESTADO GLOBAL
      ******************************************************************/
     const fileInput = document.getElementById('rom-file');
-    const lcdStandby = document.getElementById('lcd-standby');
+    const lcdScreen = document.getElementById('lcd-screen');
     const gameDiv = document.getElementById('game');
     const batteryLed = document.getElementById('battery-led');
     const currentGameLabel = document.getElementById('current-game-label');
@@ -1456,18 +2224,562 @@
       } catch (err) {}
     }
 
+    /******************************************************************
+     * 3B. MENU NA TELA LCD (CONTROLADO PELO JOYSTICK E TECLADO)
+     *     D-PAD ▲▼: navega jogos / opções
+     *     D-PAD ◀▶ / L / R / SELECT: alterna abas (JOGOS / OPÇÕES / AJUDA)
+     *     Botão A / START: confirma / inicia o jogo
+     *     Botão B: volta / fecha menu sobre jogo
+     *     SELECT + START: abre/fecha o menu com o jogo em andamento
+     ******************************************************************/
+    const lcdListEl = document.getElementById('lcd-list');
+    const lcdTitleEl = document.getElementById('lcd-title');
+    const lcdStatusChipEl = document.getElementById('lcd-status-chip');
+    const lcdGameCountEl = document.getElementById('lcd-game-count');
+    const lcdHintEl = document.getElementById('lcd-hint');
+    const lcdScrollEl = document.getElementById('lcd-scroll-indicator');
+    const lcdTabButtons = Array.from(document.querySelectorAll('.lcd-tab'));
+
+    const LCD_TABS = ['games', 'options', 'help'];
+    const LCD_THEMES = [
+      ['dmg', 'Clássico Cinza'],
+      ['purple', 'Roxo Gamer'],
+      ['dark', 'Preto Grafite'],
+      ['yellow', 'Amarelo Pocket'],
+      ['blue', 'Azul SNES']
+    ];
+
+    let lcdTab = 'games';
+    let lcdOverGame = false;       // menu aberto por cima de um jogo (pausado)
+    let lcdLoading = false;        // emulador carregando: LCD cobre o iframe
+    let lcdBusy = '';              // texto exibido durante download de ROM
+    const lcdSel = { games: 0, options: 0 };
+    let lcdFolder = null;          // null = lista de pastas A-Z | 'A'..'Z' = jogos da pasta
+    let lcdGamesRootSel = 0;       // posição do cursor na lista de pastas
+    const lcdFolderPos = new Map();// posição do cursor dentro de cada pasta
+    let lcdGameKey = null;         // preserva a seleção atual
+    let lcdItems = [];
+    let lcdChordFired = false;
+    let lcdRepeatTimer = null;
+    const joyPressed = new Set();
+
+    function isLcdMenuActive() {
+      return !activeIframe || lcdOverGame || lcdLoading;
+    }
+
+    function setEmulatorPaused(paused) {
+      if (!activeIframe) return;
+      try {
+        const ejs = activeIframe.contentWindow.EJS_emulator;
+        if (!ejs) return;
+        if (paused) {
+          if (typeof ejs.pause === 'function') ejs.pause();
+        } else if (typeof ejs.play === 'function') {
+          ejs.play();
+        }
+      } catch (_) {}
+    }
+
+    function openLcdOverGame() {
+      if (!activeIframe || lcdOverGame) return;
+      lcdOverGame = true;
+      screenViewport.classList.add('menu-open');
+      setEmulatorPaused(true);
+      try { activeIframe.blur(); } catch (_) {}
+      if (lcdScreen) lcdScreen.focus({ preventScroll: true });
+      renderLcdMenu();
+    }
+
+    function closeLcdOverGame() {
+      if (!lcdOverGame) return;
+      lcdOverGame = false;
+      screenViewport.classList.remove('menu-open');
+      setEmulatorPaused(false);
+      if (activeIframe) activeIframe.focus();
+      renderLcdMenu();
+    }
+
+    function lcdToggleOverGame() {
+      if (!activeIframe) return;
+      if (lcdOverGame) closeLcdOverGame(); else openLcdOverGame();
+    }
+
+    // Descobre a letra/pasta de um jogo:
+    //   - ROMs de games/<LETRA>/arquivo.smc usam a pasta do arquivo
+    //   - ROMs enviadas pelo usuário caem na pasta da inicial do nome
+    function getGameFolder(game) {
+      const fileName = String((game && game.fileName) || '');
+      const inPath = fileName.match(/(?:^|\/)([A-Za-z])\//);
+      if (inPath) return inPath[1].toUpperCase();
+      if (game && game.folder && /^[A-Za-z]$/.test(game.folder)) return game.folder.toUpperCase();
+      const initial = String((game && game.name) || cleanFileName(fileName)).trim().charAt(0).toUpperCase();
+      return /[A-Z]/.test(initial) ? initial : '#';
+    }
+
+    // Agrupa a biblioteca unificada (IndexedDB + games/) por pasta A-Z
+    function getGamesByFolder() {
+      const map = new Map();
+      getUnifiedGamesList().forEach((g) => {
+        const folder = getGameFolder(g);
+        if (!map.has(folder)) map.set(folder, []);
+        map.get(folder).push(g);
+      });
+      map.forEach((list) => list.sort((a, b) => a.name.localeCompare(b.name, 'pt-BR')));
+      return map;
+    }
+
+    function getLcdFolderItems() {
+      const byFolder = getGamesByFolder();
+      const folders = Array.from(byFolder.keys()).sort((a, b) => {
+        if (a === '#') return -1;
+        if (b === '#') return 1;
+        return a.localeCompare(b);
+      });
+
+      return folders.map((folder) => ({
+        key: 'folder:' + folder,
+        icon: folder === '#' ? '·' : folder,
+        isFolder: true,
+        label: folder === '#' ? 'Outros jogos' : `Pasta ${folder}`,
+        meta: `${byFolder.get(folder).length} ${byFolder.get(folder).length === 1 ? 'jogo' : 'jogos'}`,
+        run: () => {
+          lcdGamesRootSel = lcdSel.games;
+          lcdFolder = folder;
+          lcdSel.games = lcdFolderPos.get(folder) || 0;
+          lcdGameKey = null;
+        }
+      }));
+    }
+
+    function getLcdFolderGameItems(folder) {
+      const byFolder = getGamesByFolder();
+      return (byFolder.get(folder) || []).map((g) => ({
+        key: (g.fileName || g.id).toLowerCase(),
+        icon: g.id === currentPlayingId ? '♪' : (g.isCached ? '●' : '↓'),
+        label: g.name,
+        meta: formatBytes(g.size),
+        run: () => (g.isCached ? playGameFromHistory(g.id) : playGitHubGame(g))
+      }));
+    }
+
+    function getLcdGames() {
+      return lcdFolder === null ? getLcdFolderItems() : getLcdFolderGameItems(lcdFolder);
+    }
+
+    function lcdCycleTheme() {
+      const cur = document.body.getAttribute('data-theme') || 'dmg';
+      let i = LCD_THEMES.findIndex((t) => t[0] === cur);
+      i = (i + 1) % LCD_THEMES.length;
+      const btn = document.querySelector(`[data-theme-choice="${LCD_THEMES[i][0]}"]`);
+      if (btn) btn.click();
+    }
+
+    function lcdToggleCheckbox(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.checked = !el.checked;
+      el.dispatchEvent(new Event('change'));
+    }
+
+    function getLcdOptions() {
+      const themeNow = document.body.getAttribute('data-theme') || 'dmg';
+      const themeName = (LCD_THEMES.find((t) => t[0] === themeNow) || LCD_THEMES[0])[1];
+      const opts = [];
+
+      if (activeIframe) {
+        opts.push({ icon: '▶', label: 'Retomar jogo', run: () => closeLcdOverGame() });
+        opts.push({
+          icon: '↻',
+          label: 'Reiniciar jogo',
+          run: () => { if (currentPlayingId) playGameFromHistory(currentPlayingId); }
+        });
+        opts.push({ icon: '■', label: 'Parar jogo', run: () => stopEmulator() });
+      }
+
+      opts.push({ icon: '+', label: 'Adicionar ROM', run: () => fileInput.click() });
+      opts.push({ icon: '⟳', label: 'Atualizar lista', run: () => fetchGitHubGames() });
+      opts.push({ icon: '◆', label: 'ROM demo', run: () => triggerDemoRom() });
+      opts.push({ icon: '◐', label: 'Cor do console', meta: themeName, run: lcdCycleTheme });
+      opts.push({
+        icon: '≡',
+        label: 'Scanlines CRT',
+        meta: screenViewport.classList.contains('scanlines') ? 'LIGADO' : 'DESLIG.',
+        run: () => lcdToggleCheckbox('scanlines-toggle')
+      });
+      opts.push({
+        icon: '≈',
+        label: 'Vibração',
+        meta: vibrationEnabled ? 'LIGADA' : 'DESLIG.',
+        run: () => lcdToggleCheckbox('vibrate-toggle')
+      });
+      opts.push({ icon: '⛶', label: 'Tela cheia', run: () => toggleFullscreenMode() });
+      opts.push({ icon: '⚙', label: 'Gerenciar jogos (painel)', run: () => openMenuModal() });
+      return opts;
+    }
+
+    function lcdHelpLine(keys, text) {
+      const p = document.createElement('p');
+      const b = document.createElement('b');
+      b.textContent = keys;
+      p.append(b, document.createTextNode(' ' + text));
+      return p;
+    }
+
+    function renderLcdHelp() {
+      const box = document.createElement('div');
+      box.className = 'lcd-help';
+      box.append(
+        lcdHelpLine('▲▼', 'escolhe a pasta, o jogo ou a opção'),
+        lcdHelpLine('A', 'abre a pasta / joga'),
+        lcdHelpLine('B', 'volta da pasta (ou retoma jogo)'),
+        lcdHelpLine('◀▶ L R', 'troca de aba (Jogos/Opções/Ajuda)'),
+        lcdHelpLine('SELECT+START', 'abre menu durante o jogo'),
+        lcdHelpLine('📁', 'pasta alfabética  ● pronto  ↓ baixa')
+      );
+      lcdListEl.appendChild(box);
+
+      const donate = document.createElement('div');
+      donate.className = 'lcd-help lcd-donate';
+      donate.setAttribute('role', 'complementary');
+      donate.setAttribute('aria-label', 'Sobre o desenvolvedor e apoio ao projeto');
+
+      const t = document.createElement('div');
+      t.className = 'lcd-donate-title';
+      t.textContent = 'Sobre o projeto';
+
+      const p1 = document.createElement('p');
+      p1.textContent = 'Criado pelo técnico Juscelino — SNES Boy Pocket.';
+
+      const p2 = document.createElement('p');
+      p2.append(document.createTextNode('Código no GitHub: '));
+      const gh = document.createElement('a');
+      gh.href = 'https://github.com/juscelinoscooby/mygamesnes';
+      gh.target = '_blank';
+      gh.rel = 'noopener noreferrer';
+      gh.textContent = 'github.com/juscelinoscooby/mygamesnes';
+      p2.appendChild(gh);
+
+      const p3 = document.createElement('p');
+      p3.textContent = 'Ajude o projeto com uma doação via PIX — escaneie o QR Code abaixo.';
+
+      const qrWrap = document.createElement('div');
+      qrWrap.className = 'lcd-qr';
+      const qrImg = document.createElement('img');
+      qrImg.src = './pix-qr.jpeg';
+      qrImg.alt = 'QR Code PIX para doação ao projeto SNES Boy Pocket';
+      qrImg.loading = 'lazy';
+      qrImg.decoding = 'async';
+      qrWrap.appendChild(qrImg);
+
+      const cap = document.createElement('div');
+      cap.className = 'lcd-qr-caption';
+      cap.textContent = 'PIX — Doe pelo QR Code';
+
+      donate.append(t, p1, p2, p3, qrWrap, cap);
+      lcdListEl.appendChild(donate);
+    }
+
+    function renderLcdMenu() {
+      if (!lcdListEl) return;
+
+      lcdTabButtons.forEach((b) => {
+        const on = b.dataset.lcdTab === lcdTab;
+        b.classList.toggle('active', on);
+        b.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+
+      // Se a pasta aberta deixou de existir (lista atualizada), volta para A-Z
+      if (lcdFolder !== null && getLcdFolderGameItems(lcdFolder).length === 0) {
+        lcdFolder = null;
+        lcdGameKey = null;
+      }
+
+      const games = getLcdGames();
+      const showingFolders = lcdTab === 'games' && lcdFolder === null;
+      if (lcdGameCountEl) {
+        if (showingFolders) {
+          lcdGameCountEl.textContent = `${games.length} ${games.length === 1 ? 'PASTA' : 'PASTAS'}`;
+        } else {
+          lcdGameCountEl.textContent = `${games.length} ${games.length === 1 ? 'JOGO' : 'JOGOS'}`;
+        }
+      }
+      if (lcdTitleEl) {
+        if (lcdOverGame) {
+          lcdTitleEl.textContent = 'PAUSADO';
+        } else if (lcdTab === 'games' && lcdFolder !== null) {
+          lcdTitleEl.textContent = lcdFolder === '#' ? 'OUTROS' : `PASTA ${lcdFolder}`;
+        } else {
+          lcdTitleEl.textContent = 'SNES BOY';
+        }
+      }
+
+      const chipMap = { sync: 'SINCRONIZANDO', ok: 'ATUALIZADO', empty: 'PASTA VAZIA', offline: 'SEM REDE' };
+      if (lcdStatusChipEl) {
+        lcdStatusChipEl.textContent = lcdBusy || chipMap[lcdSyncState] || '';
+        lcdStatusChipEl.classList.toggle('syncing', !!lcdBusy || lcdSyncState === 'sync');
+      }
+
+      const prevScroll = lcdListEl.scrollTop;
+      lcdListEl.textContent = '';
+
+      if (lcdTab === 'help') {
+        lcdItems = [];
+        renderLcdHelp();
+        if (lcdHintEl) lcdHintEl.textContent = '◀▶ Abas · B Voltar';
+        if (lcdScrollEl) lcdScrollEl.textContent = '';
+        return;
+      }
+
+      lcdItems = lcdTab === 'games' ? games : getLcdOptions();
+
+      if (lcdItems.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'lcd-empty';
+        empty.textContent = lcdSyncState === 'sync'
+          ? 'Buscando jogos...'
+          : 'Nenhum jogo encontrado.\nVá em OPÇÕES › Adicionar ROM';
+        empty.style.whiteSpace = 'pre-line';
+        lcdListEl.appendChild(empty);
+        if (lcdHintEl) lcdHintEl.textContent = '◀▶ Abas';
+        if (lcdScrollEl) lcdScrollEl.textContent = '';
+        return;
+      }
+
+      let idx;
+      if (lcdTab === 'games') {
+        if (lcdFolder === null) {
+          idx = Math.min(lcdGamesRootSel || 0, lcdItems.length - 1);
+        } else if (lcdGameKey) {
+          idx = lcdItems.findIndex((i) => i.key === lcdGameKey);
+          if (idx < 0) idx = Math.min(lcdFolderPos.get(lcdFolder) || 0, lcdItems.length - 1);
+        } else {
+          idx = Math.min(lcdFolderPos.get(lcdFolder) || 0, lcdItems.length - 1);
+        }
+      } else {
+        idx = Math.min(lcdSel[lcdTab] || 0, lcdItems.length - 1);
+      }
+      idx = Math.max(0, idx);
+      lcdSel[lcdTab] = idx;
+      if (lcdTab === 'games') {
+        if (lcdFolder === null) {
+          lcdGamesRootSel = idx;
+        } else {
+          lcdFolderPos.set(lcdFolder, idx);
+          if (lcdItems[idx]) lcdGameKey = lcdItems[idx].key;
+        }
+      }
+
+      const frag = document.createDocumentFragment();
+      lcdItems.forEach((item, i) => {
+        const row = document.createElement('button');
+        row.type = 'button';
+        row.tabIndex = -1;
+        row.className = 'lcd-row' + (item.isFolder ? ' is-folder' : '') + (i === idx ? ' sel' : '');
+        row.setAttribute('role', 'option');
+
+        const cursor = document.createElement('span');
+        cursor.className = 'cursor';
+        cursor.textContent = '▶';
+        const icon = document.createElement('span');
+        icon.className = 'row-icon';
+        icon.textContent = item.icon || '';
+        const label = document.createElement('span');
+        label.className = 'row-label';
+        label.textContent = item.label;
+        row.append(cursor, icon, label);
+
+        if (item.meta) {
+          const meta = document.createElement('span');
+          meta.className = 'row-meta';
+          meta.textContent = item.meta;
+          row.appendChild(meta);
+        }
+
+        row.addEventListener('click', () => {
+          lcdSetSelection(i);
+          lcdActivate();
+        });
+        frag.appendChild(row);
+      });
+      lcdListEl.appendChild(frag);
+
+      // Mantém o item selecionado visível sem pular a rolagem
+      lcdListEl.scrollTop = prevScroll;
+      const selEl = lcdListEl.children[idx];
+      if (selEl) {
+        const top = selEl.offsetTop;
+        const bottom = top + selEl.offsetHeight;
+        if (top < lcdListEl.scrollTop) lcdListEl.scrollTop = top;
+        else if (bottom > lcdListEl.scrollTop + lcdListEl.clientHeight) {
+          lcdListEl.scrollTop = bottom - lcdListEl.clientHeight;
+        }
+      }
+
+      if (lcdScrollEl) lcdScrollEl.textContent = `${idx + 1}/${lcdItems.length}`;
+      if (lcdHintEl) {
+        if (lcdTab === 'games') {
+          if (lcdFolder === null) {
+            lcdHintEl.textContent = '▲▼ Pasta · A Abrir · ◀▶ Abas';
+          } else {
+            lcdHintEl.textContent = lcdOverGame
+              ? '▲▼ Escolher · A Jogar · B Pastas'
+              : '▲▼ Escolher · A Jogar · B Pastas';
+          }
+        } else {
+          lcdHintEl.textContent = lcdOverGame
+            ? '▲▼ Escolher · A Confirmar · B Voltar'
+            : '▲▼ Escolher · A Confirmar · ◀▶ Abas';
+        }
+      }
+    }
+
+    function lcdSetSelection(i) {
+      lcdSel[lcdTab] = i;
+      if (lcdTab === 'games') {
+        if (lcdFolder === null) {
+          lcdGamesRootSel = i;
+        } else {
+          lcdFolderPos.set(lcdFolder, i);
+          if (lcdItems[i]) lcdGameKey = lcdItems[i].key;
+        }
+      }
+      renderLcdMenu();
+    }
+
+    function lcdMove(dir) {
+      if (lcdTab === 'help' || lcdItems.length === 0) return;
+      const n = lcdItems.length;
+      lcdSetSelection((lcdSel[lcdTab] + dir + n) % n);
+    }
+
+    function lcdSwitchTab(dir) {
+      const cur = LCD_TABS.indexOf(lcdTab);
+      lcdTab = LCD_TABS[(cur + dir + LCD_TABS.length) % LCD_TABS.length];
+      renderLcdMenu();
+    }
+
+    function lcdActivate() {
+      if (lcdBusy || lcdTab === 'help') return;
+      const item = lcdItems[lcdSel[lcdTab]];
+      if (!item) return;
+      item.run();
+      renderLcdMenu();
+    }
+
+    function lcdBack() {
+      if (lcdOverGame) {
+        closeLcdOverGame();
+      } else if (lcdTab === 'games' && lcdFolder !== null) {
+        // Sai da pasta e retorna para a lista de pastas de letras A-Z
+        lcdFolder = null;
+        lcdGameKey = null;
+        renderLcdMenu();
+      } else if (lcdTab !== 'games') {
+        lcdTab = 'games';
+        renderLcdMenu();
+      }
+    }
+
+    function lcdStopRepeat() {
+      clearTimeout(lcdRepeatTimer);
+      clearInterval(lcdRepeatTimer);
+      lcdRepeatTimer = null;
+    }
+
+    function lcdStartRepeat(dir) {
+      lcdStopRepeat();
+      lcdRepeatTimer = setTimeout(() => {
+        lcdRepeatTimer = setInterval(() => {
+          if (!isLcdMenuActive()) return lcdStopRepeat();
+          lcdMove(dir);
+        }, 90);
+      }, 380);
+    }
+
+    function lcdMenuButtonDown(btn) {
+      switch (btn) {
+        case 4: lcdMove(-1); lcdStartRepeat(-1); break;   // ▲
+        case 5: lcdMove(1); lcdStartRepeat(1); break;     // ▼
+        case 6: case 10: lcdSwitchTab(-1); break;         // ◀  L
+        case 7: case 11: lcdSwitchTab(1); break;          // ▶  R
+        case 2: lcdSwitchTab(1); break;                   // SELECT
+      }
+    }
+
+    function lcdMenuButtonUp(btn) {
+      switch (btn) {
+        case 4: case 5: lcdStopRepeat(); break;
+        case 8: lcdActivate(); break;                      // A
+        case 3: if (lcdOverGame) closeLcdOverGame(); else lcdActivate(); break; // START
+        case 0: lcdBack(); break;                          // B
+      }
+    }
+
+    // Navegação via teclado físico
+    document.addEventListener('keydown', (e) => {
+      if (!isLcdMenuActive()) return;
+      if (document.querySelector('.modal-backdrop.open')) return;
+      const t = e.target;
+      if (t && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) return;
+
+      const ae = document.activeElement;
+      const neutral = !ae || ae === document.body || ae === lcdScreen;
+
+      switch (e.key) {
+        case 'ArrowUp': lcdMove(-1); break;
+        case 'ArrowDown': lcdMove(1); break;
+        case 'ArrowLeft': lcdSwitchTab(-1); break;
+        case 'ArrowRight': lcdSwitchTab(1); break;
+        case 'Enter':
+        case ' ':
+          if (!neutral) return;
+          lcdActivate();
+          break;
+        case 'Escape':
+        case 'Backspace': lcdBack(); break;
+        default: return;
+      }
+      e.preventDefault();
+    });
+
+    lcdTabButtons.forEach((b) => {
+      b.addEventListener('click', () => {
+        lcdTab = b.dataset.lcdTab;
+        renderLcdMenu();
+      });
+    });
+
     // Vincula todos os botões do Game Boy (suporta Multi-Touch!)
+    // Se o menu da tela estiver ativo, o botão controla o menu;
+    // caso contrário, o comando vai para o jogo em execução.
     document.querySelectorAll('.joy-btn').forEach((btn) => {
       const btnIndex = Number(btn.dataset.btn);
+      let routedToMenu = false;
 
       const press = (e) => {
         e.preventDefault();
         if (!btn.classList.contains('pressed')) {
           btn.classList.add('pressed');
+          joyPressed.add(btnIndex);
           if (vibrationEnabled && navigator.vibrate) {
             navigator.vibrate(12);
           }
-          sendInputToEmulator(btnIndex, true);
+
+          // Se pressionar SELECT (2) e START (3) juntos durante jogo: alterna menu
+          if (joyPressed.has(2) && joyPressed.has(3)) {
+            lcdChordFired = true;
+            if (activeIframe) {
+              lcdToggleOverGame();
+            }
+            return;
+          }
+
+          routedToMenu = isLcdMenuActive();
+          if (routedToMenu) {
+            lcdMenuButtonDown(btnIndex);
+          } else {
+            sendInputToEmulator(btnIndex, true);
+          }
         }
       };
 
@@ -1475,7 +2787,22 @@
         e.preventDefault();
         if (btn.classList.contains('pressed')) {
           btn.classList.remove('pressed');
-          sendInputToEmulator(btnIndex, false);
+          joyPressed.delete(btnIndex);
+
+          if ((btnIndex === 2 || btnIndex === 3) && lcdChordFired) {
+            if (!joyPressed.has(2) && !joyPressed.has(3)) {
+              lcdChordFired = false;
+            }
+            routedToMenu = false;
+            return;
+          }
+
+          if (routedToMenu) {
+            lcdMenuButtonUp(btnIndex);
+          } else {
+            sendInputToEmulator(btnIndex, false);
+          }
+          routedToMenu = false;
         }
       };
 
@@ -1497,8 +2824,46 @@
       record.updatedAt = Date.now();
       await saveRomToDB(record);
       closeMenuModal();
+      if (lcdOverGame) closeLcdOverGame();
       launchEmulator(record);
       refreshHistory();
+    }
+
+    let currentRomObjectUrl = null;
+
+    function cleanupRomUrl() {
+      if (currentRomObjectUrl && currentRomObjectUrl.startsWith('blob:')) {
+        try { URL.revokeObjectURL(currentRomObjectUrl); } catch (_) {}
+      }
+      currentRomObjectUrl = null;
+    }
+
+    function blobToDataUrl(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(reader.error || new Error('Falha ao ler ROM'));
+        reader.readAsDataURL(blob);
+      });
+    }
+
+    function prepareRomUrlSync(blobOrData) {
+      cleanupRomUrl();
+      let blob = blobOrData;
+      if (!(blob instanceof Blob)) {
+        try {
+          blob = new Blob([blobOrData], { type: 'application/octet-stream' });
+        } catch (_) {}
+      }
+
+      try {
+        const url = URL.createObjectURL(blob);
+        currentRomObjectUrl = url;
+        return url;
+      } catch (err) {
+        console.warn('URL.createObjectURL falhou:', err);
+        return '';
+      }
     }
 
     function stopEmulator() {
@@ -1509,34 +2874,119 @@
         } catch (e) {}
         activeIframe = null;
       }
+      cleanupRomUrl();
       gameDiv.innerHTML = '';
-      gameDiv.style.display = 'none';
-      lcdStandby.style.display = 'flex';
+      gameDiv.classList.remove('active');
+      screenViewport.classList.remove('menu-open');
       batteryLed.classList.remove('on');
       currentPlayingId = null;
       currentGameLabel.textContent = 'Standby';
+      lcdBusy = '';
       renderHistoryList();
+      renderLcdMenu();
     }
 
-    function launchEmulator(record) {
+    function showLcdError(record, msg) {
+      lcdOverGame = false;
+      screenViewport.classList.remove('menu-open');
+      gameDiv.classList.remove('active');
+      lcdTab = 'games';
+      lcdBusy = '';
+      if (lcdTitleEl) lcdTitleEl.textContent = 'ERRO';
+      if (lcdStatusChipEl) {
+        lcdStatusChipEl.textContent = 'FALHA';
+        lcdStatusChipEl.classList.remove('syncing');
+      }
+      if (lcdListEl) {
+        lcdListEl.textContent = '';
+        const box = document.createElement('div');
+        box.className = 'lcd-empty';
+        box.style.whiteSpace = 'pre-line';
+        box.style.color = '#7f1d1d';
+        box.textContent = `Erro ao iniciar:\n${record ? record.name : 'Jogo'}\n\n${msg}\n\n[B] Voltar ao menu`;
+        lcdListEl.appendChild(box);
+      }
+      if (lcdHintEl) lcdHintEl.textContent = 'Pressione B para voltar';
+      if (lcdScrollEl) lcdScrollEl.textContent = '';
+    }
+
+    // Mostra o carregamento do emulador na própria tela LCD, evitando "tela preta" sem feedback
+    function showLcdLoading(record) {
+      lcdOverGame = false;
+      screenViewport.classList.remove('menu-open');
+      lcdTab = 'games';
+      lcdBusy = 'CARREGANDO';
+      renderLcdMenu();
+      if (lcdTitleEl) lcdTitleEl.textContent = record.name.slice(0, 16).toUpperCase();
+      currentGameLabel.textContent = record.name;
+
+      if (lcdListEl) {
+        lcdListEl.textContent = '';
+        const box = document.createElement('div');
+        box.className = 'lcd-empty lcd-loading';
+        box.textContent = 'Iniciando emulador SNES...\nAguarde alguns segundos.';
+        box.style.whiteSpace = 'pre-line';
+        lcdListEl.appendChild(box);
+      }
+    }
+
+    async function launchEmulator(record) {
       stopEmulator();
 
       currentPlayingId = record.id;
       currentGameLabel.textContent = record.name;
       batteryLed.classList.add('on');
-      lcdStandby.style.display = 'none';
-      gameDiv.style.display = 'block';
       renderHistoryList();
+      showLcdLoading(record);
+
+      let romUrl = prepareRomUrlSync(record.blob);
+      if (!romUrl) {
+        try {
+          romUrl = await blobToDataUrl(record.blob);
+        } catch (err) {
+          console.error('Erro ao converter ROM para Data URL:', err);
+          showLcdError(record, 'Não foi possível ler os dados da ROM.');
+          return;
+        }
+      }
 
       const iframe = document.createElement('iframe');
       iframe.setAttribute('allow', 'autoplay; fullscreen; gamepad');
       iframe.setAttribute('allowfullscreen', 'true');
+      iframe.setAttribute('title', record.name);
       gameDiv.appendChild(iframe);
       activeIframe = iframe;
+      gameDiv.classList.add('active');
 
-      const safeSaveKey = record.name.replace(/[^a-zA-Z0-9_-]/g, '_') || 'snes_game';
-      iframe.contentWindow.__romBlob = record.blob;
-      iframe.contentWindow.__gameName = safeSaveKey;
+      const safeSaveKey = (record.name || 'snes_game').replace(/[^a-zA-Z0-9_-]/g, '_') || 'snes_game';
+      const isFullscreen = document.body.classList.contains('fullscreen-mode');
+
+      function onGameReady() {
+        if (activeIframe !== iframe) return;
+        lcdBusy = '';
+        renderLcdMenu();
+      }
+
+      function onGameError(msg) {
+        if (activeIframe !== iframe) return;
+        showLcdError(record, msg || 'Não foi possível carregar o emulador.');
+        setTimeout(() => {
+          if (activeIframe === iframe) stopEmulator();
+        }, 3000);
+      }
+
+      window.__onEmulatorReady = onGameReady;
+      window.__onEmulatorGameStarted = onGameReady;
+      window.__onEmulatorError = onGameError;
+
+      // Caminho para os assets locais do emulador (núcleo WASM, loader e CSS locais)
+      // com fallbacks para CDN externa caso algum arquivo local falhe
+      const localEmuPath = new URL('./emulator/', window.location.href).href;
+      const cdnSources = [
+        localEmuPath,
+        'https://cdn.emulatorjs.org/stable/data/',
+        'https://cdn.emulatorjs.org/latest/data/'
+      ];
 
       const doc = iframe.contentDocument || iframe.contentWindow.document;
       doc.open();
@@ -1545,37 +2995,64 @@
 <head>
   <meta charset="UTF-8">
   <style>
+    * { box-sizing: border-box; }
     html, body {
       margin: 0;
       padding: 0;
       width: 100%;
       height: 100%;
-      background: #000;
+      background: #8bac0f;
+      color: #0f380f;
+      font-family: monospace;
       overflow: hidden;
+    }
+    #loading-splash {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 12px;
+      background: linear-gradient(160deg, #8bac0f 0%, #9bbc0f 50%, #8bac0f 100%);
+      color: #0f380f;
+      font-weight: 700;
+      font-size: 13px;
+      line-height: 1.4;
+      z-index: 10;
+      transition: opacity 0.2s ease;
+    }
+    #loading-splash.hidden {
+      opacity: 0;
+      pointer-events: none;
+      display: none;
+    }
+    #loading-splash .spinner {
+      margin-bottom: 8px;
+      font-size: 18px;
     }
     #emulator-target {
       width: 100%;
       height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #000;
     }
-    /* No modo Console Game Boy compacto, oculta o gamepad interno do EmulatorJS para não duplicar com os botões da carcaça */
+    #emulator-target canvas {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: contain !important;
+      image-rendering: -moz-crisp-edges;
+      image-rendering: pixelated;
+    }
     body:not(.is-fullscreen) .ejs_virtualGamepad_parent,
     body:not(.is-fullscreen) .ejs_virtualGamepad_open {
       display: none !important;
     }
   </style>
-</head>
-<body class="${document.body.classList.contains('fullscreen-mode') ? 'is-fullscreen' : ''}">
-  <div id="emulator-target"></div>
   <script>
-    const romUrl = URL.createObjectURL(window.__romBlob);
-    window.EJS_player = '#emulator-target';
-    window.EJS_core = 'snes';
-    window.EJS_gameUrl = romUrl;
-    window.EJS_gameName = window.__gameName;
-    window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
-    window.EJS_virtualGamepad = true;
-    window.EJS_startOnLoaded = true;
-
     document.addEventListener('fullscreenchange', () => {
       if (document.fullscreenElement) {
         document.body.classList.add('is-fullscreen');
@@ -1583,18 +3060,88 @@
         document.body.classList.remove('is-fullscreen');
       }
     });
-
-    window.addEventListener('unload', () => {
-      URL.revokeObjectURL(romUrl);
-    });
   <\/script>
-  <script src="https://cdn.emulatorjs.org/stable/data/loader.js"><\/script>
+</head>
+<body class="${isFullscreen ? 'is-fullscreen' : ''}">
+  <div id="loading-splash">
+    <div class="spinner">● ● ●</div>
+    <div>CARREGANDO...</div>
+    <div style="font-size: 11px; opacity: 0.85; margin-top: 4px;">Iniciando núcleo SNES (local)</div>
+  </div>
+  <div id="emulator-target"></div>
+  <script>
+    (function () {
+      var sources = ${JSON.stringify(cdnSources)};
+      var index = 0;
+
+      function hideSplash() {
+        var el = document.getElementById('loading-splash');
+        if (el) el.classList.add('hidden');
+      }
+
+      window.EJS_player = '#emulator-target';
+      window.EJS_core = 'snes';
+      window.EJS_gameUrl = ${JSON.stringify(romUrl)};
+      window.EJS_gameName = ${JSON.stringify(safeSaveKey)};
+      window.EJS_pathtodata = sources[0];
+      window.EJS_virtualGamepad = false;
+      window.EJS_startOnLoaded = true;
+      window.EJS_language = 'pt-BR';
+      window.EJS_DEBUG_XX = false;
+
+      // Caminhos explícitos para garantir carregamento 100% local e sem erro de rede
+      window.EJS_paths = {
+        'compression/extract7z.js': sources[0] + 'compression/extract7z.js',
+        'compression/extractzip.js': sources[0] + 'compression/extractzip.js',
+        'compression/libunrar.js': sources[0] + 'compression/libunrar.js',
+        'compression/libunrar.wasm': sources[0] + 'compression/libunrar.wasm'
+      };
+
+      window.EJS_ready = function () {
+        hideSplash();
+        try { if (window.parent && window.parent.__onEmulatorReady) window.parent.__onEmulatorReady(); } catch (_) {}
+      };
+      window.EJS_onGameStart = function () {
+        hideSplash();
+        try { if (window.parent && window.parent.__onEmulatorGameStarted) window.parent.__onEmulatorGameStarted(); } catch (_) {}
+      };
+
+      function load() {
+        var url = sources[index];
+        window.EJS_pathtodata = url;
+        var script = document.createElement('script');
+        script.src = url + 'loader.js';
+        script.async = true;
+        script.onload = function () {
+          setTimeout(hideSplash, 3500);
+        };
+        script.onerror = function () {
+          index++;
+          if (index < sources.length) {
+            load();
+          } else {
+            var splash = document.getElementById('loading-splash');
+            if (splash) {
+              splash.innerHTML = '<div>⚠️ FALHA AO INICIAR</div><div style="font-size:11px;margin-top:6px;">Não foi possível carregar o emulador.<br>Verifique os arquivos da pasta emulator/.</div>';
+            }
+            try {
+              if (window.parent && window.parent.__onEmulatorError) {
+                window.parent.__onEmulatorError('Não foi possível conectar ao emulador (verifique pasta emulator/).');
+              }
+            } catch (_) {}
+          }
+        };
+        document.body.appendChild(script);
+      }
+      load();
+    })();
+  <\/script>
 </body>
 </html>`);
       doc.close();
 
       setTimeout(() => {
-        iframe.focus();
+        try { iframe.focus(); } catch (_) {}
       }, 100);
     }
 
@@ -1611,7 +3158,7 @@
 
     async function toggleFullscreenMode() {
       const isFull = document.body.classList.toggle('fullscreen-mode');
-      toggleFullscreenBtn.textContent = isFull ? '✕ SAIR TELA CHEIA' : '⛶ TELA CHEIA';
+      toggleFullscreenBtn.innerHTML = isFull ? '✕' : '<span class="btn-ico">⛶</span>';
       syncIframeFullscreenClass(isFull);
 
       if (isFull) {
@@ -1638,7 +3185,7 @@
     document.addEventListener('fullscreenchange', () => {
       if (!document.fullscreenElement && document.body.classList.contains('fullscreen-mode')) {
         document.body.classList.remove('fullscreen-mode');
-        toggleFullscreenBtn.textContent = '⛶ TELA CHEIA';
+        toggleFullscreenBtn.innerHTML = '<span class="btn-ico">⛶</span>';
         syncIframeFullscreenClass(false);
       }
     });
@@ -1653,86 +3200,151 @@
     const VALID_ROM_EXT = /\.(smc|sfc|fig|swc|zip)$/i;
 
     const githubSyncStatusEl = document.getElementById('github-sync-status');
-    const lcdGamesListEl = document.getElementById('lcd-games-list');
-    const lcdStatusTextEl = document.getElementById('lcd-status-text');
 
     let remoteGitHubGames = [];
+    let lcdSyncState = 'sync';      // 'sync' | 'ok' | 'empty' | 'offline'
+    let syncInFlight = false;
 
-    // Busca automaticamente os arquivos dentro da pasta games/ do repositório no GitHub
+    // Busca a lista de jogos: manifesto local (nomes amigáveis) + API do GitHub
     async function fetchGitHubGames() {
+      if (syncInFlight) return;
+      syncInFlight = true;
+      lcdSyncState = 'sync';
+      renderLcdMenu();
+
       if (githubSyncStatusEl) {
         githubSyncStatusEl.textContent = '🔄 Sincronizando pasta games/ no GitHub...';
         githubSyncStatusEl.style.color = '#fbbf24';
       }
 
-      const foundMap = new Map();
+      try {
+        const foundMap = new Map();
+        let reached = false;
 
-      // 1. Consulta a pasta games/ no repositório GitHub juscelinoscooby/mygamesnes
-      const endpoints = [
-        `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_GAMES_FOLDER}`,
-        `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents`
-      ];
-
-      for (const url of endpoints) {
+        // 1. ./games/games.json local — fornece os nomes amigáveis
+        let manifest = [];
         try {
-          const res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' } });
-          if (res.ok) {
-            const items = await res.json();
-            if (Array.isArray(items)) {
-              items.forEach((item) => {
-                if (item.type === 'file' && VALID_ROM_EXT.test(item.name) && item.download_url) {
-                  foundMap.set(item.name.toLowerCase(), {
-                    id: 'gh_' + item.name,
-                    name: localStorage.getItem('custom_name_' + item.name) || cleanFileName(item.name),
-                    fileName: item.name,
-                    size: item.size || 0,
-                    downloadUrl: item.download_url,
-                    source: 'github',
-                    updatedAt: Date.now()
-                  });
-                }
-              });
+          const localRes = await fetch('./games/games.json', { cache: 'no-store' });
+          if (localRes.ok) {
+            const list = await localRes.json();
+            if (Array.isArray(list)) {
+              manifest = list;
+              reached = true;
             }
           }
-        } catch (err) {
-          console.warn('Aviso ao consultar GitHub API:', err);
-        }
-      }
+        } catch (_) {}
 
-      // 2. Fallback também para ./games/games.json local (caso hospedado junto com a pasta games/)
-      try {
-        const localRes = await fetch('./games/games.json', { cache: 'no-store' });
-        if (localRes.ok) {
-          const localList = await localRes.json();
-          if (Array.isArray(localList)) {
-            localList.forEach((entry) => {
-              const fileName = typeof entry === 'string' ? entry : entry.file;
-              if (fileName && VALID_ROM_EXT.test(fileName) && !foundMap.has(fileName.toLowerCase())) {
-                foundMap.set(fileName.toLowerCase(), {
-                  id: 'gh_' + fileName,
-                  name: (entry && entry.name) || localStorage.getItem('custom_name_' + fileName) || cleanFileName(fileName),
-                  fileName: fileName,
-                  size: (entry && entry.size) || 0,
-                  downloadUrl: `./games/${encodeURIComponent(fileName)}`,
-                  source: 'github',
-                  updatedAt: Date.now()
-                });
+        const manifestNames = new Map();
+        manifest.forEach((entry) => {
+          const fileName = typeof entry === 'string' ? entry : entry && entry.file;
+          if (fileName && entry && entry.name) manifestNames.set(fileName.toLowerCase(), entry.name);
+        });
+
+        const resolveName = (fileName) =>
+          localStorage.getItem('custom_name_' + fileName) ||
+          manifestNames.get(fileName.toLowerCase()) ||
+          cleanFileName(fileName);
+
+        // 2. API do GitHub (pasta games/; só tenta a raiz se a pasta falhar)
+        const endpoints = [
+          `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_GAMES_FOLDER}`,
+          `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents`
+        ];
+
+        // Pastas de letras (A-Z) já cobertas pelo manifesto games.json
+        const manifestFolders = new Set(
+          manifest
+            .map((e) => (typeof e === 'string' ? e : e && e.file) || '')
+            .map((f) => (f.match(/^([A-Za-z])\//) || [])[1])
+            .filter(Boolean)
+            .map((l) => l.toUpperCase())
+        );
+
+        const addRomFile = (fileName, size, downloadUrl) => {
+          foundMap.set(fileName.toLowerCase(), {
+            id: 'gh_' + fileName,
+            name: resolveName(fileName),
+            fileName: fileName,
+            folder: getGameFolder({ fileName, name: resolveName(fileName) }),
+            size: size || 0,
+            downloadUrl: downloadUrl,
+            source: 'github',
+            updatedAt: Date.now()
+          });
+        };
+
+        const pendingFolders = [];
+
+        for (const url of endpoints) {
+          try {
+            const res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' } });
+            if (!res.ok) continue;
+            const items = await res.json();
+            if (!Array.isArray(items)) continue;
+            reached = true;
+            items.forEach((item) => {
+              if (item.type === 'file' && VALID_ROM_EXT.test(item.name) && item.download_url) {
+                addRomFile(item.name, item.size, item.download_url);
+              } else if (item.type === 'dir' && /^[A-Za-z]$/.test(item.name)) {
+                // Pasta alfabética no GitHub que o manifesto ainda não conhece
+                if (!manifestFolders.has(item.name.toUpperCase())) pendingFolders.push(item.name);
               }
             });
+            break; // pasta games/ respondeu: não gasta outra chamada da API
+          } catch (err) {
+            console.warn('Aviso ao consultar GitHub API:', err);
           }
         }
-      } catch (_) {}
 
-      remoteGitHubGames = Array.from(foundMap.values());
-
-      if (githubSyncStatusEl) {
-        if (remoteGitHubGames.length > 0) {
-          githubSyncStatusEl.textContent = `✅ ${remoteGitHubGames.length} jogo(s) encontrado(s) na pasta games/`;
-          githubSyncStatusEl.style.color = '#10b981';
-        } else {
-          githubSyncStatusEl.textContent = 'ℹ️ Pasta games/ do GitHub ainda vazia (adicione ROMs lá ou via Upload)';
-          githubSyncStatusEl.style.color = '#9ca3af';
+        // 2b. Varre as pastas de letras novas (só as que faltam no manifesto),
+        //     para que ROMs adicionadas em games/<LETRA>/ apareçam sem editar games.json
+        for (const folder of pendingFolders) {
+          try {
+            const res = await fetch(
+              `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_GAMES_FOLDER}/${encodeURIComponent(folder)}`,
+              { headers: { 'Accept': 'application/vnd.github.v3+json' } }
+            );
+            if (!res.ok) continue;
+            const items = await res.json();
+            if (!Array.isArray(items)) continue;
+            items.forEach((item) => {
+              if (item.type === 'file' && VALID_ROM_EXT.test(item.name) && item.download_url) {
+                addRomFile(`${folder}/${item.name}`, item.size, item.download_url);
+              }
+            });
+          } catch (err) {
+            console.warn('Aviso ao consultar pasta ' + folder + ' no GitHub:', err);
+          }
         }
+
+        // 3. Jogos do manifesto que a API não listou (ex.: hospedado só com a pasta games/)
+        manifest.forEach((entry) => {
+          const fileName = typeof entry === 'string' ? entry : entry && entry.file;
+          if (fileName && VALID_ROM_EXT.test(fileName) && !foundMap.has(fileName.toLowerCase())) {
+            addRomFile(
+              fileName,
+              (entry && entry.size) || 0,
+              `./games/${fileName.split('/').map(encodeURIComponent).join('/')}`
+            );
+          }
+        });
+
+        remoteGitHubGames = Array.from(foundMap.values());
+        lcdSyncState = remoteGitHubGames.length > 0 ? 'ok' : (reached ? 'empty' : 'offline');
+
+        if (githubSyncStatusEl) {
+          if (remoteGitHubGames.length > 0) {
+            githubSyncStatusEl.textContent = `✅ ${remoteGitHubGames.length} jogo(s) encontrado(s) na pasta games/`;
+            githubSyncStatusEl.style.color = '#10b981';
+          } else {
+            githubSyncStatusEl.textContent = reached
+              ? 'ℹ️ Pasta games/ do GitHub ainda vazia (adicione ROMs lá ou via Upload)'
+              : '⚠️ Sem conexão com o GitHub — mostrando apenas jogos salvos neste aparelho';
+            githubSyncStatusEl.style.color = '#9ca3af';
+          }
+        }
+      } finally {
+        syncInFlight = false;
       }
 
       await refreshHistory();
@@ -1749,17 +3361,42 @@
       }
 
       try {
-        currentGameLabel.textContent = 'Baixando ROM...';
-        if (lcdStatusTextEl) lcdStatusTextEl.textContent = `BAIXANDO: ${ghGame.name.toUpperCase()}...`;
+        currentGameLabel.textContent = 'Baixando...';
+        lcdBusy = 'BAIXANDO...';
+        renderLcdMenu();
+        if (lcdTitleEl) lcdTitleEl.textContent = ghGame.name.slice(0, 16).toUpperCase();
 
-        const res = await fetch(ghGame.downloadUrl);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const blob = await res.blob();
+        // A ROM pode estar em games/<LETRA>/arquivo.smc — codifica cada segmento
+        const romPath = String(ghGame.fileName).split('/').map(encodeURIComponent).join('/');
+        const candidateUrls = [
+          ghGame.downloadUrl,
+          `./games/${romPath}`,
+          `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/main/games/${romPath}`
+        ].filter(Boolean);
+
+        let blob = null;
+        let lastErr = null;
+        for (const url of candidateUrls) {
+          try {
+            const res = await fetch(url);
+            if (res.ok) {
+              blob = await res.blob();
+              if (blob && blob.size > 0) break;
+            }
+          } catch (e) {
+            lastErr = e;
+          }
+        }
+
+        if (!blob || blob.size === 0) {
+          throw new Error(lastErr ? lastErr.message : 'Arquivo de ROM não disponível.');
+        }
 
         const record = {
           id: ghGame.id,
           name: ghGame.name,
           fileName: ghGame.fileName,
+          folder: ghGame.folder || getGameFolder(ghGame),
           size: blob.size || ghGame.size,
           blob: blob,
           source: 'github',
@@ -1768,13 +3405,16 @@
         };
 
         await saveRomToDB(record);
+        lcdBusy = '';
         closeMenuModal();
+        if (lcdOverGame) closeLcdOverGame();
         launchEmulator(record);
         await refreshHistory();
       } catch (err) {
-        alert('Erro ao baixar a ROM da pasta games/: ' + err.message);
+        lcdBusy = '';
+        renderLcdMenu();
+        showLcdError(ghGame, 'Erro ao baixar a ROM: ' + err.message);
         currentGameLabel.textContent = 'Standby';
-        if (lcdStatusTextEl) lcdStatusTextEl.textContent = 'PASTA GAMES — MYGAMESNES';
       }
     }
 
@@ -1802,38 +3442,7 @@
       const totalBytes = gamesCache.reduce((acc, g) => acc + (g.size || 0), 0);
       storageUsageLabel.textContent = `${gamesCache.length} jogo(s) em cache • ${formatBytes(totalBytes)}`;
       renderHistoryList();
-      renderLcdGamesList();
-    }
-
-    // Exibe a lista de jogos diretamente na tela LCD verde do Game Boy
-    function renderLcdGamesList() {
-      if (!lcdGamesListEl) return;
-      const allGames = getUnifiedGamesList();
-      lcdGamesListEl.innerHTML = '';
-
-      if (allGames.length === 0) {
-        if (lcdStatusTextEl) lcdStatusTextEl.textContent = 'NENHUM JOGO NA PASTA GAMES AINDA';
-        return;
-      }
-
-      if (lcdStatusTextEl) lcdStatusTextEl.textContent = `JOGOS DISPONÍVEIS (${allGames.length}) — TOQUE PARA JOGAR:`;
-
-      allGames.forEach((game) => {
-        const row = document.createElement('button');
-        row.type = 'button';
-        row.style.cssText =
-          'width:100%;display:flex;align-items:center;justify-content:space-between;background:rgba(15,56,15,0.16);border:1px solid #0f380f;color:#0f380f;padding:5px 8px;border-radius:4px;font-size:11px;font-weight:800;cursor:pointer;text-align:left;';
-        const tag = game.source === 'github' ? '☁️' : '💾';
-        row.innerHTML = `<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">▶ ${tag} ${game.name}</span><span style="font-size:9px;margin-left:6px;flex-shrink:0;">${formatBytes(game.size)}</span>`;
-        row.onclick = () => {
-          if (game.isCached) {
-            playGameFromHistory(game.id);
-          } else {
-            playGitHubGame(game);
-          }
-        };
-        lcdGamesListEl.appendChild(row);
-      });
+      renderLcdMenu();
     }
 
     function renderHistoryList() {
@@ -2028,10 +3637,11 @@
       openNamingModal(demoFile);
     }
 
-    document.getElementById('demo-rom-btn').addEventListener('click', triggerDemoRom);
-    document.getElementById('menu-demo-btn').addEventListener('click', triggerDemoRom);
-    document.getElementById('sync-github-btn').addEventListener('click', fetchGitHubGames);
-    document.getElementById('lcd-sync-github-btn').addEventListener('click', fetchGitHubGames);
+    const menuDemoBtn = document.getElementById('menu-demo-btn');
+    if (menuDemoBtn) menuDemoBtn.addEventListener('click', triggerDemoRom);
+
+    const syncGithubBtn = document.getElementById('sync-github-btn');
+    if (syncGithubBtn) syncGithubBtn.addEventListener('click', fetchGitHubGames);
 
     /******************************************************************
      * 7. MENU DO SISTEMA E CONFIGURAÇÕES DO CONSOLE
@@ -2046,9 +3656,19 @@
       if (activeIframe) activeIframe.focus();
     }
 
-    document.getElementById('open-menu-btn').addEventListener('click', openMenuModal);
-    document.getElementById('lcd-open-menu-btn').addEventListener('click', openMenuModal);
-    document.getElementById('close-menu-btn').addEventListener('click', closeMenuModal);
+    const openMenuBtn = document.getElementById('open-menu-btn');
+    if (openMenuBtn) {
+      openMenuBtn.addEventListener('click', () => {
+        if (activeIframe) {
+          lcdToggleOverGame();
+        } else {
+          openMenuModal();
+        }
+      });
+    }
+
+    const closeMenuBtn = document.getElementById('close-menu-btn');
+    if (closeMenuBtn) closeMenuBtn.addEventListener('click', closeMenuModal);
 
     // Alternância de Abas no Menu
     document.querySelectorAll('.menu-tab-btn').forEach((btn) => {
@@ -2120,6 +3740,17 @@
 
     refreshHistory();
     fetchGitHubGames();
+
+    // Registro do Service Worker para suporte offline e PWA em mobile
+    if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').then((reg) => {
+          console.log('[PWA] Service Worker registrado com escopo:', reg.scope);
+        }).catch((err) => {
+          console.warn('[PWA] Falha ao registrar Service Worker:', err);
+        });
+      });
+    }
   </script>
 </body>
 </html>
