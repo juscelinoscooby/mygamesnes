@@ -1,10 +1,13 @@
-const CACHE_NAME = 'snes-boy-v6-cache';
+const CACHE_NAME = 'snes-boy-v7-cache';
 
 // games.json = biblioteca: deixado fora do precache — sempre rede primeiro (ver fetch abaixo).
 // Motivo: usuário organiza roms em pastas A-Z e cache velho congela visor em "2 PASTAS".
 const ASSETS_TO_CACHE = [
   './index.html',
   './manifest.webmanifest',
+  './manifest.json',
+  './icon-192.png',
+  './icon-512.png',
   './pix-qr.jpeg',
   './emulator/loader.js',
   './emulator/emulator.min.js',

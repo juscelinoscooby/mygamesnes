@@ -1,25 +1,38 @@
 {
   "name": "Super Game Boy SNES Pocket",
   "short_name": "SNES Boy",
-  "description": "Emulador portátil de Super Nintendo com interface retrô de Game Boy",
-  "start_url": "./index.html",
+  "id": "/?pwa=1",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "landscape",
   "background_color": "#0a0a0c",
   "theme_color": "#1c1c20",
+  "categories": ["games", "entertainment"],
   "icons": [
     {
       "src": "./icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "./icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
