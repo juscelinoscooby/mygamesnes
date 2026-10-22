@@ -3283,18 +3283,26 @@
         const foundMap = new Map();
         let reached = false;
 
-        // 1. ./games/games.json local — fornece os nomes amigáveis
+        // 1. Manifesto de jogos (games.json): tenta relativo e depois direto do GitHub raw
         let manifest = [];
-        try {
-          const localRes = await fetch('./games/games.json', { cache: 'no-store' });
-          if (localRes.ok) {
-            const list = await localRes.json();
-            if (Array.isArray(list)) {
-              manifest = list;
-              reached = true;
+        const manifestSources = [
+          './games/games.json',
+          `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/main/games/games.json`
+        ];
+
+        for (const src of manifestSources) {
+          try {
+            const res = await fetch(src, { cache: 'no-store' });
+            if (res.ok) {
+              const list = await res.json();
+              if (Array.isArray(list) && list.length > 0) {
+                manifest = list;
+                reached = true;
+                break;
+              }
             }
-          }
-        } catch (_) {}
+          } catch (_) {}
+        }
 
         const manifestNames = new Map();
         manifest.forEach((entry) => {
@@ -3379,14 +3387,15 @@
           }
         }
 
-        // 3. Jogos do manifesto que a API não listou (ex.: hospedado só com a pasta games/)
+        // 3. Jogos do manifesto que a API não listou (ou se a API do GitHub sofreu rate limit)
         manifest.forEach((entry) => {
           const fileName = typeof entry === 'string' ? entry : entry && entry.file;
           if (fileName && VALID_ROM_EXT.test(fileName) && !foundMap.has(fileName.toLowerCase())) {
+            const romPath = fileName.split('/').map(encodeURIComponent).join('/');
             addRomFile(
               fileName,
               (entry && entry.size) || 0,
-              `./games/${fileName.split('/').map(encodeURIComponent).join('/')}`
+              `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/main/games/${romPath}`
             );
           }
         });
