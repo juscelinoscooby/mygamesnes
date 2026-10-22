@@ -293,6 +293,32 @@
       text-transform: uppercase;
     }
 
+    .lcd-back-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 3px 8px;
+      background: #0f380f;
+      color: #9bbc0f;
+      border: 1px solid #306230;
+      border-radius: 4px;
+      font: inherit;
+      font-size: clamp(8px, 2.6cqw, 11px);
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      flex-shrink: 0;
+      touch-action: manipulation;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+    }
+
+    .lcd-back-btn:active {
+      background: #306230;
+      color: #0f380f;
+      transform: scale(0.95);
+    }
+
     .lcd-title {
       white-space: nowrap;
       overflow: hidden;
@@ -554,6 +580,13 @@
       color: #306230;
       white-space: nowrap;
       overflow: hidden;
+      cursor: pointer;
+      user-select: none;
+      touch-action: manipulation;
+    }
+
+    .lcd-footer:active {
+      background: rgba(15, 56, 15, 0.15);
     }
 
     .lcd-footer .hint {
@@ -913,7 +946,7 @@
       background: #000;
     }
 
-    body.fullscreen-mode .gameboy-console {
+    body.fullscreen-mode:has(#game.active) .gameboy-console {
       max-width: 100vw;
       width: 100vw;
       height: 100vh;
@@ -923,14 +956,14 @@
       box-shadow: none;
     }
 
-    body.fullscreen-mode .console-top-grooves,
-    body.fullscreen-mode .bezel-header,
-    body.fullscreen-mode .bezel-footer,
-    body.fullscreen-mode .speaker-grille {
+    body.fullscreen-mode:has(#game.active) .console-top-grooves,
+    body.fullscreen-mode:has(#game.active) .bezel-header,
+    body.fullscreen-mode:has(#game.active) .bezel-footer,
+    body.fullscreen-mode:has(#game.active) .speaker-grille {
       display: none;
     }
 
-    body.fullscreen-mode .screen-bezel {
+    body.fullscreen-mode:has(#game.active) .screen-bezel {
       padding: 0;
       border-radius: 0;
       background: #000;
@@ -938,7 +971,7 @@
       height: 100vh;
     }
 
-    body.fullscreen-mode .screen-viewport {
+    body.fullscreen-mode:has(#game.active) .screen-viewport {
       width: 100vw;
       height: 100vh;
       aspect-ratio: auto;
@@ -946,10 +979,10 @@
       border-radius: 0;
     }
 
-    /* Em tela cheia, oculta os botões do joystick do console para não duplicar! */
-    body.fullscreen-mode .controls-main-pad,
-    body.fullscreen-mode .select-start-row,
-    body.fullscreen-mode .shoulder-btn {
+    /* Em tela cheia com jogo ativo, oculta os botões do joystick para dar lugar ao jogo */
+    body.fullscreen-mode:has(#game.active) .controls-main-pad,
+    body.fullscreen-mode:has(#game.active) .select-start-row,
+    body.fullscreen-mode:has(#game.active) .shoulder-btn {
       display: none !important;
     }
 
@@ -1715,8 +1748,8 @@
       .rotate-hint { display: flex; }
     }
 
-    /* ---- Tela cheia (mantém apenas o jogo e os atalhos) ---- */
-    body.fullscreen-mode .gameboy-console {
+    /* ---- Tela cheia: quando um jogo estiver rodando (#game.active), foca no jogo ---- */
+    body.fullscreen-mode:has(#game.active) .gameboy-console {
       display: block;
       max-width: none;
       width: 100vw;
@@ -1726,16 +1759,16 @@
       background: #000;
       box-shadow: none;
     }
-    body.fullscreen-mode .gameboy-console::before,
-    body.fullscreen-mode .gameboy-console::after,
-    body.fullscreen-mode .grip-left,
-    body.fullscreen-mode .shoulder-btn,
-    body.fullscreen-mode .speaker-grille,
-    body.fullscreen-mode .bezel-header,
-    body.fullscreen-mode .bezel-footer {
+    body.fullscreen-mode:has(#game.active) .gameboy-console::before,
+    body.fullscreen-mode:has(#game.active) .gameboy-console::after,
+    body.fullscreen-mode:has(#game.active) .grip-left,
+    body.fullscreen-mode:has(#game.active) .shoulder-btn,
+    body.fullscreen-mode:has(#game.active) .speaker-grille,
+    body.fullscreen-mode:has(#game.active) .bezel-header,
+    body.fullscreen-mode:has(#game.active) .bezel-footer {
       display: none !important;
     }
-    body.fullscreen-mode .grip-right {
+    body.fullscreen-mode:has(#game.active) .grip-right {
       position: fixed;
       top: 10px;
       right: 12px;
@@ -1744,12 +1777,12 @@
       opacity: 0.5;
       transition: opacity 0.2s;
     }
-    body.fullscreen-mode .grip-right:hover { opacity: 1; }
-    body.fullscreen-mode .grip-right .abxy-diamond,
-    body.fullscreen-mode .grip-right .stick-base {
+    body.fullscreen-mode:has(#game.active) .grip-right:hover { opacity: 1; }
+    body.fullscreen-mode:has(#game.active) .grip-right .abxy-diamond,
+    body.fullscreen-mode:has(#game.active) .grip-right .stick-base {
       display: none !important;
     }
-    body.fullscreen-mode .screen-bezel {
+    body.fullscreen-mode:has(#game.active) .screen-bezel {
       position: absolute;
       inset: 0;
       padding: 0;
@@ -1759,7 +1792,7 @@
       box-shadow: none;
       display: block;
     }
-    body.fullscreen-mode .screen-viewport {
+    body.fullscreen-mode:has(#game.active) .screen-viewport {
       width: 100vw;
       height: 100vh;
       aspect-ratio: auto;
@@ -1830,6 +1863,7 @@
         <!-- Menu do console desenhado na própria tela LCD -->
         <div id="lcd-screen" aria-label="Menu do console" tabindex="-1">
           <div class="lcd-header">
+            <button type="button" class="lcd-back-btn" id="lcd-back-btn" aria-label="Voltar para pastas" style="display: none;">◀ VOLTAR</button>
             <div class="lcd-title" id="lcd-title">SNES BOY</div>
             <div class="lcd-header-right">
               <span class="lcd-chip" id="lcd-status-chip">INICIANDO</span>
@@ -2234,6 +2268,7 @@
      ******************************************************************/
     const lcdListEl = document.getElementById('lcd-list');
     const lcdTitleEl = document.getElementById('lcd-title');
+    const lcdBackBtnEl = document.getElementById('lcd-back-btn');
     const lcdStatusChipEl = document.getElementById('lcd-status-chip');
     const lcdGameCountEl = document.getElementById('lcd-game-count');
     const lcdHintEl = document.getElementById('lcd-hint');
@@ -2503,6 +2538,14 @@
           lcdGameCountEl.textContent = `${games.length} ${games.length === 1 ? 'JOGO' : 'JOGOS'}`;
         }
       }
+      const canGoBack = lcdOverGame || (lcdTab === 'games' && lcdFolder !== null) || lcdTab !== 'games';
+      if (lcdBackBtnEl) {
+        lcdBackBtnEl.style.display = canGoBack ? 'inline-flex' : 'none';
+        lcdBackBtnEl.textContent = (lcdTab === 'games' && lcdFolder !== null)
+          ? '◀ PASTAS'
+          : (lcdOverGame ? '◀ JOGO' : '◀ VOLTAR');
+      }
+
       if (lcdTitleEl) {
         if (lcdOverGame) {
           lcdTitleEl.textContent = 'PAUSADO';
@@ -2748,6 +2791,25 @@
         renderLcdMenu();
       });
     });
+
+    if (lcdBackBtnEl) {
+      lcdBackBtnEl.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        lcdBack();
+      });
+    }
+
+    const lcdFooterEl = document.querySelector('.lcd-footer');
+    if (lcdFooterEl) {
+      lcdFooterEl.addEventListener('click', (e) => {
+        // Se clicar no rodapé enquanto estiver em pasta ou aba diferente, volta
+        if (lcdOverGame || (lcdTab === 'games' && lcdFolder !== null) || lcdTab !== 'games') {
+          e.preventDefault();
+          lcdBack();
+        }
+      });
+    }
 
     // Vincula todos os botões do Game Boy (suporta Multi-Touch!)
     // Se o menu da tela estiver ativo, o botão controla o menu;
