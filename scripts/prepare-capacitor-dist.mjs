@@ -18,8 +18,8 @@ function copyDir(src, dst) {
 
 const withRoms = process.argv.includes('--with-roms');
 const items = withRoms
-  ? ['emulator','sw.js','manifest.webmanifest','manifest.json','icon-192.png','icon-512.png','pix-qr.jpeg','games']
-  : ['emulator','sw.js','manifest.webmanifest','manifest.json','icon-192.png','icon-512.png','pix-qr.jpeg','games/games.json'];
+  ? ['index.html','emulator','sw.js','manifest.webmanifest','manifest.json','icon-192.png','icon-512.png','pix-qr.jpeg','games']
+  : ['index.html','emulator','sw.js','manifest.webmanifest','manifest.json','icon-192.png','icon-512.png','pix-qr.jpeg','games/games.json'];
 
 for (const rel of items) {
   const src = path.join(root, rel);
@@ -35,8 +35,12 @@ for (const rel of items) {
     console.log(`[prepare] dir ${rel}`);
   } else {
     fs.mkdirSync(path.dirname(dst), { recursive: true });
-    fs.copyFileSync(src, dst);
-    console.log(`[prepare] file ${rel}`);
+    try {
+      fs.copyFileSync(src, dst);
+      console.log(`[prepare] file ${rel}`);
+    } catch (e) {
+      console.warn(`[prepare] could not overwrite ${rel} (file locked, keeping existing):`, e.message);
+    }
   }
 }
 
