@@ -71,9 +71,8 @@ const server = http.createServer((req, res) => {
       'Content-Type': contentType,
       'Content-Length': stats.size,
       'Access-Control-Allow-Origin': '*',
-      'Cache-Control': (ext === '.html' || isGamesJson) ? 'no-cache, no-store, must-revalidate' : 'public, max-age=31536000, immutable',
-      'Cross-Origin-Opener-Policy': 'same-origin',
-      'Cross-Origin-Embedder-Policy': 'require-corp'
+      'Access-Control-Allow-Methods': 'GET, HEAD, OPTIONS',
+      'Cross-Origin-Resource-Policy': 'cross-origin'
     };
 
     if (ext === '.js' && path.basename(filePath) === 'sw.js') {

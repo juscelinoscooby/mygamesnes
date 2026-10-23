@@ -23,18 +23,16 @@
 
   <style>
     :root {
-      /* Tema Padrão: Cinza Clássico Game Boy (DMG) */
-      --shell-bg: #d4d2c8;
-      --shell-border: #b5b3a8;
-      --shell-shadow: #8e8c82;
-      --shell-highlight: #ecebe4;
-      --bezel-bg: #5a5b6b;
-      --bezel-text: #d1d5db;
-      --accent-btn: #8b1d41; /* Botões A/B vinho clássico */
-      --accent-btn-alt: #4f46e5; /* Botões X/Y */
-      --dpad-color: #26272b;
-      --body-bg: #111318;
-      --overlay-opacity: 0.78;
+      /* Tema Padrão: Consola Horizontal Laranja */
+      --console-body: #1c1c20;
+      --console-body-2: #0f0f12;
+      --console-edge: #303038;
+      --accent-orange: #ff7a18;
+      --accent-orange-2: #e8620a;
+      --btn-dark: #2a2a30;
+      --dpad-color: #2a2a30;
+      --body-bg: #08090b;
+      --overlay-opacity: 0.85;
     }
 
     /* Temas alternativos do Console */
@@ -91,17 +89,27 @@
       -webkit-touch-callout: none;
     }
 
+    html {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: #08090b;
+    }
     body {
-      background: radial-gradient(circle at center, #1e222d 0%, #0b0d12 100%);
+      background: radial-gradient(circle at 50% -10%, #2a2f3a 0%, #14161b 45%, #08090b 100%);
       color: #f3f4f6;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       min-height: 100vh;
+      min-height: 100dvh;
+      height: 100vh;
+      height: 100dvh;
+      margin: 0;
+      padding: 0;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 12px;
-      overflow-x: hidden;
+      align-items: stretch;
+      justify-content: stretch;
+      overflow: hidden;
     }
 
     input[type="file"] {
@@ -109,25 +117,50 @@
     }
 
     /* =================================================================
-       CARCAÇA DO CONSOLE GAME BOY
+       CARCAÇA CONSOLE HORIZONTAL MODERNO
        ================================================================= */
     .gameboy-console {
-      width: 100%;
-      max-width: 470px;
-      background: var(--shell-bg);
-      border-radius: 22px 22px 68px 22px;
-      padding: 18px 20px 28px;
+      width: 100dvw;
+      width: 100vw;
+      height: 100dvh;
+      height: 100vh;
+      max-width: none;
+      max-height: none;
+      margin: 0;
+      padding: max(6px, env(safe-area-inset-top)) max(6px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(6px, env(safe-area-inset-left));
+      border-radius: 0;
+      background: linear-gradient(180deg, #2a2a2f 0%, #1a1a1e 42%, #101013 100%);
       box-shadow:
-        inset 3px 3px 6px var(--shell-highlight),
-        inset -4px -6px 10px var(--shell-shadow),
-        0 24px 60px rgba(0, 0, 0, 0.75),
-        0 0 0 2px var(--shell-border);
+        inset 0 2px 1px rgba(255, 255, 255, 0.16),
+        inset 0 -12px 24px rgba(0, 0, 0, 0.75),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+      display: grid;
+      grid-template-columns: minmax(120px, 1fr) minmax(0, 3.4fr) minmax(120px, 1fr);
+      grid-template-areas: "left screen right";
+      align-items: center;
+      gap: clamp(6px, 1.2vmin, 16px);
+      align-content: stretch;
       position: relative;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      transition: background 0.25s, box-shadow 0.25s;
+      box-sizing: border-box;
+      overflow: hidden;
+      transition: none;
     }
+
+    /* Recorte decorativo laranja nas laterais */
+    .gameboy-console::before,
+    .gameboy-console::after {
+      content: "";
+      position: absolute;
+      top: 22%;
+      width: 5px;
+      height: 56%;
+      border-radius: 99px;
+      background: linear-gradient(180deg, transparent, var(--accent-orange), transparent);
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .gameboy-console::before { left: 14px; }
+    .gameboy-console::after { right: 14px; }
 
     /* Ranhuras decorativas no topo do Game Boy */
     .console-top-grooves {
@@ -220,9 +253,17 @@
     }
 
     /* Viewport onde o jogo roda */
+    .screen-bezel {
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
     .screen-viewport {
       width: 100%;
-      aspect-ratio: 4 / 3;
+      flex: 1 1 auto;
+      min-height: 180px;
+      max-height: 52vh;
+      aspect-ratio: auto;
       background: #181c14;
       border-radius: 6px;
       border: 3px solid #111318;
@@ -712,392 +753,9 @@
       border-bottom-color: #1e3a8a;
     }
 
-    /* Área Principal de Controles: D-Pad (Esquerda) e Botões A/B/X/Y (Direita) */
-    .controls-main-pad {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 8px 6px 4px;
-      position: relative;
-    }
-
-    /* D-PAD em Cruz */
-    .dpad-container {
-      position: relative;
-      width: 132px;
-      height: 132px;
-      flex-shrink: 0;
-      touch-action: none;
-    }
-
-    .dpad-cross-bg {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
-
-    .dpad-btn {
-      position: absolute;
-      background: var(--dpad-color);
-      color: #71717a;
-      border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      cursor: pointer;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.45);
-      touch-action: none;
-    }
-
-    .dpad-btn.pressed {
-      background: #3f3f46;
-      color: #f3f4f6;
-      transform: scale(0.96);
-    }
-
-    .dpad-up {
-      top: 0;
-      left: 44px;
-      width: 44px;
-      height: 48px;
-      border-radius: 7px 7px 0 0;
-    }
-
-    .dpad-down {
-      bottom: 0;
-      left: 44px;
-      width: 44px;
-      height: 48px;
-      border-radius: 0 0 7px 7px;
-    }
-
-    .dpad-left {
-      left: 0;
-      top: 44px;
-      width: 48px;
-      height: 44px;
-      border-radius: 7px 0 0 7px;
-    }
-
-    .dpad-right {
-      right: 0;
-      top: 44px;
-      width: 48px;
-      height: 44px;
-      border-radius: 0 7px 7px 0;
-    }
-
-    .dpad-center {
-      position: absolute;
-      top: 44px;
-      left: 44px;
-      width: 44px;
-      height: 44px;
-      background: var(--dpad-color);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      pointer-events: none;
-    }
-
-    .dpad-center::after {
-      content: "";
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,255,255,0.08), rgba(0,0,0,0.5));
-    }
-
-    /* Cluster Diamante de Botões Y, X, B, A */
-    .abxy-diamond {
-      position: relative;
-      width: 146px;
-      height: 136px;
-      flex-shrink: 0;
-      touch-action: none;
-    }
-
-    .action-btn {
-      position: absolute;
-      width: 46px;
-      height: 46px;
-      border-radius: 50%;
-      border: none;
-      color: #fff;
-      font-weight: 900;
-      font-size: 15px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow:
-        inset 0 2px 3px rgba(255,255,255,0.35),
-        0 5px 8px rgba(0,0,0,0.5);
-      transition: transform 0.06s, box-shadow 0.06s;
-      touch-action: none;
-    }
-
-    .action-btn.pressed,
-    .action-btn:active {
-      transform: translateY(3px) scale(0.95);
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.5), 0 2px 3px rgba(0,0,0,0.4);
-    }
-
-    /* Botões A e B (Vinho Clássico Game Boy / Vermelho-Amarelo) */
-    .btn-a {
-      right: 0;
-      top: 45px;
-      background: var(--accent-btn);
-    }
-
-    .btn-b {
-      left: 50px;
-      bottom: 0;
-      background: var(--accent-btn);
-    }
-
-    /* Botões X e Y */
-    .btn-x {
-      left: 50px;
-      top: 0;
-      background: var(--accent-btn-alt);
-    }
-
-    .btn-y {
-      left: 0;
-      top: 45px;
-      background: var(--accent-btn-alt);
-    }
-
-    /* Botões SELECT e START inclinados no centro inferior */
-    .select-start-row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 28px;
-      margin-top: 4px;
-      padding-bottom: 4px;
-    }
-
-    .pill-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .pill-btn {
-      width: 48px;
-      height: 15px;
-      background: #4b4d57;
-      border: none;
-      border-radius: 999px;
-      transform: rotate(-24deg);
-      box-shadow:
-        inset 0 1px 2px rgba(255,255,255,0.25),
-        0 3px 4px rgba(0,0,0,0.45);
-      cursor: pointer;
-      touch-action: none;
-    }
-
-    .pill-btn.pressed,
-    .pill-btn:active {
-      transform: rotate(-24deg) scale(0.92);
-      background: #6b7280;
-    }
-
-    .pill-label {
-      font-size: 10px;
-      font-weight: 900;
-      letter-spacing: 1.2px;
-      color: rgba(0, 0, 0, 0.6);
-      margin-top: 2px;
-    }
-
-    body[data-theme="dark"] .pill-label,
-    body[data-theme="purple"] .pill-label,
-    body[data-theme="blue"] .pill-label {
-      color: rgba(255, 255, 255, 0.65);
-    }
-
-    /* Ranhuras do Alto-Falante (Canto inferior direito do Game Boy) */
-    .speaker-grille {
-      position: absolute;
-      bottom: 18px;
-      right: 22px;
-      display: flex;
-      gap: 5px;
-      transform: rotate(-28deg);
-      pointer-events: none;
-    }
-
-    .speaker-slot {
-      width: 4px;
-      height: 28px;
-      border-radius: 99px;
-      background: rgba(0, 0, 0, 0.38);
-      box-shadow: inset 1px 1px 2px rgba(0,0,0,0.7);
-    }
-
     /* =================================================================
-       MODO TELA CHEIA — menu e jogo preenchem 100% da viewport
+       CONTROLES DO CONSOLE: Definidos no bloco de design principal abaixo
        ================================================================= */
-    body.fullscreen-mode {
-      padding: 0;
-      background: #000;
-      min-height: 100dvh;
-      height: 100dvh;
-      overflow: hidden;
-    }
-    body.fullscreen-mode:not(:has(#game.active)) {
-      align-items: stretch;
-      justify-content: stretch;
-    }
-    /* Menu em tela cheia: escala por altura (vmin) para não cortar no celular deitado */
-    body.fullscreen-mode:not(:has(#game.active)) .gameboy-console {
-      width: 100vw;
-      width: 100dvw;
-      height: 100dvh;
-      height: 100vh;
-      max-width: none;
-      max-height: 100dvh;
-      max-height: 100vh;
-      border-radius: 0;
-      box-shadow: none;
-      box-sizing: border-box;
-      overflow: hidden;
-      padding: max(4px, env(safe-area-inset-top)) max(4px, env(safe-area-inset-right)) max(4px, env(safe-area-inset-bottom)) max(4px, env(safe-area-inset-left));
-      gap: clamp(4px, 0.9vmin, 12px);
-      align-items: center;
-      align-content: center;
-      grid-template-columns: minmax(0, 0.82fr) minmax(0, 2.7fr) minmax(0, 0.82fr);
-    }
-    body.fullscreen-mode:not(:has(#game.active)) .grip {
-      min-height: 0;
-      max-height: 100%;
-      overflow: hidden;
-      gap: clamp(6px, 1.4vmin, 14px);
-      justify-content: center;
-    }
-    body.fullscreen-mode:not(:has(#game.active)) .shoulder-btn {
-      width: clamp(56px, 10vmin, 112px);
-      height: clamp(20px, 3.2vmin, 34px);
-      font-size: clamp(8px, 1.35vmin, 13px);
-      top: 2px;
-    }
-    body.fullscreen-mode:not(:has(#game.active)) .shoulder-left { left: clamp(8px, 2.5vmin, 74px); }
-    body.fullscreen-mode:not(:has(#game.active)) .shoulder-right { right: clamp(8px, 2.5vmin, 74px); }
-    body.fullscreen-mode:not(:has(#game.active)) .stick-base {
-      width: clamp(36px, 7vmin, 82px);
-      height: clamp(36px, 7vmin, 82px);
-    }
-    body.fullscreen-mode:not(:has(#game.active)) .stick-cap {
-      width: clamp(24px, 4.2vmin, 52px);
-      height: clamp(24px, 4.2vmin, 52px);
-    }
-    body.fullscreen-mode:not(:has(#game.active)) .dpad-container {
-      width: clamp(68px, 12vmin, 132px);
-      height: clamp(68px, 12vmin, 132px);
-    }
-    body.fullscreen-mode:not(:has(#game.active)) .abxy-diamond {
-      width: clamp(76px, 13vmin, 146px);
-      height: clamp(72px, 11.5vmin, 136px);
-    }
-    body.fullscreen-mode:not(:has(#game.active)) .action-btn {
-      width: clamp(28px, 4.6vmin, 48px);
-      height: clamp(28px, 4.6vmin, 48px);
-      font-size: clamp(9px, 1.6vmin, 15px);
-    }
-    body.fullscreen-mode:not(:has(#game.active)) .round-btn {
-      width: clamp(30px, 4.8vmin, 46px);
-      height: clamp(30px, 4.8vmin, 46px);
-      font-size: clamp(12px, 1.8vmin, 18px);
-    }
-    body.fullscreen-mode:not(:has(#game.active)) .pill-btn {
-      width: clamp(36px, 5vmin, 54px);
-      height: clamp(11px, 1.6vmin, 17px);
-    }
-    body.fullscreen-mode:not(:has(#game.active)) .pill-label { font-size: clamp(6px, 0.9vmin, 9px); }
-    body.fullscreen-mode:not(:has(#game.active)) .select-start-row { gap: clamp(10px, 1.6vmin, 22px); }
-    body.fullscreen-mode:not(:has(#game.active)) .screen-bezel {
-      height: 100%;
-      min-height: 0;
-      max-height: 100%;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      padding: 4px 6px 4px;
-      gap: 3px;
-    }
-    body.fullscreen-mode:not(:has(#game.active)) .bezel-header,
-    body.fullscreen-mode:not(:has(#game.active)) .bezel-footer {
-      flex-shrink: 0;
-      font-size: clamp(6px, 1vmin, 9px);
-    }
-    body.fullscreen-mode:not(:has(#game.active)) .screen-viewport {
-      flex: 1 1 auto;
-      min-height: 0;
-      max-height: 100%;
-      height: auto;
-      aspect-ratio: auto;
-      border-radius: 6px;
-      overflow: hidden;
-    }
-
-    /* Jogo ativo em tela cheia: foco total no jogo, oculta carcaça */
-    body.fullscreen-mode:has(#game.active) .gameboy-console {
-      max-width: 100vw;
-      width: 100vw;
-      width: 100dvw;
-      height: 100dvh;
-      height: 100vh;
-      border-radius: 0;
-      padding: 0;
-      background: #000;
-      box-shadow: none;
-    }
-    body.fullscreen-mode:has(#game.active) .console-top-grooves,
-    body.fullscreen-mode:has(#game.active) .bezel-header,
-    body.fullscreen-mode:has(#game.active) .bezel-footer,
-    body.fullscreen-mode:has(#game.active) .speaker-grille {
-      display: none;
-    }
-    body.fullscreen-mode:has(#game.active) .screen-bezel {
-      padding: 0;
-      border-radius: 0;
-      background: #000;
-      width: 100vw;
-      width: 100dvw;
-      height: 100dvh;
-      height: 100vh;
-    }
-    body.fullscreen-mode:has(#game.active) .screen-viewport {
-      width: 100vw;
-      width: 100dvw;
-      height: 100dvh;
-      height: 100vh;
-      aspect-ratio: auto;
-      border: none;
-      border-radius: 0;
-    }
-    body.fullscreen-mode:has(#game.active) .controls-main-pad,
-    body.fullscreen-mode:has(#game.active) .select-start-row,
-    body.fullscreen-mode:has(#game.active) .shoulder-btn {
-      display: none !important;
-    }
-    body.fullscreen-mode .console-top-bar {
-      position: fixed;
-      top: max(8px, env(safe-area-inset-top));
-      right: max(10px, env(safe-area-inset-right));
-      left: auto;
-      z-index: 50;
-      opacity: var(--overlay-opacity);
-      pointer-events: none;
-    }
-    body.fullscreen-mode .console-top-bar > .utility-bar {
-      pointer-events: auto;
-    }
 
     /* =================================================================
        MODAIS: MENU DE GERENCIAMENTO (JOGOS & APLICAÇÃO) E UPLOAD
@@ -1424,73 +1082,11 @@
       border-color: #3b82f6;
     }
 
-    /* =================================================================
-       OTIMIZAÇÕES RESPONSIVAS E TOUCH PARA DISPOSITIVOS MÓVEIS (SMARTPHONES/TABLETS)
-       ================================================================= */
-    @media (max-width: 520px) {
-      body {
-        padding: max(6px, env(safe-area-inset-top, 0px))
-                 max(6px, env(safe-area-inset-right, 0px))
-                 max(8px, env(safe-area-inset-bottom, 0px))
-                 max(6px, env(safe-area-inset-left, 0px));
-        justify-content: flex-start;
-      }
 
-      .gameboy-console {
-        max-width: 100%;
-        padding: 12px 14px 22px;
-        gap: 10px;
-        border-radius: 18px 18px 48px 18px;
-      }
-
-      .screen-bezel {
-        padding: 8px 10px 12px;
-        border-radius: 10px 10px 24px 10px;
-      }
-
-      .screen-viewport {
-        border-width: 3px;
-      }
-
-      .dpad-container {
-        width: 120px;
-        height: 120px;
-      }
-
-      .abxy-diamond {
-        width: 120px;
-        height: 120px;
-      }
-
-      .action-btn {
-        width: 44px;
-        height: 44px;
-        font-size: 14px;
-      }
-
-      .shoulder-btn {
-        padding: 6px 14px;
-        font-size: 11px;
-      }
-
-      .sys-btn {
-        padding: 6px 10px;
-        font-size: 11px;
-      }
-
-      .pill-btn {
-        width: 44px;
-        height: 14px;
-      }
-
-      .controls-main-pad {
-        padding: 0 4px;
-      }
-    }
 
     /* =================================================================
-       NOVO DESIGN — PORTÁTIL HORIZONTAL COM ACENTOS LARANJA
-       (sobrescreve o layout vertical antigo mantendo IDs e classes)
+       NOVO DESIGN UNIFICADO — PORTÁTIL HORIZONTAL COM ACENTOS LARANJA
+       Layout 100% proporcional, botões alinhados e tela responsiva
        ================================================================= */
     :root {
       --console-body: #1c1c20;
@@ -1501,30 +1097,47 @@
       --btn-dark: #2a2a30;
     }
 
-    body {
+    /* FULL-BLEED: 100% da viewport, zero faixas pretas (janela normal e tela cheia) */
+    html, body {
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
       background: radial-gradient(circle at 50% -10%, #2a2f3a 0%, #14161b 45%, #08090b 100%);
-      padding: 18px;
-      justify-content: center;
+      display: flex;
+      align-items: stretch;
+      justify-content: stretch;
     }
 
-    /* ---- Carcaça horizontal ---- */
+    /* ---- Carcaça horizontal (100% da viewport, sem bordas/margins) ---- */
     .gameboy-console {
-      width: 100%;
-      max-width: 1180px;
-      padding: 30px 38px 32px;
-      border-radius: 46px;
+      width: 100dvw;
+      width: 100vw;
+      height: 100dvh;
+      height: 100vh;
+      max-width: 100vw;
+      max-height: 100vh;
+      margin: 0;
+      padding: max(6px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+      border-radius: 0;
       background: linear-gradient(180deg, #2a2a2f 0%, #1a1a1e 42%, #101013 100%);
       box-shadow:
         inset 0 2px 1px rgba(255, 255, 255, 0.16),
         inset 0 -12px 24px rgba(0, 0, 0, 0.75),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.06),
-        0 36px 90px rgba(0, 0, 0, 0.82);
+        inset 0 0 0 1px rgba(255, 255, 255, 0.06);
       display: grid;
-      grid-template-columns: minmax(130px, 0.92fr) minmax(0, 2.7fr) minmax(130px, 0.92fr);
+      grid-template-columns: minmax(90px, 1fr) minmax(0, 3.2fr) minmax(90px, 1fr);
+      grid-template-rows: 100%;
       grid-template-areas: "left screen right";
-      align-items: center;
-      gap: 24px;
+      align-items: stretch;
+      justify-content: stretch;
+      gap: clamp(4px, 1vmin, 16px);
+      align-content: stretch;
       position: relative;
+      box-sizing: border-box;
+      overflow: hidden;
       transition: none;
     }
 
@@ -1544,215 +1157,426 @@
     .gameboy-console::before { left: 14px; }
     .gameboy-console::after { right: 14px; }
 
+    /* =================================================================
+       EMPUNHADURAS SIMÉTRICAS — ALINHAMENTO MATEMÁTICO PERFEITO
+       ================================================================= */
     .grip {
+      height: 100%;
+      max-height: 100%;
+      min-height: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      gap: 20px;
+      justify-content: space-between;
+      padding: clamp(34px, 5.5vmin, 48px) 2px clamp(8px, 1.4vmin, 16px);
+      box-sizing: border-box;
       min-width: 0;
+      overflow: hidden;
+      position: relative;
+      gap: clamp(4px, 1vmin, 12px);
     }
     .grip-left { grid-area: left; }
     .grip-right { grid-area: right; }
 
-    /* ---- Botões de ombro ---- */
-    .shoulder-btn {
-      position: absolute;
-      top: 6px;
-      width: 112px;
-      height: 34px;
-      padding: 0;
-      border: none;
-      border-radius: 18px 18px 9px 9px;
-      background: linear-gradient(180deg, #ff8f34 0%, var(--accent-orange) 45%, var(--accent-orange-2) 100%);
-      color: #2b1200;
-      font-size: 13px;
-      font-weight: 900;
-      letter-spacing: 1.2px;
-      box-shadow:
-        inset 0 2px 0 rgba(255, 255, 255, 0.38),
-        0 6px 14px rgba(0, 0, 0, 0.6);
-      cursor: pointer;
-      touch-action: none;
-      z-index: 5;
-    }
-    .shoulder-left { left: 74px; }
-    .shoulder-right { right: 74px; }
-    .shoulder-btn.pressed,
-    .shoulder-btn:active {
-      transform: translateY(3px);
-      background: linear-gradient(180deg, #e8620a 0%, #b94b00 100%);
-      border-bottom-width: 0;
-    }
-
-    /* ---- Analógicos (decorativos, estilo do console de referência) ---- */
-    .stick-base {
-      width: 82px;
-      height: 82px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 50% 38%, #32323a 0%, #17171b 60%, #0a0a0c 100%);
-      box-shadow:
-        inset 0 5px 12px rgba(0, 0, 0, 0.9),
-        inset 0 -1px 0 rgba(255, 255, 255, 0.05),
-        0 1px 0 rgba(255, 255, 255, 0.06);
+    /* Topo das empunhaduras: espaçador esquerdo / atalhos direitos (mesma altura) */
+    .grip-left > .grip-top-spacer,
+    .grip-right > .utility-cluster {
+      height: clamp(32px, 5.2vmin, 52px);
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      pointer-events: none;
-    }
-    .stick-cap {
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 36% 30%, #50505b 0%, #24242a 62%, #111114 100%);
-      box-shadow:
-        0 5px 10px rgba(0, 0, 0, 0.75),
-        inset 0 1px 2px rgba(255, 255, 255, 0.2);
     }
 
-    /* ---- D-Pad laranja ---- */
-    .dpad-container {
-      width: 132px;
-      height: 132px;
+    /* Centro das empunhaduras: D-Pad e ABXY Diamond no MESMO centro horizontal */
+    .dpad-container,
+    .abxy-diamond {
+      width: clamp(108px, 17vmin, 152px);
+      height: clamp(108px, 17vmin, 152px);
+      position: relative;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .dpad-btn {
-      background: linear-gradient(180deg, #ff8b2e 0%, var(--accent-orange) 48%, var(--accent-orange-2) 100%);
-      color: rgba(60, 26, 0, 0.8);
+
+    /* Base das empunhaduras: select/start esquerdo / espaçador direito (mesma altura) */
+    .grip-left > .select-start-row,
+    .grip-right > .grip-bottom-spacer {
+      height: clamp(32px, 5.2vmin, 52px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* ---- Botões de ombro L/R (fluentes, no topo da carcaça) ---- */
+    .shoulder-btn {
+      position: absolute;
+      top: max(4px, env(safe-area-inset-top));
+      width: clamp(64px, 10vmin, 110px);
+      height: clamp(22px, 3.4vmin, 34px);
+      padding: 0;
+      border: none;
+      border-radius: 12px 12px 6px 6px;
+      background: linear-gradient(180deg, #ff8f34 0%, var(--accent-orange) 45%, var(--accent-orange-2) 100%);
+      color: #2b1200;
+      font-size: clamp(9px, 1.3vmin, 13px);
+      font-weight: 900;
+      letter-spacing: 1px;
       box-shadow:
-        0 4px 8px rgba(0, 0, 0, 0.6),
-        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        inset 0 2px 0 rgba(255, 255, 255, 0.38),
+        0 4px 8px rgba(0, 0, 0, 0.55);
+      cursor: pointer;
+      touch-action: none;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .dpad-btn.pressed {
-      background: linear-gradient(180deg, #d55c00, #a84400);
-      color: #fff;
+    .shoulder-left { left: clamp(14px, 2.5vmin, 44px); }
+    .shoulder-right { right: clamp(14px, 2.5vmin, 44px); }
+    .shoulder-btn.pressed,
+    .shoulder-btn:active {
+      transform: translateY(2px);
+      background: linear-gradient(180deg, #e8620a 0%, #b94b00 100%);
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.6);
+    }
+
+    /* ---- D-Pad em Cruz Perfeito, Tátil e Responsivo ---- */
+    .dpad-container {
+      width: clamp(108px, 17vmin, 152px);
+      height: clamp(108px, 17vmin, 152px);
+      position: relative;
+      touch-action: none;
+      filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.6)) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4));
+    }
+
+    /* Placa base circular do D-Pad (poço chanfrado onde a cruz se assenta) */
+    .dpad-container::before {
+      content: "";
+      position: absolute;
+      inset: -6%;
+      border-radius: 50%;
+      background: radial-gradient(circle at 50% 35%, #2a2a32 0%, #151518 70%, #0c0c0e 100%);
+      box-shadow:
+        inset 0 4px 8px rgba(0, 0, 0, 0.9),
+        inset 0 -1px 2px rgba(255, 255, 255, 0.08),
+        0 1px 1px rgba(255, 255, 255, 0.08);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .dpad-btn {
+      background: linear-gradient(160deg, #ff9438 0%, var(--accent-orange) 50%, var(--accent-orange-2) 100%);
+      color: #2b1200;
+      box-shadow:
+        inset 0 1px 1px rgba(255, 255, 255, 0.5),
+        inset 0 -2px 3px rgba(0, 0, 0, 0.4),
+        0 3px 5px rgba(0, 0, 0, 0.5);
+      position: absolute;
+      border: none;
+      cursor: pointer;
+      touch-action: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(12px, 1.9vmin, 18px);
+      font-weight: 900;
+      line-height: 1;
+      padding: 0;
+      margin: 0;
+      transition: background 0.08s ease, transform 0.08s ease;
+      z-index: 2;
+    }
+    .dpad-arrow {
+      display: inline-block;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35), 0 -1px 0 rgba(0, 0, 0, 0.3);
+      user-select: none;
+      pointer-events: none;
+    }
+    .dpad-btn.pressed,
+    .dpad-btn:active {
+      background: linear-gradient(160deg, #d85d00 0%, #aa4300 100%);
+      color: #ffffff;
+      box-shadow:
+        inset 0 3px 6px rgba(0, 0, 0, 0.8),
+        inset 0 0 1px rgba(0, 0, 0, 0.9);
       transform: scale(0.96);
     }
+    .dpad-btn.pressed .dpad-arrow,
+    .dpad-btn:active .dpad-arrow {
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+    }
+
+    .dpad-up {
+      width: 34%;
+      height: 36%;
+      left: 33%;
+      top: 0;
+      border-radius: 8px 8px 0 0;
+      padding-bottom: 4px;
+    }
+    .dpad-down {
+      width: 34%;
+      height: 36%;
+      left: 33%;
+      bottom: 0;
+      border-radius: 0 0 8px 8px;
+      padding-top: 4px;
+    }
+    .dpad-left {
+      width: 36%;
+      height: 34%;
+      top: 33%;
+      left: 0;
+      border-radius: 8px 0 0 8px;
+      padding-right: 4px;
+    }
+    .dpad-right {
+      width: 36%;
+      height: 34%;
+      top: 33%;
+      right: 0;
+      border-radius: 0 8px 8px 0;
+      padding-left: 4px;
+    }
+
     .dpad-center {
-      background: linear-gradient(180deg, #ff8b2e 0%, var(--accent-orange) 48%, var(--accent-orange-2) 100%);
+      position: absolute;
+      width: 34%;
+      height: 34%;
+      top: 33%;
+      left: 33%;
+      background: linear-gradient(160deg, #ff9438 0%, var(--accent-orange) 50%, var(--accent-orange-2) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 1;
     }
     .dpad-center::after {
-      background: radial-gradient(circle, rgba(255, 255, 255, 0.3), rgba(0, 0, 0, 0.35));
+      content: "";
+      width: 48%;
+      height: 48%;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.6) 80%, rgba(255, 255, 255, 0.15) 100%);
+      box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.75), 0 1px 1px rgba(255, 255, 255, 0.25);
     }
 
     /* ---- SELECT / START ---- */
     .select-start-row {
-      gap: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(8px, 1.5vmin, 18px);
       margin-top: 0;
       padding-bottom: 0;
     }
+    .pill-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
     .pill-btn {
-      width: 54px;
-      height: 17px;
+      width: clamp(32px, 4.8vmin, 48px);
+      height: clamp(10px, 1.5vmin, 14px);
       background: linear-gradient(180deg, #ff8f34, var(--accent-orange-2));
-      transform: none;
+      border: none;
+      border-radius: 999px;
+      transform: rotate(-20deg);
       box-shadow:
         inset 0 1px 2px rgba(255, 255, 255, 0.4),
-        0 3px 6px rgba(0, 0, 0, 0.5);
+        0 2px 5px rgba(0, 0, 0, 0.5);
+      cursor: pointer;
+      touch-action: none;
     }
     .pill-btn.pressed,
     .pill-btn:active {
-      transform: scale(0.92);
+      transform: rotate(-20deg) scale(0.92);
       background: #b94b00;
     }
     .pill-label {
-      color: rgba(255, 255, 255, 0.55);
-      font-size: 9px;
-      letter-spacing: 1.4px;
+      color: rgba(255, 255, 255, 0.65);
+      font-size: clamp(6px, 0.9vmin, 8.5px);
+      font-weight: 900;
+      letter-spacing: 1.2px;
       margin-top: 0;
     }
 
-    /* ---- ABXY + atalhos ---- */
+    /* ---- ABXY Diamond Layout Nintendo Legítimo ---- */
     .abxy-diamond {
-      width: 146px;
-      height: 136px;
+      width: clamp(92px, 15vmin, 142px);
+      height: clamp(92px, 15vmin, 142px);
+      position: relative;
+      touch-action: none;
     }
     .action-btn {
-      width: 48px;
-      height: 48px;
-      font-size: 15px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      width: clamp(30px, 4.8vmin, 45px);
+      height: clamp(30px, 4.8vmin, 45px);
+      font-size: clamp(12px, 1.8vmin, 17px);
+      font-weight: 900;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      position: absolute;
+      cursor: pointer;
+      touch-action: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      box-shadow:
+        inset 0 2px 3px rgba(255, 255, 255, 0.38),
+        inset 0 -2px 3px rgba(0, 0, 0, 0.35),
+        0 4px 8px rgba(0, 0, 0, 0.55);
     }
     .btn-a,
     .btn-b {
-      background: linear-gradient(180deg, #ff8f34, var(--accent-orange-2));
+      background: linear-gradient(180deg, #ff8f34 0%, var(--accent-orange-2) 100%);
       color: #2b1200;
       text-shadow: 0 1px 0 rgba(255, 255, 255, 0.25);
     }
     .btn-x,
     .btn-y {
-      background: linear-gradient(180deg, #3c3c45, #1e1e24);
-      color: #e9e9ef;
+      background: linear-gradient(180deg, #3c3c45 0%, #1e1e24 100%);
+      color: #ffffff;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
     }
 
+    /* Posições no diamante Nintendo SNES */
+    .btn-x {
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+    }
+    .btn-b {
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+    }
+    .btn-y {
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
+    }
+    .btn-a {
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
+    }
+    .btn-x.pressed, .btn-x:active { transform: translateX(-50%) scale(0.92); filter: brightness(0.85); box-shadow: inset 0 2px 4px rgba(0,0,0,0.6); }
+    .btn-b.pressed, .btn-b:active { transform: translateX(-50%) scale(0.92); filter: brightness(0.85); box-shadow: inset 0 2px 4px rgba(0,0,0,0.6); }
+    .btn-y.pressed, .btn-y:active { transform: translateY(-50%) scale(0.92); filter: brightness(0.85); box-shadow: inset 0 2px 4px rgba(0,0,0,0.6); }
+    .btn-a.pressed, .btn-a:active { transform: translateY(-50%) scale(0.92); filter: brightness(0.85); box-shadow: inset 0 2px 4px rgba(0,0,0,0.6); }
+
+    /* ---- Atalhos Utilitários (Menu e Tela Cheia) ---- */
     .utility-cluster {
       display: flex;
       align-items: center;
-      gap: 12px;
+      justify-content: center;
+      gap: clamp(6px, 1.2vmin, 12px);
     }
     .round-btn {
-      width: 46px;
-      height: 46px;
+      width: clamp(28px, 4.2vmin, 42px);
+      height: clamp(28px, 4.2vmin, 42px);
       padding: 0;
       border-radius: 50%;
-      border: 1px solid rgba(255, 255, 255, 0.09);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       background: radial-gradient(circle at 40% 28%, #34343d 0%, #17171b 70%);
       color: #d9d9e0;
-      font-size: 18px;
+      font-size: clamp(12px, 1.7vmin, 16px);
       line-height: 1;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.13),
-        0 4px 10px rgba(0, 0, 0, 0.55);
+        inset 0 1px 0 rgba(255, 255, 255, 0.14),
+        0 3px 8px rgba(0, 0, 0, 0.55);
       touch-action: manipulation;
       transition: transform 0.08s, color 0.15s;
     }
     .round-btn:hover { color: #fff; }
-    .round-btn:active { transform: translateY(2px) scale(0.96); }
-    .round-btn .btn-ico { font-size: 19px; }
+    .round-btn:active { transform: translateY(2px) scale(0.94); }
+    .round-btn .btn-ico { font-size: clamp(13px, 1.8vmin, 18px); }
 
-    /* ---- Moldura da tela ---- */
+    /* ---- Moldura da tela central (Sempre preenche 100% da altura) ---- */
     .screen-bezel {
       grid-area: screen;
+      align-self: stretch;
+      justify-self: stretch;
+      width: 100%;
+      height: 100%;
+      max-height: 100%;
+      min-height: 0;
       background: #0a0a0c;
       border: 2px solid #2b2b32;
-      border-radius: 18px;
-      padding: 10px 12px 8px;
-      gap: 6px;
+      border-radius: clamp(10px, 1.8vmin, 18px);
+      padding: clamp(4px, 0.9vmin, 10px) clamp(6px, 1.2vmin, 14px);
+      gap: clamp(2px, 0.6vmin, 6px);
       box-shadow:
-        inset 0 0 0 7px #060608,
-        inset 0 8px 22px rgba(0, 0, 0, 0.95),
+        inset 0 0 0 5px #060608,
+        inset 0 8px 24px rgba(0, 0, 0, 0.95),
         0 2px 0 rgba(255, 255, 255, 0.05);
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+      overflow: hidden;
     }
     .bezel-header {
-      font-size: 9px;
+      font-size: clamp(7px, 1vmin, 10px);
       color: #6e6e7a;
-      letter-spacing: 1px;
+      letter-spacing: 0.8px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
     .stripe-lines span:nth-child(1) { background: var(--accent-orange); }
     .stripe-lines span:nth-child(2) { background: #3ca0ff; }
-    .battery-indicator { font-size: 8px; color: #6e6e7a; }
+    .battery-indicator { font-size: clamp(7px, 1vmin, 9px); color: #6e6e7a; }
     .battery-led { width: 8px; height: 8px; }
 
+    /* Viewport central: preenche com flex 1 e não colapsa */
     .screen-viewport {
-      aspect-ratio: 4 / 3;
+      flex: 1 1 auto;
+      height: 100%;
+      max-height: 100%;
+      width: 100%;
+      margin: 0;
       border: none;
-      border-radius: 5px;
-      box-shadow: inset 0 0 34px rgba(0, 0, 0, 0.95);
+      border-radius: 6px;
+      background: #181c14;
+      box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.95);
+      position: relative;
+      overflow: hidden;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .bezel-footer { margin-top: 4px; }
+    .bezel-footer {
+      margin-top: 1px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: clamp(7px, 0.95vmin, 10px);
+    }
     .brand-signature {
-      font-size: 11px;
+      font-size: clamp(9px, 1.2vmin, 12px);
       color: #7f7f8b;
-      letter-spacing: 1.4px;
+      letter-spacing: 1.2px;
     }
     .brand-signature span { color: var(--accent-orange); }
     .now-playing-badge {
-      font-size: 10px;
+      font-size: clamp(8px, 1vmin, 11px);
       color: #6f6f7b;
       max-width: 240px;
     }
@@ -1760,17 +1584,20 @@
     /* ---- Detalhes da carcaça ---- */
     .speaker-grille {
       position: absolute;
-      bottom: 14px;
+      bottom: 8px;
       left: 50%;
       right: auto;
       transform: translateX(-50%);
-      gap: 4px;
+      display: flex;
+      gap: 3px;
+      pointer-events: none;
     }
     .speaker-slot {
-      width: 3px;
-      height: 12px;
-      background: rgba(255, 255, 255, 0.13);
+      width: 2.5px;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.12);
       box-shadow: none;
+      border-radius: 2px;
     }
 
     /* ---- Aviso de rotação ---- */
@@ -1802,105 +1629,76 @@
       60%, 100% { transform: rotate(90deg); }
     }
 
-    /* ---- Responsivo ---- */
-    @media (max-width: 900px) {
-      .gameboy-console {
-        padding: 26px 20px 28px;
-        gap: 14px;
-        border-radius: 34px;
-        grid-template-columns: minmax(104px, 0.9fr) minmax(0, 2.6fr) minmax(104px, 0.9fr);
-      }
-      .shoulder-left { left: 34px; }
-      .shoulder-right { right: 34px; }
-      .stick-base { width: 68px; height: 68px; }
-      .stick-cap { width: 44px; height: 44px; }
-      .abxy-diamond { width: 132px; height: 124px; }
-      .action-btn { width: 44px; height: 44px; }
-      .round-btn { width: 42px; height: 42px; }
+    /* =================================================================
+       RESPONSIVIDADE E TELA CHEIA (SEM CORTAR NADA)
+       ================================================================= */
+    body.fullscreen-mode {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: var(--shell-bg);
+    }
+    body.fullscreen-mode .gameboy-console {
+      width: 100dvw;
+      width: 100vw;
+      height: 100dvh;
+      height: 100vh;
+      max-width: 100vw;
+      max-height: 100vh;
+      grid-template-rows: 100%;
+      align-items: stretch;
+      padding: max(6px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+    }
+    body.fullscreen-mode .screen-bezel {
+      height: 100%;
+      max-height: 100%;
+      min-height: 0;
+      align-self: stretch;
+    }
+    body.fullscreen-mode .screen-viewport {
+      flex: 1 1 auto;
+      height: 100%;
+      min-height: 0;
     }
 
-    @media (max-width: 640px) {
-      body { padding: 8px; }
+    @media (max-width: 900px) {
       .gameboy-console {
-        padding: 20px 12px 22px;
-        gap: 8px;
-        border-radius: 26px;
-        grid-template-columns: minmax(84px, 0.85fr) minmax(0, 2.4fr) minmax(84px, 0.85fr);
+        grid-template-columns: minmax(88px, 0.95fr) minmax(0, 2.7fr) minmax(88px, 0.95fr);
+      }
+    }
+
+    @media (max-width: 680px) {
+      .gameboy-console {
+        grid-template-columns: minmax(78px, 0.9fr) minmax(0, 2.4fr) minmax(78px, 0.9fr);
       }
       .gameboy-console::before,
       .gameboy-console::after { display: none; }
-      .shoulder-btn { width: 84px; height: 28px; font-size: 11px; top: 4px; }
-      .shoulder-left { left: 16px; }
-      .shoulder-right { right: 16px; }
-      .stick-base { width: 56px; height: 56px; }
-      .stick-cap { width: 36px; height: 36px; }
-      .dpad-container { width: 106px; height: 106px; }
-      .abxy-diamond { width: 108px; height: 102px; }
-      .action-btn { width: 38px; height: 38px; font-size: 12px; }
-      .round-btn { width: 36px; height: 36px; font-size: 15px; }
-      .pill-btn { width: 42px; height: 13px; }
-      .pill-label { font-size: 8px; }
-      .bezel-header { font-size: 8px; }
+      .shoulder-left { left: clamp(8px, 2vmin, 20px); }
+      .shoulder-right { right: clamp(8px, 2vmin, 20px); }
+      .speaker-grille { display: none; }
+    }
+
+    @media (max-height: 480px) {
+      .gameboy-console {
+        padding: max(4px, env(safe-area-inset-top)) max(6px, env(safe-area-inset-right)) max(4px, env(safe-area-inset-bottom)) max(6px, env(safe-area-inset-left));
+        gap: clamp(2px, 0.8vmin, 8px);
+      }
+      .grip {
+        padding: clamp(28px, 5vmin, 36px) 2px 4px;
+        gap: 2px;
+      }
+      .screen-bezel {
+        padding: 4px 6px;
+        gap: 2px;
+      }
+      .speaker-grille { display: none; }
     }
 
     @media (max-width: 780px) and (orientation: portrait) {
       .rotate-hint { display: flex; }
-    }
-
-    /* Menu fullscreen usa mesmas regras vmin do bloco principal (sem duplicar) */
-    body.fullscreen-mode:has(#game.active) .gameboy-console {
-      display: block;
-      max-width: none;
-      width: 100vw;
-      width: 100dvw;
-      height: 100dvh;
-      height: 100vh;
-      padding: 0;
-      border-radius: 0;
-      background: #000;
-      box-shadow: none;
-    }
-    body.fullscreen-mode:has(#game.active) .gameboy-console::before,
-    body.fullscreen-mode:has(#game.active) .gameboy-console::after,
-    body.fullscreen-mode:has(#game.active) .grip-left,
-    body.fullscreen-mode:has(#game.active) .shoulder-btn,
-    body.fullscreen-mode:has(#game.active) .speaker-grille,
-    body.fullscreen-mode:has(#game.active) .bezel-header,
-    body.fullscreen-mode:has(#game.active) .bezel-footer {
-      display: none !important;
-    }
-    body.fullscreen-mode:has(#game.active) .grip-right {
-      position: fixed;
-      top: 10px;
-      right: 12px;
-      z-index: 60;
-      display: block;
-      opacity: 0.5;
-      transition: opacity 0.2s;
-    }
-    body.fullscreen-mode:has(#game.active) .grip-right:hover { opacity: 1; }
-    body.fullscreen-mode:has(#game.active) .grip-right .abxy-diamond,
-    body.fullscreen-mode:has(#game.active) .grip-right .stick-base {
-      display: none !important;
-    }
-    body.fullscreen-mode:has(#game.active) .screen-bezel {
-      position: absolute;
-      inset: 0;
-      padding: 0;
-      border: none;
-      border-radius: 0;
-      background: #000;
-      box-shadow: none;
-      display: block;
-    }
-    body.fullscreen-mode:has(#game.active) .screen-viewport {
-      width: 100vw;
-      width: 100dvw;
-      height: 100dvh;
-      height: 100vh;
-      aspect-ratio: auto;
-      border: none;
-      border-radius: 0;
     }
   </style>
 </head>
@@ -1919,17 +1717,15 @@
 
     <!-- ============ EMPUNHADURA ESQUERDA ============ -->
     <section class="grip grip-left">
-      <!-- Analógico esquerdo -->
-      <div class="stick-base" aria-hidden="true">
-        <div class="stick-cap"></div>
-      </div>
+      <!-- Espaçador superior para alinhamento simétrico com os atalhos direitos -->
+      <div class="grip-top-spacer" aria-hidden="true"></div>
 
-      <!-- D-Pad em Cruz -->
+      <!-- D-Pad em Cruz Tátil -->
       <div class="dpad-container" id="dpad">
-        <button type="button" class="dpad-btn dpad-up joy-btn" data-btn="4" aria-label="Cima">▲</button>
-        <button type="button" class="dpad-btn dpad-down joy-btn" data-btn="5" aria-label="Baixo">▼</button>
-        <button type="button" class="dpad-btn dpad-left joy-btn" data-btn="6" aria-label="Esquerda">◀</button>
-        <button type="button" class="dpad-btn dpad-right joy-btn" data-btn="7" aria-label="Direita">▶</button>
+        <button type="button" class="dpad-btn dpad-up joy-btn" data-btn="4" aria-label="Cima"><span class="dpad-arrow">▲</span></button>
+        <button type="button" class="dpad-btn dpad-down joy-btn" data-btn="5" aria-label="Baixo"><span class="dpad-arrow">▼</span></button>
+        <button type="button" class="dpad-btn dpad-left joy-btn" data-btn="6" aria-label="Esquerda"><span class="dpad-arrow">◀</span></button>
+        <button type="button" class="dpad-btn dpad-right joy-btn" data-btn="7" aria-label="Direita"><span class="dpad-arrow">▶</span></button>
         <div class="dpad-center"></div>
       </div>
 
@@ -2015,10 +1811,8 @@
         <button type="button" class="action-btn btn-b joy-btn" data-btn="0">B</button>
       </div>
 
-      <!-- Analógico direito -->
-      <div class="stick-base" aria-hidden="true">
-        <div class="stick-cap"></div>
-      </div>
+      <!-- Espaçador inferior para alinhamento simétrico com Select/Start -->
+      <div class="grip-bottom-spacer" aria-hidden="true"></div>
     </section>
 
     <!-- Alto-falante decorativo -->
@@ -2977,8 +2771,37 @@
       });
       btn.addEventListener('pointerup', release);
       btn.addEventListener('pointercancel', release);
-      btn.addEventListener('lostpointercapture', release);
     });
+
+    // Deslizamento contínuo no direcional em telas sensíveis ao toque (Mobile D-Pad touch slide)
+    const dpadEl = document.getElementById('dpad');
+    if (dpadEl) {
+      let activeDpadTarget = null;
+      dpadEl.addEventListener('touchmove', (e) => {
+        if (!e.touches || e.touches.length === 0) return;
+        const touch = e.touches[0];
+        const target = document.elementFromPoint(touch.clientX, touch.clientY);
+        const btn = target ? target.closest('.dpad-btn') : null;
+        if (btn !== activeDpadTarget) {
+          if (activeDpadTarget) {
+            activeDpadTarget.dispatchEvent(new PointerEvent('pointerup', { bubbles: true }));
+          }
+          activeDpadTarget = btn;
+          if (activeDpadTarget) {
+            activeDpadTarget.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+          }
+        }
+      }, { passive: true });
+
+      const clearDpadTouch = () => {
+        if (activeDpadTarget) {
+          activeDpadTarget.dispatchEvent(new PointerEvent('pointerup', { bubbles: true }));
+          activeDpadTarget = null;
+        }
+      };
+      dpadEl.addEventListener('touchend', clearDpadTouch, { passive: true });
+      dpadEl.addEventListener('touchcancel', clearDpadTouch, { passive: true });
+    }
 
     /******************************************************************
      * 4. EXECUÇÃO DO EMULADOR NO VISOR DO GAME BOY
@@ -3123,8 +2946,15 @@
       activeIframe = iframe;
       gameDiv.classList.add('active');
 
-      const safeSaveKey = (record.name || 'snes_game').replace(/[^a-zA-Z0-9_-]/g, '_') || 'snes_game';
+      let gameFileName = 'game.smc';
+      if (record.fileName) {
+        gameFileName = record.fileName.split('/').pop();
+      } else if (record.name) {
+        const clean = record.name.replace(/[^a-zA-Z0-9_-]/g, '_') || 'game';
+        gameFileName = clean.endsWith('.smc') || clean.endsWith('.sfc') ? clean : (clean + '.smc');
+      }
       const isFullscreen = document.body.classList.contains('fullscreen-mode');
+      const isFileProtocol = window.location.protocol === 'file:';
 
       function onGameReady() {
         if (activeIframe !== iframe) return;
@@ -3147,7 +2977,11 @@
       // Caminho para os assets locais do emulador (núcleo WASM, loader e CSS locais)
       // com fallbacks para CDN externa caso algum arquivo local falhe
       const localEmuPath = new URL('./emulator/', window.location.href).href;
-      const cdnSources = [
+      const cdnSources = isFileProtocol ? [
+        'https://cdn.emulatorjs.org/stable/data/',
+        'https://cdn.emulatorjs.org/latest/data/',
+        localEmuPath
+      ] : [
         localEmuPath,
         'https://cdn.emulatorjs.org/stable/data/',
         'https://cdn.emulatorjs.org/latest/data/'
@@ -3186,7 +3020,7 @@
       font-size: 13px;
       line-height: 1.4;
       z-index: 10;
-      transition: opacity 0.2s ease;
+      transition: opacity 0.25s ease;
     }
     #loading-splash.hidden {
       opacity: 0;
@@ -3196,6 +3030,19 @@
     #loading-splash .spinner {
       margin-bottom: 8px;
       font-size: 18px;
+      letter-spacing: 2px;
+      animation: pulse 1s infinite alternate;
+    }
+    @keyframes pulse {
+      from { opacity: 0.4; }
+      to { opacity: 1; }
+    }
+    #loading-detail {
+      font-size: 11px;
+      opacity: 0.85;
+      margin-top: 5px;
+      max-width: 90%;
+      word-break: break-word;
     }
     #emulator-target {
       width: 100%;
@@ -3212,50 +3059,72 @@
       image-rendering: -moz-crisp-edges;
       image-rendering: pixelated;
     }
-    body:not(.is-fullscreen) .ejs_virtualGamepad_parent,
-    body:not(.is-fullscreen) .ejs_virtualGamepad_open {
+    /* O console já possui seus próprios controles táteis nas empunhaduras.
+       O gamepad virtual interno do emulador é PERMANENTEMENTE desativado e oculto em tela cheia e modo padrão */
+    .ejs_virtualGamepad_parent,
+    .ejs_virtualGamepad_open,
+    .ejs_dpad_main,
+    .ejs_virtualGamepad_left,
+    .ejs_virtualGamepad_right,
+    .ejs_virtualGamepad_top,
+    .ejs_virtualGamepad_bottom,
+    [class*="ejs_virtualGamepad"],
+    [class*="ejs_dpad"] {
       display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
     }
   </style>
-  <script>
-    document.addEventListener('fullscreenchange', () => {
-      if (document.fullscreenElement) {
-        document.body.classList.add('is-fullscreen');
-      } else if (!window.parent.document.body.classList.contains('fullscreen-mode')) {
-        document.body.classList.remove('is-fullscreen');
-      }
-    });
-  <\/script>
 </head>
 <body class="${isFullscreen ? 'is-fullscreen' : ''}">
   <div id="loading-splash">
     <div class="spinner">● ● ●</div>
-    <div>CARREGANDO...</div>
-    <div style="font-size: 11px; opacity: 0.85; margin-top: 4px;">Iniciando núcleo SNES (local)</div>
+    <div id="loading-title">CARREGANDO...</div>
+    <div id="loading-detail">Iniciando núcleo SNES (local)...</div>
   </div>
   <div id="emulator-target"></div>
   <script>
     (function () {
       var sources = ${JSON.stringify(cdnSources)};
       var index = 0;
+      var splashEl = document.getElementById('loading-splash');
+      var detailEl = document.getElementById('loading-detail');
+      var gameStarted = false;
+
+      function updateStatus(txt) {
+        if (detailEl && !gameStarted && txt) detailEl.textContent = txt;
+      }
 
       function hideSplash() {
-        var el = document.getElementById('loading-splash');
-        if (el) el.classList.add('hidden');
+        if (gameStarted) return;
+        gameStarted = true;
+        if (splashEl) splashEl.classList.add('hidden');
       }
 
       window.EJS_player = '#emulator-target';
       window.EJS_core = 'snes';
       window.EJS_gameUrl = ${JSON.stringify(romUrl)};
-      window.EJS_gameName = ${JSON.stringify(safeSaveKey)};
+      window.EJS_gameName = ${JSON.stringify(gameFileName)};
       window.EJS_pathtodata = sources[0];
       window.EJS_virtualGamepad = false;
+      window.EJS_VirtualGamepadSettings = [];
+      window.EJS_defaultOptions = {
+        'virtual-gamepad': 'disabled',
+        'menu-bar-button': 'hidden'
+      };
       window.EJS_startOnLoaded = true;
       window.EJS_language = 'pt-BR';
       window.EJS_DEBUG_XX = false;
 
-      // Caminhos explícitos para garantir carregamento 100% local e sem erro de rede
+      // Mapeamento explícito de caminhos absolutos e de nomes base
       window.EJS_paths = {
+        'extract7z.js': sources[0] + 'compression/extract7z.js',
+        'extractzip.js': sources[0] + 'compression/extractzip.js',
+        'libunrar.js': sources[0] + 'compression/libunrar.js',
+        'libunrar.wasm': sources[0] + 'compression/libunrar.wasm',
+        'snes9x-wasm.data': sources[0] + 'cores/snes9x-wasm.data',
+        'snes9x-legacy-wasm.data': sources[0] + 'cores/snes9x-legacy-wasm.data',
         'compression/extract7z.js': sources[0] + 'compression/extract7z.js',
         'compression/extractzip.js': sources[0] + 'compression/extractzip.js',
         'compression/libunrar.js': sources[0] + 'compression/libunrar.js',
@@ -3263,13 +3132,55 @@
       };
 
       window.EJS_ready = function () {
-        hideSplash();
+        updateStatus('Carregando jogo e vídeo...');
         try { if (window.parent && window.parent.__onEmulatorReady) window.parent.__onEmulatorReady(); } catch (_) {}
       };
       window.EJS_onGameStart = function () {
         hideSplash();
         try { if (window.parent && window.parent.__onEmulatorGameStarted) window.parent.__onEmulatorGameStarted(); } catch (_) {}
       };
+
+      window.addEventListener('error', function (err) {
+        console.error('Erro no emulador:', err);
+        if (!gameStarted && splashEl) {
+          splashEl.innerHTML = '<div style="font-size:16px;margin-bottom:6px;color:#7f1d1d;">⚠️ FALHA AO INICIAR</div>' +
+            '<div style="font-size:11px;opacity:0.9;padding:0 8px;">' + (err.message || 'Erro ao carregar arquivos') + '</div>' +
+            '<div style="font-size:10px;margin-top:8px;opacity:0.8;">Acesse http://localhost:5173 para suporte total.</div>';
+        }
+      });
+
+      var monitorInterval = setInterval(function () {
+        if (gameStarted) {
+          clearInterval(monitorInterval);
+          return;
+        }
+        if (window.EJS_emulator) {
+          if (window.EJS_emulator.failedToStart) {
+            clearInterval(monitorInterval);
+            var msg = (window.EJS_emulator.textElem && window.EJS_emulator.textElem.innerText) || 'Falha ao iniciar núcleo do emulador.';
+            if (splashEl) {
+              splashEl.innerHTML = '<div style="font-size:15px;margin-bottom:6px;color:#7f1d1d;">⚠️ FALHA NO NÚCLEO</div>' +
+                '<div style="font-size:11px;opacity:0.9;padding:0 8px;">' + msg + '</div>' +
+                '<div style="font-size:10px;margin-top:8px;opacity:0.8;">Verifique a pasta emulator/ ou use http://localhost:5173</div>';
+            }
+            try { if (window.parent && window.parent.__onEmulatorError) window.parent.__onEmulatorError(msg); } catch (_) {}
+            return;
+          }
+          if (window.EJS_emulator.textElem && window.EJS_emulator.textElem.innerText) {
+            updateStatus(window.EJS_emulator.textElem.innerText);
+          }
+        }
+      }, 150);
+
+      // Fallback: se o canvas já recebeu dimensões ou começou a renderizar
+      setTimeout(function () {
+        if (!gameStarted) {
+          var cv = document.querySelector('#emulator-target canvas');
+          if (cv && cv.width > 0 && cv.height > 0) {
+            hideSplash();
+          }
+        }
+      }, 6000);
 
       function load() {
         var url = sources[index];
@@ -3278,16 +3189,17 @@
         script.src = url + 'loader.js';
         script.async = true;
         script.onload = function () {
-          setTimeout(hideSplash, 3500);
+          updateStatus('Loader carregado. Baixando núcleo...');
         };
         script.onerror = function () {
           index++;
           if (index < sources.length) {
+            updateStatus('Tentando servidor alternativo (' + index + ')...');
             load();
           } else {
-            var splash = document.getElementById('loading-splash');
-            if (splash) {
-              splash.innerHTML = '<div>⚠️ FALHA AO INICIAR</div><div style="font-size:11px;margin-top:6px;">Não foi possível carregar o emulador.<br>Verifique os arquivos da pasta emulator/.</div>';
+            clearInterval(monitorInterval);
+            if (splashEl) {
+              splashEl.innerHTML = '<div>⚠️ FALHA AO INICIAR</div><div style="font-size:11px;margin-top:6px;">Não foi possível carregar o emulador.<br>Verifique a conexão ou a pasta emulator/.</div>';
             }
             try {
               if (window.parent && window.parent.__onEmulatorError) {
@@ -3524,23 +3436,50 @@
       await refreshHistory();
     }
 
-    // Baixa a ROM do repositório GitHub na primeira vez, salva no IndexedDB e inicia o jogo
+    // APK sem ROMs: clique baixa on-demand, salva IndexedDB, reuse offline. Badge ● salvo / ↓ baixa.
+    let downloadInFlight = false;
+    async function fetchWithProgress(url, onProgress) {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const len = Number(res.headers.get('Content-Length') || 0);
+      if (!res.body || !len) return res.blob();
+      const reader = res.body.getReader();
+      const chunks = [];
+      let loaded = 0;
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+        loaded += value.byteLength;
+        if (len && onProgress) onProgress(Math.round((loaded / len) * 100));
+      }
+      return new Blob(chunks);
+    }
     async function playGitHubGame(ghGame) {
-      // Verifica se já está em cache no IndexedDB
+      if (downloadInFlight) return;
+      // Checa IndexedDB direto (gamesCache pode estar stale)
+      try {
+        const dbHit = await getRomById(ghGame.id);
+        if (dbHit && dbHit.blob) return playGameFromHistory(dbHit.id);
+      } catch (_) {}
       const cached = gamesCache.find(
         (g) => g.id === ghGame.id || g.fileName.toLowerCase() === ghGame.fileName.toLowerCase()
       );
-      if (cached && cached.blob) {
-        return playGameFromHistory(cached.id);
+      if (cached && cached.blob) return playGameFromHistory(cached.id);
+
+      // Offline e não cacheado → erro amigável
+      if (!navigator.onLine) {
+        showLcdError(ghGame, 'Sem rede e jogo não está em cache.\nConecte à internet para baixar na primeira vez.');
+        return;
       }
 
+      downloadInFlight = true;
       try {
         currentGameLabel.textContent = 'Baixando...';
-        lcdBusy = 'BAIXANDO...';
+        lcdBusy = 'BAIXANDO 0%';
         renderLcdMenu();
         if (lcdTitleEl) lcdTitleEl.textContent = ghGame.name.slice(0, 16).toUpperCase();
 
-        // A ROM pode estar em games/<LETRA>/arquivo.smc — codifica cada segmento
         const romPath = String(ghGame.fileName).split('/').map(encodeURIComponent).join('/');
         const candidateUrls = [
           ghGame.downloadUrl,
@@ -3552,19 +3491,15 @@
         let lastErr = null;
         for (const url of candidateUrls) {
           try {
-            const res = await fetch(url);
-            if (res.ok) {
-              blob = await res.blob();
-              if (blob && blob.size > 0) break;
-            }
-          } catch (e) {
-            lastErr = e;
-          }
+            blob = await fetchWithProgress(url, (pct) => {
+              lcdBusy = `BAIXANDO ${pct}%`;
+              if (lcdStatusChipEl) lcdStatusChipEl.textContent = lcdBusy;
+            });
+            if (blob && blob.size > 0) break;
+          } catch (e) { lastErr = e; }
         }
 
-        if (!blob || blob.size === 0) {
-          throw new Error(lastErr ? lastErr.message : 'Arquivo de ROM não disponível.');
-        }
+        if (!blob || blob.size === 0) throw new Error(lastErr ? lastErr.message : 'Arquivo de ROM não disponível.');
 
         const record = {
           id: ghGame.id,
@@ -3587,8 +3522,14 @@
       } catch (err) {
         lcdBusy = '';
         renderLcdMenu();
-        showLcdError(ghGame, 'Erro ao baixar a ROM: ' + err.message);
+        const offline = !navigator.onLine;
+        const msg = offline
+          ? 'Sem rede. Conecte à internet para baixar.'
+          : ('Erro ao baixar a ROM: ' + err.message);
+        showLcdError(ghGame, msg);
         currentGameLabel.textContent = 'Standby';
+      } finally {
+        downloadInFlight = false;
       }
     }
 

@@ -16,16 +16,10 @@ function copyDir(src, dst) {
   }
 }
 
-const items = [
-  'emulator',
-  'sw.js',
-  'manifest.webmanifest',
-  'manifest.json',
-  'icon-192.png',
-  'icon-512.png',
-  'pix-qr.jpeg',
-  'games/games.json',
-];
+const withRoms = process.argv.includes('--with-roms');
+const items = withRoms
+  ? ['emulator','sw.js','manifest.webmanifest','manifest.json','icon-192.png','icon-512.png','pix-qr.jpeg','games']
+  : ['emulator','sw.js','manifest.webmanifest','manifest.json','icon-192.png','icon-512.png','pix-qr.jpeg','games/games.json'];
 
 for (const rel of items) {
   const src = path.join(root, rel);

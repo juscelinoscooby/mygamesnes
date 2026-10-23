@@ -1,4 +1,4 @@
-const CACHE_NAME = 'snes-boy-v7-cache';
+const CACHE_NAME = 'snes-boy-v10-cache';
 
 // games.json = biblioteca: deixado fora do precache — sempre rede primeiro (ver fetch abaixo).
 // Motivo: usuário organiza roms em pastas A-Z e cache velho congela visor em "2 PASTAS".
@@ -14,6 +14,7 @@ const ASSETS_TO_CACHE = [
   './emulator/emulator.min.css',
   './emulator/localization/pt-BR.json',
   './emulator/cores/reports/snes.json',
+  './emulator/cores/reports/snes9x.json',
   './emulator/cores/snes9x-wasm.data',
   './emulator/cores/snes9x-legacy-wasm.data',
   './emulator/compression/extract7z.js',
@@ -49,6 +50,9 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   if (req.method !== 'GET') return;
+
+  // ROMs (.smc/.sfc) ficam no IndexedDB — não cachear no SW (evita duplicar MB e estourar quota)
+  if (/\.(smc|sfc|fig|bs|rom)(\?|#|$)/i.test(req.url)) return;
 
   // games.json = biblioteca viva — rede primeiro, cache só se falhar (offline)
   const isGamesJson = req.url.includes('/games/games.json');
